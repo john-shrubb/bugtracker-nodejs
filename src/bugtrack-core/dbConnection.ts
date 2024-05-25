@@ -1,11 +1,10 @@
 import pg from 'pg';
-import {hostname, port, password, database, username} from '../config/dbParameters.json';
 
 const clientPool = new pg.Pool({
-	host: hostname,
-	port: port,
-	password: password,
-	database: database,
-	user: username,
+	host: process.env.HOST,
+	port: Number(process.env.PORT),
+	password: process.env.PASSWORD,
+	database: process.env.DBNAME,
+	user: process.env.LOGIN,
 }).connect();
 export default await clientPool;
