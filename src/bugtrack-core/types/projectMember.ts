@@ -13,11 +13,13 @@ class ProjectMember {
 		user     : User,
 		project  : Project,
 		role     : Role,
+		joinedOn : Date,
 	) {
 		this.memberID = memberID;
 		this.user = user;
 		this.project = project;
 		this.role = role;
+		this.joined = joinedOn;
 	}
 
 	/**
@@ -39,6 +41,11 @@ class ProjectMember {
 	 * The user's role.
 	 */
 	public role;
+
+	/**
+	 * When the user joined the project.
+	 */
+	public joined;
 
 	/**
 	 * Grabs all the tickets the user created in the context of the current project.

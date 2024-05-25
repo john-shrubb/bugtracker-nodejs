@@ -20,6 +20,7 @@ class Ticket {
 		ticketTitle            : string,
 		ticketDescription      : string,
 		attachments            : string,
+		createdOn              : Date,
 	) {
 		// Check the format of the passed ID.
 		if (!checkID(ticketID)) {
@@ -36,6 +37,7 @@ class Ticket {
 		this.title = ticketTitle;
 		this.description = ticketDescription;
 		this.attachments = attachments;
+		this.opened = createdOn;
 	}
 
 	/**
@@ -84,6 +86,11 @@ class Ticket {
 	 * The URLs for the attachments of the tickets.
 	 */
 	public attachments;
+
+	/**
+	 * When the ticket was opened.
+	 */
+	public opened;
 
 	/**
 	 * Get all the comments created for the ticket.
