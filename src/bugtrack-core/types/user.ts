@@ -1,3 +1,8 @@
+import ProjectMember from './projectMember';
+
+/**
+ * A class used to represent users within the bug tracker system.
+ */
 class User {
 	constructor(
 		userID       : string,
@@ -6,25 +11,59 @@ class User {
 		displayName  : string,
 		pfp          : string,
 		creationDate : Date,
-		projectIDs   : Array<string>,
 	) {
-		this.userID = userID;
+		this.id = userID;
 		this.username = username;
 		this.email = email;
 		this.displayName = displayName;
 		this.pfp = pfp;
 		this.creationDate = creationDate;
-		this.projectIDs = projectIDs;
 	}
+
 	// Basic user data
 
-	public userID;
+	/**
+	 * The ID used to reference the user.
+	 */
+	public id;
+
+	/**
+	 * A username which can be used to uniquely identify the user.
+	 */
 	public username;
+
+	/**
+	 * The user's email address.
+	 */
 	public email;
+
+	/**
+	 * The user's chosen display name shown to other users.
+	 */
 	public displayName;
-	public pfp; // pfp is the URL leading to the user's profile picture. 
+
+	/**
+	 * A URL leading to the PFP.
+	 * This URL should be passed directly to the browser and such should be stored either
+	 * on local CDN or by an external provider, such as Cloudinary.
+	 */
+	public pfp;
+
+	/**
+	 * The date the account was created.
+	 */
 	public creationDate;
-	public projectIDs; // An array containing all the IDs referencing the projects the user is in.
+
+	// Functions
+
+	/**
+	 * Get the projects the user is in.
+	 * @returns An array of the ProjectMember class, in the context of this user.
+	 */
+	public getProjects() : Array<ProjectMember> {
+		return [];
+	}
+
 }
 
 export default User;
