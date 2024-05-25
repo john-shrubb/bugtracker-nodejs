@@ -1,5 +1,5 @@
 import pg from 'pg';
-import { hostname, port, password, database, username } from '../config/dbParameters.json';
+import {hostname, port, password, database, username} from '../config/dbParameters.json';
 
 const clientPool = new pg.Pool({
 	host: hostname,
