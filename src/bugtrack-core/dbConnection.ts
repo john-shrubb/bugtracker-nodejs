@@ -22,4 +22,4 @@ const gpPool = await new pg.Pool({
 	password: process.env['GP-PASSWORD'],
 }).connect();
 
-export default { umPool, gpPool };
+export { umPool, gpPool };
