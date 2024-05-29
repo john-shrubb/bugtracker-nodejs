@@ -1,3 +1,5 @@
+import checkID from '../helperFunctions/checkID.js';
+import BugtrackCore from '../index.js';
 import Project from './project.js';
 import Role from './role.js';
 import Ticket from './ticket.js';
@@ -9,18 +11,31 @@ import User from './user.js';
 
 class ProjectMember {
 	constructor(
-		memberID : string,
-		user     : User,
-		project  : Project,
-		role     : Role,
-		joinedOn : Date,
+		bugtrackCore : BugtrackCore,
+		memberID     : string,
+		user         : User,
+		project      : Project,
+		role         : Role,
+		joinedOn     : Date,
 	) {
+		this.bugtrackCore = bugtrackCore;
+
+		// Check format of member ID.
+		if (!checkID(memberID)) {
+			throw new Error('Attempted to create ProjectMember with invalid member ID.');
+		}
+
 		this.memberID = memberID;
 		this.user = user;
 		this.project = project;
 		this.role = role;
 		this.joined = joinedOn;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * The user's member ID used to link them with the project.

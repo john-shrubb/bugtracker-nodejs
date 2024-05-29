@@ -1,27 +1,35 @@
+import checkID from '../helperFunctions/checkID.js';
+import BugtrackCore from '../index.js';
 import ProjectMember from './projectMember.js';
 
 /**
  * Used to represent a role in a project.
  */
 class Role {
-	/**
-	 * @param roleID The ID of the project role.
-	 * @param name   The display name of the project role.
-	 * @param permissionInt The permission int specifying the permissions granted to the
-	 *                      role.
-	 * @param displayTag Whether the role is displayed on the client.
-	 */
 	constructor(
-		roleID : string,
-		name : string,
+		bugtrackCore  : BugtrackCore,
+		roleID        : string,
+		name          : string,
 		permissionInt : number,
-		displayTag : boolean,
+		displayTag    : boolean,
 	) {
+		this.bugtrackCore = bugtrackCore;
+
+		// Check format of role ID.
+		if (!checkID(roleID)) {
+			throw new Error('Attempted to create Role with invalid role ID.');
+		}
+
 		this.id = roleID;
 		this.name = name;
 		this.permissionBits = permissionInt;
 		this.displayTag = displayTag;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * The ID used to reference the role.

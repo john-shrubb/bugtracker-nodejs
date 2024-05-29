@@ -1,3 +1,5 @@
+import checkID from '../helperFunctions/checkID.js';
+import BugtrackCore from '../index.js';
 import ProjectMember from './projectMember.js';
 import Ticket from './ticket.js';
 import User from './user.js';
@@ -7,16 +9,29 @@ import User from './user.js';
  */
 class Project {
 	constructor(
-		projectID : string,
-		name      : string,
-		owner     : User,
+		bugtrackCore : BugtrackCore,
+		projectID    : string,
+		name         : string,
+		owner        : User,
 		creationDate : Date,
 	) {
+		this.bugtrackCore = bugtrackCore;
+
+		// Check format of project ID.
+		if (!checkID(projectID)) {
+			throw new Error('Attempted to create new Project with invalid project ID');
+		}
+
 		this.id = projectID;
 		this.name = name;
 		this.owner = owner;
 		this.createdOn = creationDate;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * ID used to reference the project.

@@ -1,3 +1,5 @@
+import checkID from '../helperFunctions/checkID.js';
+import BugtrackCore from '../index.js';
 import ProjectMember from './projectMember.js';
 
 /**
@@ -5,6 +7,7 @@ import ProjectMember from './projectMember.js';
  */
 class User {
 	constructor(
+		bugtrackCore : BugtrackCore,
 		userID       : string,
 		username     : string,
 		email        : string,
@@ -12,6 +15,12 @@ class User {
 		pfp          : string,
 		creationDate : Date,
 	) {
+		this.bugtrackCore = bugtrackCore;
+
+		if (!checkID(userID)) {
+			throw Error('Attempted to create User with invalid user ID.');
+		}
+
 		this.id = userID;
 		this.username = username;
 		this.email = email;
@@ -19,6 +28,11 @@ class User {
 		this.pfp = pfp;
 		this.creationDate = creationDate;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	// Basic user data
 

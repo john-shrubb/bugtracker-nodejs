@@ -1,3 +1,4 @@
+import BugtrackCore from '../index.js';
 import User from './user.js';
 
 /**
@@ -6,18 +7,25 @@ import User from './user.js';
 
 class LoginAttempt {
 	constructor(
-		user       : User,
-		date       : Date,
-		successful : boolean,
-		ipAddress  : string,
-		userAgent  : string,
+		bugtrackCore : BugtrackCore,
+		user         : User,
+		date         : Date,
+		successful   : boolean,
+		ipAddress    : string,
+		userAgent    : string,
 	) {
+		this.bugtrackCore = bugtrackCore;
 		this.user = user;
 		this.date = date;
 		this.successful = successful;
 		this.ip = ipAddress;
 		this.userAgent = userAgent;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * The user the client attempted to log in as

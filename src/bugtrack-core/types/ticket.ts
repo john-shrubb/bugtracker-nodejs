@@ -1,4 +1,5 @@
 import checkID from '../helperFunctions/checkID.js';
+import BugtrackCore from '../index.js';
 import Comment from './comment.js';
 import TicketPriority from './enums/ticketPriority.js';
 import TicketStatus from './enums/ticketStatus.js';
@@ -11,6 +12,7 @@ import Tag from './tag.js';
 
 class Ticket {
 	constructor(
+		bugtrackCore           : BugtrackCore,
 		ticketID               : string,
 		author                 : ProjectMember,
 		priority               : TicketPriority,
@@ -22,12 +24,15 @@ class Ticket {
 		attachments            : string,
 		createdOn              : Date,
 	) {
+		this.bugtrackCore = bugtrackCore;
+
 		// Check the format of the passed ID.
 		if (!checkID(ticketID)) {
 			throw new Error(
 				'Attempted to create a ticket with an invalid ticket ID format.'
 			);
 		}
+
 		this.id = ticketID;
 		this.author = author;
 		this.priority = priority;
@@ -39,6 +44,11 @@ class Ticket {
 		this.attachments = attachments;
 		this.opened = createdOn;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * The ID used to reference the ticket.

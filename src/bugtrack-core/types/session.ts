@@ -1,3 +1,4 @@
+import BugtrackCore from '../index.js';
 import User from './user.js';
 
 /**
@@ -6,18 +7,25 @@ import User from './user.js';
  */
 class Session {
 	constructor(
+		bugtrackCore : BugtrackCore,
 		sessionToken : string,
 		userAgent    : string,
 		user         : User,
 		issueDate    : Date,
 		expiryDate   : Date,
 	) {
+		this.bugtrackCore = bugtrackCore;
 		this.sessionToken = sessionToken;
 		this.userAgent = userAgent;
 		this.user = user;
 		this.issued = issueDate;
 		this.expires = expiryDate;
 	}
+
+	/**
+	 * Instance of the core bugtracker class.
+	 */
+	private bugtrackCore;
 
 	/**
 	 * The token tied to the user's session.
