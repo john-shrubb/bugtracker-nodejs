@@ -1,4 +1,4 @@
-import User from './user';
+import User from './user.js';
 
 /**
  * Represents an attempt to login to the bug tracker system.

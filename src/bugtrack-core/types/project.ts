@@ -1,6 +1,6 @@
-import ProjectMember from './projectMember';
-import Ticket from './ticket';
-import User from './user';
+import ProjectMember from './projectMember.js';
+import Ticket from './ticket.js';
+import User from './user.js';
 
 /**
  * Represents an overall project in the bug tracker.

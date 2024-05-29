@@ -1,5 +1,5 @@
-import ProjectMember from './projectMember';
-import Ticket from './ticket';
+import ProjectMember from './projectMember.js';
+import Ticket from './ticket.js';
 
 /**
  * Represents a comment made on a ticket.

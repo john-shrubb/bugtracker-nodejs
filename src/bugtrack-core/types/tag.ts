@@ -1,5 +1,5 @@
-import Project from './project';
-import Ticket from './ticket';
+import Project from './project.js';
+import Ticket from './ticket.js';
 
 class Tag {
 	constructor(

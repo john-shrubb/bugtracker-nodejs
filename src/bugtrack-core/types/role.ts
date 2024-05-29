@@ -1,4 +1,4 @@
-import ProjectMember from './projectMember';
+import ProjectMember from './projectMember.js';
 
 /**
  * Used to represent a role in a project.

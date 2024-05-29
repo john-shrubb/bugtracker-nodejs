@@ -1,9 +1,9 @@
-import checkID from '../helperFunctions/checkID';
-import Comment from './comment';
-import TicketPriority from './enums/ticketPriority';
-import TicketStatus from './enums/ticketStatus';
-import ProjectMember from './projectMember';
-import Tag from './tag';
+import checkID from '../helperFunctions/checkID.js';
+import Comment from './comment.js';
+import TicketPriority from './enums/ticketPriority.js';
+import TicketStatus from './enums/ticketStatus.js';
+import ProjectMember from './projectMember.js';
+import Tag from './tag.js';
 
 /**
  * Used to represent a ticket.

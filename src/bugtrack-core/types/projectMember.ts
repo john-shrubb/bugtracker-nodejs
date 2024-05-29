@@ -1,7 +1,7 @@
-import Project from './project';
-import Role from './role';
-import Ticket from './ticket';
-import User from './user';
+import Project from './project.js';
+import Role from './role.js';
+import Ticket from './ticket.js';
+import User from './user.js';
 
 /**
  * Represents a user in the context of a project.

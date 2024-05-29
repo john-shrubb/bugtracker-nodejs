@@ -1,4 +1,4 @@
-import User from './user';
+import User from './user.js';
 
 /**
  * Used to represent a session.

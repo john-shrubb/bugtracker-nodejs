@@ -1,4 +1,4 @@
-import ProjectMember from './projectMember';
+import ProjectMember from './projectMember.js';
 
 /**
  * A class used to represent users within the bug tracker system.
