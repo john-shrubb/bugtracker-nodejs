@@ -10,20 +10,20 @@ Use the provided [database creation script](../src/config/dbInitScript.sql) prov
 ```sql
 -- Ensure you are executing this script in the context of the correct database!
 
-CREATE ROLE bugtracker-nodejs-usermanager LOGIN ENCRYPTED PASSWORD 'password123';
-CREATE ROLE bugtracker-nodejs-generalpurpose LOGIN ENCRYPTED PASSWORD 'password123';
+CREATE ROLE bugtrackernodejsusermanager LOGIN ENCRYPTED PASSWORD 'password123';
+CREATE ROLE bugtrackernodejsgeneralpurpose LOGIN ENCRYPTED PASSWORD 'password123';
 
 -- Allow bugtracker-user-manager to see and edit users table. Role should not have permissions for anything else.
 
-GRANT ALL ON users TO bugtracker-nodejs-usermanager;
+GRANT ALL ON users TO bugtrackernodejsusermanager;
 
 -- Role cannot edit users table nor see passwords or soft deleted accounts.
 
-GRANT SELECT ON usersgp TO bugtracker-nodejs-generalpurpose;
+GRANT SELECT ON usersgp TO bugtrackernodejsgeneralpurpose;
 
 -- Does have permissions for everything else.
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON projects, projectmembers, tickets, ticketassignments, comments, contentedits, tags, tagassignments, roles, roleassignments, loginattempts, sessions TO bugtracker-nodejs-generalpurpose;
+GRANT SELECT, INSERT, UPDATE, DELETE ON projects, projectmembers, tickets, ticketassignments, comments, contentedits, tags, tagassignments, roles, roleassignments, loginattempts, sessions TO bugtrackernodejsgeneralpurpose;
 ```
 
 ## Roles
