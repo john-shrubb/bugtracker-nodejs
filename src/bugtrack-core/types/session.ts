@@ -10,7 +10,7 @@ class Session {
 		bugtrackCore : BugtrackCore,
 		sessionID    : string,
 		sessionToken : string,
-		salt         : string | null,
+		salt         : string,
 		userAgent    : string,
 		user         : User,
 		issueDate    : Date,
@@ -20,6 +20,7 @@ class Session {
 		this.bugtrackCore = bugtrackCore;
 		this.id = sessionID;
 		this.sessionToken = sessionToken;
+		this.salt = salt;
 		this.userAgent = userAgent;
 		this.user = user;
 		this.issued = issueDate;
@@ -49,7 +50,7 @@ class Session {
 	 * wasn't hashed (Not recommended).
 	 */
 
-	public salt = null;
+	public salt;
 
 	/**
 	 * The user agent tied to the session.

@@ -20,6 +20,7 @@
   "homepage": "https://github.com/john-shrubb/bugtracker-nodejs#readme",
   "dependencies": {
     "@typescript-eslint/eslint-plugin": "^7.10.0",
+    "bcrypt": "^5.1.1",
     "express": "^4.19.2",
     "pg": "^8.11.5"
   },
