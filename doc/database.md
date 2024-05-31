@@ -15,15 +15,15 @@ CREATE ROLE bugtrackernodejsgeneralpurpose LOGIN ENCRYPTED PASSWORD 'password123
 
 -- Allow bugtracker-user-manager to see and edit users table. Role should not have permissions for anything else.
 
-GRANT ALL ON users TO bugtrackernodejsusermanager;
+GRANT ALL ON users, sessions, loginattempts TO bugtrackernodejsusermanager;
 
 -- Role cannot edit users table nor see passwords or soft deleted accounts.
 
-GRANT SELECT ON usersgp TO bugtrackernodejsgeneralpurpose;
+GRANT SELECT, UPDATE ON usersgp TO bugtrackernodejsgeneralpurpose;
 
 -- Does have permissions for everything else.
 
-GRANT SELECT, INSERT, UPDATE, DELETE ON projects, projectmembers, tickets, ticketassignments, comments, contentedits, tags, tagassignments, roles, roleassignments, loginattempts, sessions TO bugtrackernodejsgeneralpurpose;
+GRANT SELECT, INSERT, UPDATE, DELETE ON projects, projectmembers, tickets, ticketassignments, comments, contentedits, tags, tagassignments, roles, roleassignments TO bugtrackernodejsgeneralpurpose;
 ```
 
 ## Roles
