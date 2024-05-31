@@ -5,7 +5,7 @@
 			"single"
 		],
 		"semi": "error",
-		"max-len": ["error", { "code": 90, "comments": 90 }]
+		"max-len": ["error", { "code": 90, "comments": 90, "ignoreStrings": true }]
 	},
 	"parser": "@typescript-eslint/parser",
 	"plugins": ["@typescript-eslint"],
