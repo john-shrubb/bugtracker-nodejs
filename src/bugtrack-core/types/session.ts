@@ -9,6 +9,7 @@ class Session {
 	constructor(
 		bugtrackCore : BugtrackCore,
 		sessionToken : string,
+		salt         : string | null,
 		userAgent    : string,
 		user         : User,
 		issueDate    : Date,
@@ -31,6 +32,13 @@ class Session {
 	 * The token tied to the user's session.
 	 */
 	private sessionToken;
+
+	/**
+	 * Salt associated with hashed session token. Can be left blank if session token
+	 * wasn't hashed (Not recommended).
+	 */
+
+	public salt = null;
 
 	/**
 	 * The user agent tied to the session.
