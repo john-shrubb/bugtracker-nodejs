@@ -3,6 +3,8 @@ The Database
 
 This app uses PostgreSQL 16 for the database although there is the possibility on the DAL layer to implement a driver based architecture to allow for connections to multiple different types of databases.
 
+Be aware, the system **will** break if you attempt to run multiple instances of bugtracker on the same database. There is currently no support for listening for changes to the database and updating cache (Future project?).
+
 ## Setup
 
 Use the provided [database creation script](../src/config/dbInitScript.sql) provided to create all the required tables. You can then use the below SQL, replacing `password123` with your own passwords to create two PostgreSQL roles to access the database with AND create a view used by the general purpose role to access the users table. I plan to automate this in a setup script at some point in the future.
