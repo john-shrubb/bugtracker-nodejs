@@ -14,6 +14,7 @@ class Session {
 		user         : User,
 		issueDate    : Date,
 		expiryDate   : Date,
+		onExpire     : (session : Session) => void,
 	) {
 		this.bugtrackCore = bugtrackCore;
 		this.sessionToken = sessionToken;
@@ -21,6 +22,9 @@ class Session {
 		this.user = user;
 		this.issued = issueDate;
 		this.expires = expiryDate;
+		// Set a timer which will call a function inside of the userManagerInventory to
+		// notify it that the session has expired.
+		setTimeout(() => onExpire(this), expiryDate.getTime() - Date.now());
 	}
 
 	/**
