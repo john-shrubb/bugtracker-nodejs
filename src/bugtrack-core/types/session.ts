@@ -8,6 +8,7 @@ import User from './user.js';
 class Session {
 	constructor(
 		bugtrackCore : BugtrackCore,
+		sessionID    : string,
 		sessionToken : string,
 		salt         : string | null,
 		userAgent    : string,
@@ -17,6 +18,7 @@ class Session {
 		onExpire     : (session : Session) => void,
 	) {
 		this.bugtrackCore = bugtrackCore;
+		this.id = sessionID;
 		this.sessionToken = sessionToken;
 		this.userAgent = userAgent;
 		this.user = user;
@@ -31,6 +33,11 @@ class Session {
 	 * Instance of the core bugtracker class.
 	 */
 	private bugtrackCore;
+
+	/**
+	 * The ID used to reference the session.
+	 */
+	public id;
 
 	/**
 	 * The token tied to the user's session.

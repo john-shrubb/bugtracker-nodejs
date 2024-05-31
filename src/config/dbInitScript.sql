@@ -234,6 +234,7 @@ CREATE TABLE IF NOT EXISTS loginattempts (
 -- Holds all currently active sessions.
 
 CREATE TABLE IF NOT EXISTS sessions (
+	sessionid char(15) PRIMARY KEY,
 	sessiontoken char(256) NOT NULL,
 	userid char(15) NOT NULL,
 	useragent varchar(512) NOT NULL,
