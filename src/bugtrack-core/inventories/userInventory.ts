@@ -155,9 +155,9 @@ class UserInventory {
 	 * @param userID The ID of the user you are searching for.
 	 */
 
-	public getUserByID(userID : string) : User | null {
+	public getUserByID(userID : string, throwError = true) : User | null {
 		// Format check the user ID.
-		if (!checkID(userID)) {
+		if (!checkID(userID) && throwError) {
 			throw Error('Attempted to search for user with invalid ID: ' + userID);
 		}
 
@@ -205,6 +205,21 @@ class UserInventory {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Attempt to get the user by either their ID, email or username. Simply queries cache
+	 * for all three types and returns upon a match.
+	 * 
+	 * If you know the identifier for the user then attempt to use that, this function
+	 * may impact performance if used excessively.
+	 */
+
+	public queryUserIdentifier(identifier : string) : User | null {
+		return this.getUserByID(identifier, false) ||
+		this.getUserByUsername(identifier) ||
+		this.getUserByEmail(identifier) ||
+		null;
 	}
 
 	// Update functions
