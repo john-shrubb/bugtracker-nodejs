@@ -141,11 +141,17 @@ class UserManagerInventory {
 	 * @param sessionToken Token to check against sessions.
 	 */
 	public async checkToken(sessionToken : string) : Promise<User | null> {
+		// Variable to be assigned if the for loop matches a user.
 		let foundUser : User | null = null;
+
+		// For each key in the map...
 		for (const sessionID in this.sessionMap) {
+			// Get the session object...
 			const session = this.sessionMap.get(sessionID)!;
+			// Generate the hashed token in a way that will return true when compared.
 			const hashedToken = await bcrypt.hash(sessionToken, session.salt);
 			if (session.compareToken(hashedToken)) {
+				// If the token is a match, then return the correct user.
 				foundUser = session.user;
 			}
 		}
