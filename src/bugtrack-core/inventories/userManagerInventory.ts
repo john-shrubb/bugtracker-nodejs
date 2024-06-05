@@ -266,6 +266,26 @@ class UserManagerInventory {
 	}
 
 	// Create/Delete a user.
+
+	/**
+	 * Create a new user and automatically notify the internal cache invalidation system.
+	 * @param username The username of the new user.
+	 * @param email The email of the new user.
+	 * @param displayname The display name of the new user.
+	 * @param pfp The path to the profile picture of the new user.
+	 * @param password The plaintext password for the new user. Will be automatically
+	 *                 hashed.
+	 * @returns A string with the new account ID.
+	 */
+	public createUser(
+		username : string,
+		email : string,
+		displayname : string,
+		pfp : string | null,
+		password : string
+	) : string {
+
+	}
 }
 
 export default UserManagerInventory;
