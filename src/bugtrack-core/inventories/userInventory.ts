@@ -1,7 +1,8 @@
 import BugtrackCore from '..';
+import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import checkID from '../helperFunctions/checkID.js';
-import { possibleEvents } from '../services/cacheInvalidationService';
-import UserAttributeType from '../types/enums/userUpdateType.js';
+import { possibleEvents } from '../services/cacheInvalidationService.js';
+import UserAttributeType from '../types/enums/userAttributeType.js';
 import User from '../types/user.js';
 import { PoolClient, QueryResult } from 'pg';
 
@@ -315,57 +316,16 @@ class UserInventory {
 
 		// Length validation
 
-		// username validation
-		if (
-			updateType === UserAttributeType.username &&
-			(newValue.length < 3 || newValue.length > 30)
-		) {
-			// Build a cause which makes the issue more debuggable if something goes
-			// wrong.
-			const cause = {
-				enumerator: updateType.toString(),
-				passedValue: newValue,
-			};
-			
-			// Build and throw error.
-			const error = new Error('Invalid format for username. Must be >= 3 || <= 30.');
-			error.cause = cause;
-			throw error;
-		}
+		// USERNAME, EMAIL, PASSWORD, PFP
 
-		// displayname validation
-		if (
-			updateType === UserAttributeType.displayname &&
-			(newValue.length < 3 || newValue.length > 50)
-		) {
-			// Cause
-			const cause = {
-				enumerator: updateType.toString(),
-				passedValue: newValue,
-			};
-
-			// Error
-			const error = new Error('Invalid format for displayname. Must be >= 3 || <= 50.');
-			error.cause = cause;
-			throw error;
-		}
-
-		// email validation
-		// Similar/identical structure to above.
-		if (
-			updateType === UserAttributeType.email &&
-			(newValue.length < 6 || newValue.length > 256)
-		) {
-			// Cause
-			const cause = {
-				enumerator: updateType.toString(),
-				passedValue: newValue,
-			};
-
-			// Error
-			const error = new Error('Invalid format for email. Must be >= 6 || <= 256.');
-			error.cause = cause;
-			throw error;
+		if (!checkAttributeConstraint(newValue, updateType)) {
+			throw new Error('Invalid format for user attribute update.', {
+				cause: {
+					user: user,
+					value: newValue,
+					updateType: updateType,
+				},
+			});
 		}
 
 		// Check if the user exists and throw an error if it does not.
