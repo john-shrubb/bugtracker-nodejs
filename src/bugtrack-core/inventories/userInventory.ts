@@ -1,7 +1,7 @@
 import BugtrackCore from '..';
 import checkID from '../helperFunctions/checkID.js';
 import { possibleEvents } from '../services/cacheInvalidationService';
-import UserUpdateType from '../types/enums/userUpdateType.js';
+import UserAttributeType from '../types/enums/userUpdateType.js';
 import User from '../types/user.js';
 import { PoolClient, QueryResult } from 'pg';
 
@@ -285,9 +285,13 @@ class UserInventory {
 	 * @param newValue The new value of the field you want to change.
 	 */
 
-	public async updateUser(user : User, updateType : UserUpdateType, newValue : string) {
+	public async updateUser( // Adherance to 90 character line limit
+		user : User,
+		updateType : UserAttributeType,
+		newValue : string
+	) {
 		// This method cannot be used to update a password.
-		if (updateType === UserUpdateType.password) {
+		if (updateType === UserAttributeType.password) {
 			const error = new TypeError('Passed invalid argument for updateType. Passwords must be updated via userManagerInventory.');
 			error.cause = updateType;
 			throw error;
@@ -313,7 +317,7 @@ class UserInventory {
 
 		// username validation
 		if (
-			updateType === UserUpdateType.username &&
+			updateType === UserAttributeType.username &&
 			(newValue.length < 3 || newValue.length > 30)
 		) {
 			// Build a cause which makes the issue more debuggable if something goes
@@ -331,7 +335,7 @@ class UserInventory {
 
 		// displayname validation
 		if (
-			updateType === UserUpdateType.displayname &&
+			updateType === UserAttributeType.displayname &&
 			(newValue.length < 3 || newValue.length > 50)
 		) {
 			// Cause
@@ -349,7 +353,7 @@ class UserInventory {
 		// email validation
 		// Similar/identical structure to above.
 		if (
-			updateType === UserUpdateType.email &&
+			updateType === UserAttributeType.email &&
 			(newValue.length < 6 || newValue.length > 256)
 		) {
 			// Cause
@@ -372,10 +376,10 @@ class UserInventory {
 
 		// Mapping to map the enumerator to the column name in the database.
 		const columnUpdateMapping = {
-			[UserUpdateType.displayname]: 'displayname',
-			[UserUpdateType.email]: 'email',
-			[UserUpdateType.username]: 'username',
-			[UserUpdateType.pfp]: 'pfp',
+			[UserAttributeType.displayname]: 'displayname',
+			[UserAttributeType.email]: 'email',
+			[UserAttributeType.username]: 'username',
+			[UserAttributeType.pfp]: 'pfp',
 		};
 		
 		// Utilise column mapping by making a string with the appropriate column name in
