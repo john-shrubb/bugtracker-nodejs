@@ -8,6 +8,8 @@ import { QueryResult } from 'pg';
 import { possibleEvents } from '../services/cacheInvalidationService.js';
 import User from '../types/user.js';
 import generateID from '../helperFunctions/genID.js';
+import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
+import UserAttributeType from '../types/enums/userAttributeType.js';
 
 interface sessionRowStructure {
 	sessiontoken : string;
@@ -266,6 +268,67 @@ class UserManagerInventory {
 	}
 
 	// Create/Delete a user.
+
+	/**
+	 * Create a new user and automatically notify the internal cache invalidation system.
+	 * @param username The username of the new user.
+	 * @param email The email of the new user.
+	 * @param displayname The display name of the new user.
+	 * @param pfp The path to the profile picture of the new user.
+	 * @param password The plaintext password for the new user. Will be automatically
+	 *                 hashed.
+	 * @returns A string with the new account ID.
+	 */
+	public async createUser(
+		username : string,
+		email : string,
+		displayname : string,
+		pfp : string | null,
+		password : string
+	) : Promise<string> {
+		// Generate the new user's ID.
+		const newUserID = generateID();
+
+		// Check that all the user attributes are of a valid format.
+		if (
+			!checkAttributeConstraint(username, UserAttributeType.username) ||
+			!checkAttributeConstraint(email, UserAttributeType.email) ||
+			!checkAttributeConstraint(displayname, UserAttributeType.displayname) ||
+			!checkAttributeConstraint(pfp || '', UserAttributeType.pfp) // If PFP is null then just substitute an empty string to avoid an error.
+		) {
+			// Throw an error with bad strings in the cause object to help with debugging.
+			throw new Error('Attempted to create user with invalid constraints.', {
+				cause: {
+					username: username,
+					email: email,
+					displayname: displayname,
+					pfp: pfp,
+				},
+			});
+		}
+
+		if (
+			this.bgCore.userInventory.getUserByUsername(username) ||
+			this.bgCore.userInventory.getUserByEmail(email)
+		) {
+			throw new Error('Attempted to create with an already existing username or email address.');
+		}
+
+		const salt = await bcrypt.genSalt(13);
+		const hashedPass = await bcrypt.hash(password, salt);
+
+		await umPool.query(
+			'INSERT INTO users (userid, username, email, displayname, pfp, pass, salt) VALUES ($1, $2, $3, $4, $5, $6, $7);',
+			[newUserID, username, email, displayname, pfp, hashedPass, salt],
+		);
+
+		// Notify the cache invalidation system of the new user.
+		this.bgCore.cacheInvalidation.notifyUpdate(possibleEvents.user, newUserID);
+
+		// Return an ID. Any function that needs instant access to the new user object
+		// should use the no cache variant of getUserByID().
+		return newUserID;
+	}
 }
 
 export default UserManagerInventory;
