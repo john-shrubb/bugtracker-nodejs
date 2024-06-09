@@ -1,5 +1,6 @@
 // Apparently a decent cryptography library.
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import BugtrackCore from '../index.js';
 // Imports its own umPool.
 import { umPool } from '../dbConnection.js';
