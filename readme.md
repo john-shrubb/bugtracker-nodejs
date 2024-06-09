@@ -21,3 +21,7 @@ Make sure to make these environment variables accessible to the node.js process.
 ## TBC
 
 This readme.md will be expanded upon as the project progresses.
+
+## Licensing
+
+The entirety of this project and all previous, future and current versions are licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.html).
