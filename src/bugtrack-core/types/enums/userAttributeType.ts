@@ -1,18 +1,19 @@
 /**
- * The UserUpdateType enum indicates the type of update being made to a user.
+ * The UserUpdateType enum provides a standard way to indicate the attribute of a user
+ * being referred to.
  */
 
 enum UserAttributeType {
 	// Regular user attribute types.
-	displayname = 'UPDATEDISPLAYNAME',
-	email = 'UPDATEEMAIL',
-	username = 'UPDATEUSERNAME',
-	pfp = 'UPDATEPFP',
+	displayname = 'DISPLAYNAMEATTRIBUTE',
+	email = 'ATTRIBUTEEMAIL',
+	username = 'USERNAMEATTRIBUTE',
+	pfp = 'PFPATTRIBUTE',
 
 	// Password is a protected attribute type which cannot be accessed outside of
 	// UserManagerInventory.
 
-	password = 'UPDATEPASSWORD',
+	password = 'PASSWORDATTRIBUTEPROTECTED',
 }
 
 export default UserAttributeType;
