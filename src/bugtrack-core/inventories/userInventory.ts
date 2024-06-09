@@ -163,7 +163,7 @@ class UserInventory {
 		}
 
 		// Will return either a user class or "null" if it doesn't exist.
-		return this.userMap.get(userID) || null;
+		return structuredClone(this.userMap.get(userID)) || null;
 	}
 
 	/**
@@ -233,7 +233,7 @@ class UserInventory {
 			// Check if the email matches.
 			if (user.email === userEmail) {
 				// Return if it does.
-				return user;
+				return structuredClone(user);
 			}
 		}
 
@@ -253,7 +253,7 @@ class UserInventory {
 		for (const key in this.userMap) {
 			const user : User = this.userMap.get(key)!;
 			if (user.username === username) {
-				return user;
+				return structuredClone(user);
 			}
 		}
 
@@ -269,10 +269,11 @@ class UserInventory {
 	 */
 
 	public queryUserIdentifier(identifier : string) : User | null {
-		return this.getUserByID(identifier, false) ||
+		const userMatch = this.getUserByID(identifier, false) ||
 		this.getUserByUsername(identifier) ||
 		this.getUserByEmail(identifier) ||
 		null;
+		return structuredClone(userMatch);
 	}
 
 	// Update functions
