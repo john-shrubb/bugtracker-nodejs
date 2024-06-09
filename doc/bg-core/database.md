@@ -7,6 +7,8 @@ Be aware, the system **will** break if you attempt to run multiple instances of 
 
 ## Setup
 
+*When the project has matured, this is due to be merged into a central setup.md file*
+
 Use the provided [database creation script](../src/config/dbInitScript.sql) provided to create all the required tables. You can then use the below SQL, replacing `password123` with your own passwords to create two PostgreSQL roles to access the database with AND create a view used by the general purpose role to access the users table. I plan to automate this in a setup script at some point in the future.
 
 ```sql
