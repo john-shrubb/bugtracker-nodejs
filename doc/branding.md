@@ -8,24 +8,6 @@ Even if this project is more of a personal portfolio project and not really inte
 As shown above, the branding for the stock version of the front end is *TroubleTracker*.
 I simply chose this as it was the first creative and relevant name I could think of.
 
-## Colour Scheming
-
-Here are my current ideas for the colour palette represented below:
-
-<!--
-The line height for the font used in Github MD means that the bottom padding looks smaller than it should.
-Resolved by using 7px rather than 5px. 
-
-This should not become an issue in the actual front end.
--->
-
-<p class="small-tag" style="color: #d17408;">Primary #d17408</p>
-<p class="small-tag" style="color: #f0a146;">Secondary #f0a146</p>
-<p class="small-tag" style="color: #a5a5a5;">Light Gray #a5a5a5</p>
-<p class="small-tag" style="color: #303030;">Dark Gray #303030</p>
-
-More colours, such as error, information, warning etc. will be added later.
-
 ## Logo
 
 I've gone for a pretty simple logo, with some simple text and a logo.
