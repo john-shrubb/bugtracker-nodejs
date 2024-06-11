@@ -19,10 +19,10 @@ Resolved by using 7px rather than 5px.
 This should not become an issue in the actual front end.
 -->
 
-<p class="small-tag" style="background: #d17408; color: white; padding: 5px 10px 7px 10px;">Primary #d17408</p>
-<p class="small-tag" style="background: #f0a146; color: white; padding: 5px 10px 7px 10px;">Secondary #f0a146</p>
-<p class="small-tag" style="background: #a5a5a5; color: black; padding: 5px 10px 7px 10px;">Light Gray #a5a5a5</p>
-<p class="small-tag" style="background: #303030; color: white; padding: 5px 10px 7px 10px;">Dark Gray #303030</p>
+<p class="small-tag" style="display: block; background: #d17408; color: white; padding: 5px 10px 7px 10px;">Primary #d17408</p>
+<p class="small-tag" style="display: block; background: #f0a146; color: white; padding: 5px 10px 7px 10px;">Secondary #f0a146</p>
+<p class="small-tag" style="display: block; background: #a5a5a5; color: black; padding: 5px 10px 7px 10px;">Light Gray #a5a5a5</p>
+<p class="small-tag" style="display: block; background: #303030; color: white; padding: 5px 10px 7px 10px;">Dark Gray #303030</p>
 
 More colours, such as error, information, warning etc. will be added later.
 
