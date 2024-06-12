@@ -11,7 +11,7 @@ import User from './user.js';
 
 class ProjectMember {
 	constructor(
-		bgCore : BugtrackCore,
+		bgCore       : BugtrackCore,
 		memberID     : string,
 		user         : User,
 		project      : Project,
