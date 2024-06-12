@@ -7,7 +7,7 @@ import ProjectMember from './projectMember.js';
  */
 class User {
 	constructor(
-		bugtrackCore : BugtrackCore,
+		bgCore : BugtrackCore,
 		userID       : string,
 		username     : string,
 		email        : string,
@@ -15,7 +15,7 @@ class User {
 		pfp          : string,
 		creationDate : Date,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		if (!checkID(userID)) {
 			throw Error('Attempted to create User with invalid user ID.');
@@ -32,7 +32,7 @@ class User {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	// Basic user data
 

@@ -9,7 +9,7 @@ import User from './user.js';
  */
 class Project {
 	constructor(
-		bugtrackCore   : BugtrackCore,
+		bgCore   : BugtrackCore,
 		projectID      : string,
 		name           : string,
 		owner          : User,
@@ -17,7 +17,7 @@ class Project {
 		projectMembers : Map<string, ProjectMember>,
 		creationDate   : Date,
 	) {
-		this.bgCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Check format of project ID.
 		if (!checkID(projectID)) {

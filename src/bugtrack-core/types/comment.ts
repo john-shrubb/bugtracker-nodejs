@@ -8,14 +8,14 @@ import Ticket from './ticket.js';
  */
 class Comment {
 	constructor(
-		bugtrackCore : BugtrackCore,
+		bgCore : BugtrackCore,
 		commentID : string,
 		commentAuthor : ProjectMember,
 		content : string,
 		ticket : Ticket,
 		creationDate : Date,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Check format of comment ID.
 		if (!checkID(commentID)) {
@@ -32,7 +32,7 @@ class Comment {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The ID used to reference the comment.

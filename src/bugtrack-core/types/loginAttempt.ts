@@ -7,14 +7,14 @@ import User from './user.js';
 
 class LoginAttempt {
 	constructor(
-		bugtrackCore : BugtrackCore,
+		bgCore : BugtrackCore,
 		user         : User,
 		date         : Date,
 		successful   : boolean,
 		ipAddress    : string,
 		userAgent    : string,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 		this.user = user;
 		this.date = date;
 		this.successful = successful;
@@ -25,7 +25,7 @@ class LoginAttempt {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The user the client attempted to log in as

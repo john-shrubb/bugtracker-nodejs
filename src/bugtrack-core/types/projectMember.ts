@@ -11,14 +11,14 @@ import User from './user.js';
 
 class ProjectMember {
 	constructor(
-		bugtrackCore : BugtrackCore,
+		bgCore : BugtrackCore,
 		memberID     : string,
 		user         : User,
 		project      : Project,
 		role         : Role,
 		joinedOn     : Date,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Check format of member ID.
 		if (!checkID(memberID)) {
@@ -35,7 +35,7 @@ class ProjectMember {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The user's member ID used to link them with the project.

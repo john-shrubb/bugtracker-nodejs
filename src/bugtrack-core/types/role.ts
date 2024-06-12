@@ -7,13 +7,13 @@ import ProjectMember from './projectMember.js';
  */
 class Role {
 	constructor(
-		bugtrackCore  : BugtrackCore,
+		bgCore  : BugtrackCore,
 		roleID        : string,
 		name          : string,
 		permissionInt : number,
 		displayTag    : boolean,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Check format of role ID.
 		if (!checkID(roleID)) {
@@ -29,7 +29,7 @@ class Role {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The ID used to reference the role.

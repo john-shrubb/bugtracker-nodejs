@@ -7,7 +7,7 @@ import User from './user.js';
  */
 class Session {
 	constructor(
-		bugtrackCore : BugtrackCore,
+		bgCore : BugtrackCore,
 		sessionID    : string,
 		sessionToken : string,
 		salt         : string,
@@ -17,7 +17,7 @@ class Session {
 		expiryDate   : Date,
 		onExpire     : (session : Session) => void,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 		this.id = sessionID;
 		this.sessionToken = sessionToken;
 		this.salt = salt;
@@ -33,7 +33,7 @@ class Session {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The ID used to reference the session.

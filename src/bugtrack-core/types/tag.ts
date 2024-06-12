@@ -5,13 +5,13 @@ import Ticket from './ticket.js';
 
 class Tag {
 	constructor(
-		bugtrackCore  : BugtrackCore,
+		bgCore  : BugtrackCore,
 		tagID         : string,
 		name          : string,
 		parentProject : Project,
 		colour        : string,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Check format of tag ID.
 		if (!checkID(tagID)) {
@@ -27,7 +27,7 @@ class Tag {
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * The ID used to reference the tag.
