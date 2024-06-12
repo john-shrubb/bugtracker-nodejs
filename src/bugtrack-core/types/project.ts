@@ -9,13 +9,15 @@ import User from './user.js';
  */
 class Project {
 	constructor(
-		bugtrackCore : BugtrackCore,
-		projectID    : string,
-		name         : string,
-		owner        : User,
-		creationDate : Date,
+		bugtrackCore   : BugtrackCore,
+		projectID      : string,
+		name           : string,
+		owner          : User,
+		tickets        : Map<string, Ticket>,
+		projectMembers : Map<string, ProjectMember>,
+		creationDate   : Date,
 	) {
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bugtrackCore;
 
 		// Check format of project ID.
 		if (!checkID(projectID)) {
@@ -25,13 +27,15 @@ class Project {
 		this.id = projectID;
 		this.name = name;
 		this.owner = owner;
+		this.tickets = tickets;
+		this.projectMembers = projectMembers;
 		this.createdOn = creationDate;
 	}
 
 	/**
 	 * Instance of the core bugtracker class.
 	 */
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * ID used to reference the project.
@@ -49,37 +53,22 @@ class Project {
 	public owner;
 
 	/**
+	 * All the tickets which are a part of this project. The ID for each ticket is used as
+	 * a key.
+	 */
+
+	public tickets;
+
+	/**
+	 * All members of the project. The ID of each project member is used as the key.
+	 */
+
+	public projectMembers;
+
+	/**
 	 * When the project was created.
 	 */
 	public createdOn;
-
-	// Functions
-
-	/**
-	 * Function to grab all project members from the project and return
-	 * @returns An array with all project members associated with the project.
-	 */
-	public getAllProjectMembers() : Array<ProjectMember> {
-		return [];
-	}
-
-	/**
-	 * A function to get all the tickets in the project.
-	 * @returns An array with all the tickets created in this project.
-	 */
-	public getAllTickets() : Array<Ticket> {
-		return [];
-	}
-
-	/**
-	 * Grabs a ticket object by it's ID.
-	 * @param ticketID The ID of the ticket object.
-	 * @returns A ticket object with the referenced ID.
-	 */
-	public getTicketByID(ticketID : string) : void {
-		ticketID;
-		return;
-	}
 }
 
 export default Project;
