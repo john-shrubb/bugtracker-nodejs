@@ -27,7 +27,7 @@ A url which the browser client can call to get the user's profile picture. Will 
 
 ### creationDate : `Date`
 
-The date when the account was created.
+The date of account creation.
 
 ## Methods
 
