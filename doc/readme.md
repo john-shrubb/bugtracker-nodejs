@@ -12,6 +12,6 @@ This modularity allows for users to either deploy the full bugtracker suite, run
 
 ## Table of Contents
 
-- [Permissions](./permissions.md)
-- [Database](./database.md)
-- [Bugtracker Core](./bg-core.md)
+- [Bugtracker Core](./bg-core/readme.md.md)
+- [Bugtracker API]()
+- [Bugtracker Web]()
