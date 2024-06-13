@@ -7,7 +7,7 @@ The user class makes up the bread and butter of everything that happens in bg-co
 
 ### id : `String`
 
-A string used to reference the user.
+The ID used to reference the user.
 
 ### username : `String`
 
