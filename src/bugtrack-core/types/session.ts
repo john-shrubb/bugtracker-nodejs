@@ -43,7 +43,7 @@ class Session {
 	/**
 	 * The token tied to the user's session.
 	 */
-	private sessionToken;
+	public sessionToken;
 
 	/**
 	 * Salt associated with hashed session token. Can be left blank if session token
@@ -55,7 +55,7 @@ class Session {
 	/**
 	 * The user agent tied to the session.
 	 */
-	public readonly userAgent;
+	public userAgent;
 
 	/**
 	 * The user tied to the session.
@@ -70,16 +70,7 @@ class Session {
 	/**
 	 * When the session token expires.
 	 */
-	public readonly expires;
-
-	/**
-	 * Compares whether a session token is equivelant to the one in this class.
-	 * @param token Session token to compare.
-	 * @returns True if the session token is valid.
-	 */
-	public compareToken(token : string) : boolean {
-		return this.sessionToken === token;
-	}
+	public expires;
 }
 
 export default Session;

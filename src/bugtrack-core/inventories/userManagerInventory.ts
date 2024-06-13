@@ -154,7 +154,7 @@ class UserManagerInventory {
 			const session = this.sessionMap.get(sessionID)!;
 			// Generate the hashed token in a way that will return true when compared.
 			const hashedToken = await bcrypt.hash(sessionToken, session.salt);
-			if (session.compareToken(hashedToken)) {
+			if (session.sessionToken === hashedToken) {
 				// If the token is a match, then return the correct user.
 				foundUser = session.user;
 			}
