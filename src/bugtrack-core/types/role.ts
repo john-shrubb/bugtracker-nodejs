@@ -7,10 +7,11 @@ import ProjectMember from './projectMember.js';
  */
 class Role {
 	constructor(
-		bgCore  : BugtrackCore,
+		bgCore        : BugtrackCore,
 		roleID        : string,
 		name          : string,
 		permissionInt : number,
+		colour        : string,
 		displayTag    : boolean,
 	) {
 		this.bgCore = bgCore;
@@ -23,6 +24,7 @@ class Role {
 		this.id = roleID;
 		this.name = name;
 		this.permissionBits = permissionInt;
+		this.colour = colour;
 		this.displayTag = displayTag;
 	}
 
@@ -45,6 +47,12 @@ class Role {
 	 * The permission bits making up the role.
 	 */
 	public permissionBits;
+
+	/**
+	 * The colour of the role displayed to other users.
+	 */
+
+	public colour;
 
 	/**
 	 * Whether the role is shown next to the user's name when they are displayed.

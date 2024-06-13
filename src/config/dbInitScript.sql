@@ -187,6 +187,7 @@ CREATE TABLE IF NOT EXISTS roles (
 	rolename varchar(20) NOT NULL,
 	displaytag boolean DEFAULT 'false',
 	permissionmask int,
+	colour char(6) DEFAULT '343434', -- 6 digit hex representation of the role colour that will be applied.
 	deleted boolean DEFAULT 'false',
 
 	FOREIGN KEY (projectid) REFERENCES projects(projectid) ON UPDATE CASCADE ON DELETE SET NULL
