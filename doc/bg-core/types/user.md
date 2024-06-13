@@ -33,7 +33,7 @@ The date of account creation.
 
 ### getProjects() : `Array<ProjectMember>`
 
-*Prone to be restructured into a attribute which looks something like `this.projects : Array<Project>`*
+*Prone to be restructured into an attribute which looks something like `this.projects : Array<Project>`.*
 
 Fetches all the projects the user is a member of and returns these projects in the form of a `ProjectMember`.
 
