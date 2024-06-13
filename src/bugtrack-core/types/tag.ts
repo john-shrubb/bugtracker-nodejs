@@ -52,11 +52,6 @@ class Tag {
 	public getTicketsWithTag() : Array<Ticket> {
 		return [];
 	}
-
-	static from(tagID : string) {
-		tagID;
-		return;
-	}
 }
 
 export default Tag;
