@@ -23,9 +23,9 @@ This table of contents provides easy access to the documentation relating to bg-
 	- [Ticket](./types/ticket.md)
 	- [User](./types/user.md)
 - Enumeration Types
-	- [Ticket Priority]()
-	- [Ticket Status]()
-	- [User Attributes]()
+	- [Ticket Priority](./enums/ticketPriority.md)
+	- [Ticket Status](./enums/ticketStatus.md)
+	- [User Attributes](./enums/userAttributes.md)
 - Interfaces
 	- **A minor refactor is required before interfaces are documented.**
 
@@ -56,4 +56,3 @@ My current list of planned additions is as follows after the first iteration of 
 - Capability for some kind of announcements tab where an overall system administrator can write posts.
 - Potentially more robust types which when connected to an instance of bg-core can automatically update their own attributes. Would require a major restructuring of the classes to make for more use of private variables coupled with getters to prevent another class from polluting the type. Would also remove the need for deep copying a variable and make variables much more simple to construct if I introduce the concept of `<object>.from(objectID)` which will handle all the construction and initialisation.
 - For databases that support it, implement a listen function to automatically update cache records if edits are made to the database.
-- Very possibly
