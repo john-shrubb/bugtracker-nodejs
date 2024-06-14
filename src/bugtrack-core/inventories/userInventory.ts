@@ -1,7 +1,7 @@
 import BugtrackCore from '..';
 import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import checkID from '../helperFunctions/checkID.js';
-import { possibleEvents } from '../services/cacheInvalidationService.js';
+import PossibleEvents from '../types/enums/possibleEvents.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
 import User from '../types/user.js';
 import { PoolClient, QueryResult } from 'pg';
@@ -25,7 +25,6 @@ interface userRowStruct {
  * **Note:** Users cannot be created using this inventory. See the userManagerInventory
  *           to create users.
  */
-
 class UserInventory {
 	constructor(bugtrackCore : BugtrackCore, gpPool : PoolClient ) {
 		// User map which essentially acts as the cache.
@@ -374,7 +373,7 @@ class UserInventory {
 			throw error;
 		});
 
-		this.bugtrackCore.cacheInvalidation.notifyUpdate(possibleEvents.user, user.id);
+		this.bugtrackCore.cacheInvalidation.notifyUpdate(PossibleEvents.user, user.id);
 	}
 
 	// See authentication inventory to delete user.

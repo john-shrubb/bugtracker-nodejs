@@ -1,5 +1,6 @@
 import { EventEmitter } from 'node:events';
 import checkID from '../helperFunctions/checkID.js';
+import PossibleEvents from '../types/enums/possibleEvents.js';
 
 /**
  * An object defining the possible event names and their arguments that the invalidation
@@ -15,21 +16,6 @@ interface eventMap {
 	tagUpdate: [string];
 	ticketUpdate: [string];
 	userUpdate: [string];
-}
-
-/**
- * An enumeration
- */
-
-enum possibleEvents {
-	comment = 'COMMENTUPDATEEVENT',
-	project = 'PROJECTUPDATEEVENT',
-	projectmember = 'PROJECTMEMBERUPDATEEVENT',
-	role = 'ROLEUPDATEEVENT',
-	session = 'SESSIONUPDATEEVENT',
-	tag = 'TAGUPDATEEVENT',
-	ticket = 'TICKETUPDATEEVENT',
-	user = 'USERUPDATEEVENT',
 }
 
 /**
@@ -71,7 +57,7 @@ class CacheInvalidationService {
 	 * @param updateType The type of update that occurred.
 	 * @param affectedID The ID of the object that has been modified.
 	 */
-	public notifyUpdate(updateType : possibleEvents, affectedID : string) {
+	public notifyUpdate(updateType : PossibleEvents, affectedID : string) {
 		// Check the ID is of the correct format.
 		if (!checkID(affectedID)) {
 			throw Error('Invalid ID passed as affectedID');
@@ -83,28 +69,28 @@ class CacheInvalidationService {
 		// about the object.
 
 		switch (updateType) {
-			case possibleEvents.comment:
+			case PossibleEvents.comment:
 				this.emitter.emit('commentUpdate', affectedID);
 				break;
-			case possibleEvents.project:
+			case PossibleEvents.project:
 				this.emitter.emit('projectUpdate', affectedID);
 				break;
-			case possibleEvents.projectmember:
+			case PossibleEvents.projectmember:
 				this.emitter.emit('projectMemberUpdate', affectedID);
 				break;
-			case possibleEvents.role:
+			case PossibleEvents.role:
 				this.emitter.emit('roleUpdate', affectedID);
 				break;
-			case possibleEvents.session:
+			case PossibleEvents.session:
 				this.emitter.emit('sessionUpdate', affectedID);
 				break;
-			case possibleEvents.tag:
+			case PossibleEvents.tag:
 				this.emitter.emit('tagUpdate', affectedID);
 				break;
-			case possibleEvents.ticket:
+			case PossibleEvents.ticket:
 				this.emitter.emit('ticketUpdate', affectedID);
 				break;
-			case possibleEvents.user:
+			case PossibleEvents.user:
 				this.emitter.emit('userUpdate', affectedID);
 				break;
 			default:
@@ -115,4 +101,4 @@ class CacheInvalidationService {
 }
 
 
-export { possibleEvents, CacheInvalidationService };
+export { PossibleEvents as possibleEvents, CacheInvalidationService };
