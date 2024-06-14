@@ -17,18 +17,40 @@ function checkAttributeConstraint(
 
 	// Display names
 	if (attributeType === UserAttributeType.displayname) {
+		// A display name can have pretty much whatever the user wants in it.
+		// It's down to project owners/admins to moderate what is acceptable.
+		// Some users may also have names in cryllic or other character sets.
 		if (value.length < 3 || value.length > 50) return false;
+
 		return true;
 	}
 
 	// Usernames
 	if (attributeType === UserAttributeType.username) {
+		// eslint-disable-next-line max-len
+		// Credit: https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
+		// Adapted Regex from above link, only lower case letters are allowed.
+		const usernameRegex = /^[a-z]+$/;
+
+		// Format check.
+		if (!usernameRegex.test(value)) return false;
+
+		// Length check
 		if (value.length < 3 || value.length > 30) return false;
+
 		return true;
 	}
 
 	// Emails
 	if (attributeType === UserAttributeType.email) {
+		// eslint-disable-next-line max-len
+		// Credit: https://emaillistvalidation.com/blog/mastering-email-validation-in-typescript-the-ultimate-guide-for-error-free-communication/
+		const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+		// Check format of email.
+		if (!emailRegex.test(value)) return false;
+
+		// Check length of email.
 		if (value.length < 6 || value.length > 256) return false;
 		return true;
 	}
@@ -37,6 +59,9 @@ function checkAttributeConstraint(
 	if (attributeType === UserAttributeType.pfp) {
 		// 2048 is generally the agreed maximum length a URL should be.
 		if (value.length > 2048) return false;
+
+		// No format check is required as a PFP URL is generated automatically by a
+		// service.
 		return true;
 	}
 
