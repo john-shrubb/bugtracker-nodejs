@@ -27,8 +27,6 @@ This table of contents provides easy access to the documentation relating to bg-
 	- [TicketPriority](./enums/ticketPriority.md)
 	- [TicketStatus](./enums/ticketStatus.md)
 	- [UserAttributeType](./enums/userAttributes.md)
-- Interfaces
-	- **A minor refactor is required before interfaces are documented.**
 
 ## Types
 
