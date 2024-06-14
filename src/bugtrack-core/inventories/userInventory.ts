@@ -26,7 +26,7 @@ interface userRowStruct {
  *           to create users.
  */
 class UserInventory {
-	constructor(bugtrackCore : BugtrackCore, gpPool : PoolClient ) {
+	constructor(bgCore : BugtrackCore, gpPool : PoolClient ) {
 		// User map which essentially acts as the cache.
 		this.userMap = new Map<string, User>();
 
@@ -34,10 +34,10 @@ class UserInventory {
 		this.gpPool = gpPool;
 
 		// The instance of BugtrackCore
-		this.bugtrackCore = bugtrackCore;
+		this.bgCore = bgCore;
 
 		// Set up cache invalidation to listen for user updates. Callback defined below.
-		this.bugtrackCore.cacheInvalidation.on('userUpdate', this.userUpdateCallback);
+		this.bgCore.cacheInvalidation.on('userUpdate', this.userUpdateCallback);
 
 		// Initialise class method builds the cache from whats in the database.
 		// This may take some time depending on the size of the database.
@@ -70,7 +70,7 @@ class UserInventory {
 	 * BugtrackCore instance
 	 */
 
-	private bugtrackCore;
+	private bgCore;
 
 	/**
 	 * Callback function for the event in which a user is updated.
@@ -101,7 +101,7 @@ class UserInventory {
 
 		// Otherwise create a new entry for them in the cache.
 		this.userMap.set(userData.userid, new User(
-			this.bugtrackCore,
+			this.bgCore,
 			userData.userid,
 			userData.username,
 			userData.email,
@@ -128,7 +128,7 @@ class UserInventory {
 		allUserData.rows.forEach(userData => {
 			// Create a new User class...
 			const userToCreate = new User(
-				this.bugtrackCore,
+				this.bgCore,
 				userData.userid,
 				userData.username,
 				userData.email,
@@ -204,7 +204,7 @@ class UserInventory {
 
 		// Construct a user object to return.
 		const user = new User(
-			this.bugtrackCore,
+			this.bgCore,
 			userData.userid,
 			userData.username,
 			userData.email,
@@ -373,7 +373,7 @@ class UserInventory {
 			throw error;
 		});
 
-		this.bugtrackCore.cacheInvalidation.notifyUpdate(PossibleEvents.user, user.id);
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.user, user.id);
 	}
 
 	// See authentication inventory to delete user.

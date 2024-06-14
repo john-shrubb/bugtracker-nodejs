@@ -12,6 +12,9 @@ import generateID from '../helperFunctions/genID.js';
 import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
 
+/**
+ * Structure for the session rows when they are fetched from the database.
+ */
 interface sessionRowStructure {
 	sessiontoken : string;
 	userid       : string;
@@ -27,7 +30,6 @@ interface sessionRowStructure {
  * 
  * It also keeps a private cache of all sessions, and login attempts.
  */
-
 class UserManagerInventory {
 	constructor(bgCore : BugtrackCore) {
 		this.bgCore = bgCore;
