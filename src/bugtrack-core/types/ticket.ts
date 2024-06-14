@@ -21,7 +21,8 @@ class Ticket {
 		assignedProjectMembers : Array<ProjectMember>,
 		ticketTitle            : string,
 		ticketDescription      : string,
-		attachments            : string,
+		attachments            : Array<string>,
+		comments 			   : Array<Comment>,
 		createdOn              : Date,
 	) {
 		this.bgCore = bgCore;
@@ -42,6 +43,7 @@ class Ticket {
 		this.title = ticketTitle;
 		this.description = ticketDescription;
 		this.attachments = attachments;
+		this.comments = comments;
 		this.opened = createdOn;
 	}
 
@@ -98,17 +100,14 @@ class Ticket {
 	public attachments;
 
 	/**
+	 * Comments which have been made on the ticket.
+	 */
+	public comments;
+
+	/**
 	 * When the ticket was opened.
 	 */
 	public opened;
-
-	/**
-	 * Get all the comments created for the ticket.
-	 * @returns An array of all the comments on the ticket.
-	 */
-	public getComments() : Array<Comment> {
-		return [];
-	}
 }
 
 export default Ticket;
