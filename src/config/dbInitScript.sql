@@ -13,13 +13,12 @@ CREATE TABLE IF NOT EXISTS users (
 	email varchar(256),
 	displayname varchar(50) NOT NULL,
 	pfp text,
-	pass text, -- WILL BE HASHED
-	salt char(256),
+	pass text, -- WILL BE HASHED, bcrypt includes the salt.
 	deleted boolean DEFAULT 'false',
 	creationdate timestamp NOT NULL DEFAULT now(),
 
 	-- Check to ensure that deleted accounts are allowed to have null fields.
-	CHECK ((email IS NOT NULL AND pass IS NOT NULL AND salt IS NOT NULL) OR deleted = 'true')
+	CHECK ((email IS NOT NULL AND pass IS NOT NULL) OR deleted = 'true')
 );
 
 CREATE VIEW usersgp AS SELECT userid, username, email, displayname, pfp, creationdate FROM users WHERE deleted='false';
