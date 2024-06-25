@@ -343,7 +343,37 @@ class UserManagerInventory {
 		this.bgCore.cacheInvalidation.notifyUpdate(possibleEvents.user, user.id);
 	}
 
+	/**
+	 * Update the user's password.
+	 * 
+	 * This function will throw an error if the old password is incorrect. It is advisable
+	 * to encase the use of this function in a try/catch block.
+	 * @param user The user object to update the password for.
+	 * @param oldPassword The old password given by the user.
+	 * @param newPassword The new password to be set.
+	 */
 
+	public async updatePassword(user : User, oldPassword : string, newPassword : string) {
+		// Check that user exists.
+		if (!this.bgCore.userInventory.getUserByID(user.id)) {
+			throw new Error('Attempted to update password for non existent user.', {
+				cause: user,
+			});
+		}
+
+		// Check that the old password is correct.
+		const userPassHash : string = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id])).rows[0][0];
+
+		// Compare and throw error if old password is incorrect.
+		if (!await bcrypt.compare(oldPassword, userPassHash)) {
+			throw new Error('Attempted to update password with incorrect old password.');
+		}
+
+		const newPassHash = await bcrypt.hash(newPassword, 13);
+
+		// Update the password in the database.
+		await umPool.query('UPDATE users SET pass=$1 WHERE userid=$2;', [newPassHash, user.id]);
+	}
 }
 
 export default UserManagerInventory;
