@@ -10,7 +10,6 @@ class Session {
 		bgCore : BugtrackCore,
 		sessionID    : string,
 		sessionToken : string,
-		salt         : string,
 		userAgent    : string,
 		user         : User,
 		issueDate    : Date,
@@ -20,7 +19,6 @@ class Session {
 		this.bgCore = bgCore;
 		this.id = sessionID;
 		this.sessionToken = sessionToken;
-		this.salt = salt;
 		this.userAgent = userAgent;
 		this.user = user;
 		this.issued = issueDate;
@@ -44,13 +42,6 @@ class Session {
 	 * The token tied to the user's session.
 	 */
 	public sessionToken;
-
-	/**
-	 * Salt associated with hashed session token. Can be left blank if session token
-	 * wasn't hashed (Not recommended).
-	 */
-
-	public salt;
 
 	/**
 	 * The user agent tied to the session.

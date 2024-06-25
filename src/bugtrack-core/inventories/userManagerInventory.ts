@@ -82,13 +82,11 @@ class UserManagerInventory {
 
 		rawSessionQuery.rows.forEach(async (value) => {
 			// Pack it all into a session object...
-			const salt = await bcrypt.genSalt(12);
-			const hashedSessionToken = await bcrypt.hash(value.sessiontoken, salt);
+			const hashedSessionToken = await bcrypt.hash(value.sessiontoken, 12);
 			const session = new Session(
 				this.bgCore,
 				value.sessionid,
 				hashedSessionToken,
-				salt,
 				value.useragent,
 				this.bgCore.userInventory.getUserByID(value.userid)!,
 				value.issuedon,
@@ -125,15 +123,11 @@ class UserManagerInventory {
 
 		const sessionData = sessionDataRaw.rows[0];
 
-		// Generate salt to hash the session token for security.
-		const salt = await bcrypt.genSalt(12);
-
 		// Assign the session a spot in cache.
 		this.sessionMap.set(sessionID, new Session(
 			this.bgCore,
 			sessionData.sessionid,
-			await bcrypt.hash(sessionData.sessiontoken, salt),
-			salt,
+			await bcrypt.hash(sessionData.sessiontoken, 10),
 			sessionData.useragent,
 			this.bgCore.userInventory.getUserByID(sessionData.userid)!,
 			sessionData.issuedon,
@@ -154,9 +148,8 @@ class UserManagerInventory {
 		for (const sessionID in this.sessionMap) {
 			// Get the session object...
 			const session = this.sessionMap.get(sessionID)!;
-			// Generate the hashed token in a way that will return true when compared.
-			const hashedToken = await bcrypt.hash(sessionToken, session.salt);
-			if (session.sessionToken === hashedToken) {
+
+			if (await bcrypt.compare(sessionToken, session.sessionToken)) {
 				// If the token is a match, then return the correct user.
 				foundUser = session.user;
 			}
@@ -218,13 +211,12 @@ class UserManagerInventory {
 		// Interface for password and salt.
 		interface passSaltStruct {
 			pass: string;
-			salt: string;
 		}
 
 		// Grab user data from database.
 		// This class avoids holding this data in memory for longer than required to
 		// prevent security where a user may get access to a cache of hashed passwords.
-		const userData : passSaltStruct = (await umPool.query('SELECT pass, salt FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
+		const userData : passSaltStruct = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
 			// Catch error incase DB query goes wrong.
 			throw Error('Something has gone wrong with fetching user authentication details. User that exists in cache not present in database.', {
 				cause: {
@@ -232,7 +224,7 @@ class UserManagerInventory {
 					reason: reason,
 				},
 			});
-		})).rows[0]; // The first row will be correct.
+		})).rows[0]; // The first row will always be correct.
 
 		const passwordCorrect = await bcrypt.compare(password, userData.pass);
 		
@@ -316,12 +308,11 @@ class UserManagerInventory {
 			throw new Error('Attempted to create with an already existing username or email address.');
 		}
 
-		const salt = await bcrypt.genSalt(13);
-		const hashedPass = await bcrypt.hash(password, salt);
+		const hashedPass = await bcrypt.hash(password, 13);
 
 		await umPool.query(
-			'INSERT INTO users (userid, username, email, displayname, pfp, pass, salt) VALUES ($1, $2, $3, $4, $5, $6, $7);',
-			[newUserID, username, email, displayname, pfp, hashedPass, salt],
+			'INSERT INTO users (userid, username, email, displayname, pfp, pass) VALUES ($1, $2, $3, $4, $5, $6);',
+			[newUserID, username, email, displayname, pfp, hashedPass],
 		);
 
 		// Notify the cache invalidation system of the new user.
@@ -351,6 +342,8 @@ class UserManagerInventory {
 		// Notify cache invalidation of the user deletion.
 		this.bgCore.cacheInvalidation.notifyUpdate(possibleEvents.user, user.id);
 	}
+
+
 }
 
 export default UserManagerInventory;
