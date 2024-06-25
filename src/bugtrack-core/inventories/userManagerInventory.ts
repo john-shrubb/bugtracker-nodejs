@@ -234,12 +234,11 @@ class UserManagerInventory {
 			});
 		})).rows[0]; // The first row will be correct.
 
-		const passwordCorrect =
-			await bcrypt.hash(password, userData.salt) === userData.pass;
+		const passwordCorrect = await bcrypt.compare(password, userData.pass);
 		
 		// Insert a record of the login attempt to the database.
 		await umPool.query('INSERT INTO loginattempts (userid, successful, ipaddress, useragent) VALUES ($1, $2, $3, $4);',
-		[user.id, passwordCorrect, ipAddress, userAgent] // With the parameters.
+			[user.id, passwordCorrect, ipAddress, userAgent] // With the parameters.
 		);
 
 		if (passwordCorrect) {
@@ -270,7 +269,7 @@ class UserManagerInventory {
 		}
 	}
 
-	// Create/Delete a user.
+	// Create/Delete/Update a user.
 
 	/**
 	 * Create a new user and automatically notify the internal cache invalidation system.
@@ -331,6 +330,26 @@ class UserManagerInventory {
 		// Return an ID. Any function that needs instant access to the new user object
 		// should use the no cache variant of getUserByID().
 		return newUserID;
+	}
+
+	/**
+	 * Delete a user from the database. Cache may take a few seconds to reflect the
+	 * user deletion.
+	 * @param user The user that requires deletion.
+	 */
+	public async deleteUser(user : User) {
+		// Check that user exists so it's impossible to delete a non existent user.
+		if (!this.bgCore.userInventory.getUserByID(user.id)) {
+			throw new Error('Attempted to delete non existent user.', {
+				cause: user,
+			});
+		}
+
+		// Query DB to delete user.
+		await umPool.query('DELETE FROM users WHERE userid=$1;', [user.id]);
+
+		// Notify cache invalidation of the user deletion.
+		this.bgCore.cacheInvalidation.notifyUpdate(possibleEvents.user, user.id);
 	}
 }
 
