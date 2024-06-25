@@ -17,13 +17,13 @@ The name/title of the project.
 
 The ID of the user who owns the project.
 
-### tickets : `Map<string, Ticket>`
+### tickets : `Array<Ticket>`
 
-A map of the tickets, `string` in the map structure represents the ID of the ticket it corresponds to.
+An array of all tickets created under the project.
 
-### projectMembers : `Map<string, ProjectMember>`
+### projectMembers : `Array<ProjectMember>`
 
-A map consisting of all the members of the project. Like in tickets, `string` corresponds to the ID of the project member.
+An array consisting of all the members of the project.
 
 ### creationDate : `Date`
 
