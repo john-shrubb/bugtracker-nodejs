@@ -22,8 +22,8 @@ interface userRowStruct {
  * The user inventory is responsible for holding cache for all users and providing CRUD
  * methods to other objects.
  * 
- * **Note:** Users cannot be created using this inventory. See the userManagerInventory
- *           to create users.
+ * **Note:** Users cannot be created using this inventory. See the
+ *           [UserManagerInventory](./userManagerInventory.ts) to create users.
  */
 class UserInventory {
 	constructor(bgCore : BugtrackCore, gpPool : PoolClient ) {

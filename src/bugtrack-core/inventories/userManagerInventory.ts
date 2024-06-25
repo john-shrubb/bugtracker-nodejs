@@ -206,15 +206,15 @@ class UserManagerInventory {
 			});
 		}
 
-		// Interface for password and salt.
-		interface passSaltStruct {
+		// Interface for password.
+		interface passStruct {
 			pass: string;
 		}
 
 		// Grab user data from database.
 		// This class avoids holding this data in memory for longer than required to
 		// prevent security where a user may get access to a cache of hashed passwords.
-		const userData : passSaltStruct = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
+		const userData : passStruct = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
 			// Catch error incase DB query goes wrong.
 			throw Error('Something has gone wrong with fetching user authentication details. User that exists in cache not present in database.', {
 				cause: {
