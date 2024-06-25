@@ -335,7 +335,7 @@ class UserManagerInventory {
 		}
 
 		// Query DB to delete user.
-		await umPool.query('DELETE FROM users WHERE userid=$1;', [user.id]);
+		await umPool.query('UPDATE users SET deleted=$1 WHERE userid=$2;', [true, user.id]);
 
 		// Notify cache invalidation of the user deletion.
 		this.bgCore.cacheInvalidation.notifyUpdate(possibleEvents.user, user.id);
