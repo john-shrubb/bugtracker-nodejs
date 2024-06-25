@@ -13,8 +13,8 @@ class Project {
 		projectID      : string,
 		name           : string,
 		owner          : User,
-		tickets        : Map<string, Ticket>,
-		projectMembers : Map<string, ProjectMember>,
+		tickets        : Array<Ticket>,
+		projectMembers : Array<ProjectMember>,
 		creationDate   : Date,
 	) {
 		this.bgCore = bgCore;
