@@ -53,9 +53,7 @@ class UserManagerInventory {
 	// provides CRUD operations (Update isn't really appropriate for a session).
 
 	/**
-	 * Cache holding current sessions. The session token is private AND hashed, so to
-	 * check a session this class must hash the token before passing it to the session
-	 * map.
+	 * Cache holding current sessions. The session token is hashed for security.
 	 * 
 	 * Do not delete items directly from the session map, simply notify cache invalidation
 	 * of the change and it will handle the rest.
