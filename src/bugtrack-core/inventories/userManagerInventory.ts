@@ -11,6 +11,7 @@ import User from '../types/user.js';
 import generateID from '../helperFunctions/genID.js';
 import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
+import UserStub from '../types/userStub.js';
 
 /**
  * Structure for the session rows when they are fetched from the database.
@@ -147,7 +148,7 @@ class UserManagerInventory {
 			// Get the session object...
 			const session = this.sessionMap.get(sessionID)!;
 
-			if (await bcrypt.compare(sessionToken, session.sessionToken)) {
+			if (await bcrypt.compare(sessionToken, session.token)) {
 				// If the token is a match, then return the correct user.
 				foundUser = session.user;
 			}
@@ -371,6 +372,45 @@ class UserManagerInventory {
 
 		// Update the password in the database.
 		await umPool.query('UPDATE users SET pass=$1 WHERE userid=$2;', [newPassHash, user.id]);
+	}
+
+	// Deleted users are only accessible by this class, so a method is needed to provide
+	// access to user stubs.
+
+	/**
+	 * Attempt to find a deleted user and return a user stub. Undeleted users will not be
+	 * returned.
+	 * @param userID The ID of the user stub to retrieve.
+	 */
+	public async getUserStubByID(userID : string) : Promise<UserStub | null> {
+		/**
+		 * Interface for how the user data will be returned from the database.
+		 */
+		interface UserDataStruct {
+			id : string;
+			displayname : string;
+			username : string;
+			email : string;
+		}
+
+		// Query the database.
+		const userDataRaw : QueryResult<UserDataStruct> = await umPool.query('SELECT (userid, displayname, username, email) FROM users WHERE userid=$1, deleted=$2;', [userID, true]);
+
+		// Check if there is a deleted user.
+		if (!userDataRaw.rows.length) {
+			return null;
+		}
+
+		const userData = userDataRaw.rows[0];
+
+		const user = new UserStub(
+			userData.id,
+			userData.displayname,
+			userData.username,
+			userData.email,
+		);
+
+		return user;
 	}
 }
 
