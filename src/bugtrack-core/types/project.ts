@@ -3,6 +3,7 @@ import BugtrackCore from '../index.js';
 import ProjectMember from './projectMember.js';
 import Ticket from './ticket.js';
 import User from './user.js';
+import UserStub from './userStub.js';
 
 /**
  * Represents an overall project in the bug tracker.
@@ -21,7 +22,7 @@ class Project {
 		private bgCore    : BugtrackCore,
 		public  id        : string,
 		public  name      : string,
-		public  owner     : User,
+		public  owner     : User | UserStub,
 		public  tickets   : Array<Ticket>,
 		public  members   : Array<ProjectMember>,
 		public  createdOn : Date,

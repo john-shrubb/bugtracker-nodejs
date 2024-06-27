@@ -5,6 +5,7 @@ import TicketPriority from './enums/ticketPriority.js';
 import TicketStatus from './enums/ticketStatus.js';
 import ProjectMember from './projectMember.js';
 import Tag from './tag.js';
+import UserStub from './userStub.js';
 
 /**
  * Used to represent a ticket.
@@ -28,7 +29,7 @@ class Ticket {
 	constructor(
 		private bgCore            : BugtrackCore,
 		public  id                : string,
-		public  author            : ProjectMember,
+		public  author            : ProjectMember | UserStub,
 		public  priority          : TicketPriority,
 		public  status            : TicketStatus,
 		public  tags              : Array<Tag>,

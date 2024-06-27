@@ -2,6 +2,7 @@ import checkID from '../helperFunctions/checkID.js';
 import BugtrackCore from '../index.js';
 import ProjectMember from './projectMember.js';
 import Ticket from './ticket.js';
+import UserStub from './userStub.js';
 
 /**
  * Represents a comment made on a ticket.
@@ -16,9 +17,9 @@ class Comment {
 	 * @param createdOn When the comment was made.
 	 */
 	constructor(
-		private bgCore   : BugtrackCore,
+		private bgCore    : BugtrackCore,
 		public  id        : string,
-		public  author    : ProjectMember,
+		public  author    : ProjectMember | UserStub,
 		public  content   : string,
 		public  ticket    : Ticket,
 		public  createdOn : Date,

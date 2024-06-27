@@ -15,7 +15,7 @@ class LoginAttempt {
 	 * @param userAgent The user agent of the client.
 	 */
 	constructor(
-		private bgCore      : BugtrackCore,
+		private bgCore       : BugtrackCore,
 		public  user         : User,
 		public  date         : Date,
 		public  successful   : boolean,
