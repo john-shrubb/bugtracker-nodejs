@@ -6,51 +6,23 @@ import User from './user.js';
  */
 
 class LoginAttempt {
+	/**
+	 * @param bgCore The instance of bg-core. Will be used for data retreival.
+	 * @param user The user the client attempted to login as.
+	 * @param date The date the attempt was made.
+	 * @param successful Whether the client managed to log in or not.
+	 * @param ipAddress The IP address the attempt was made from.
+	 * @param userAgent The user agent of the client.
+	 */
 	constructor(
-		bgCore : BugtrackCore,
-		user         : User,
-		date         : Date,
-		successful   : boolean,
-		ipAddress    : string,
-		userAgent    : string,
+		private bgCore      : BugtrackCore,
+		public  user         : User,
+		public  date         : Date,
+		public  successful   : boolean,
+		public  ipAddress    : string,
+		public  userAgent    : string,
 	) {
-		this.bgCore = bgCore;
-		this.user = user;
-		this.date = date;
-		this.successful = successful;
-		this.ip = ipAddress;
-		this.userAgent = userAgent;
 	}
-
-	/**
-	 * Instance of the core bugtracker class.
-	 */
-	private bgCore;
-
-	/**
-	 * The user the client attempted to log in as
-	 */
-	public user;
-
-	/**
-	 * The date of the login attempt.
-	 */
-	public date;
-
-	/**
-	 * Whether the user successfully logged in
-	 */
-	public successful;
-
-	/**
-	 * The IP address tied to the attempt.
-	 */
-	public ip;
-
-	/**
-	 * The user agent of the client that attempted to log in.
-	 */
-	public userAgent;
 }
 
 export default LoginAttempt;

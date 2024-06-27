@@ -8,67 +8,29 @@ import User from './user.js';
  * Represents an overall project in the bug tracker.
  */
 class Project {
+	/**
+	 * @param bgCore Instance of bg-core for data retrieval.
+	 * @param id The ID used to reference the project.
+	 * @param name The name of the project.
+	 * @param owner The user who is the owner/authro of the project.
+	 * @param tickets The tickets made under the project.
+	 * @param members The project members.
+	 * @param createdOn When the project was created.
+	 */
 	constructor(
-		bgCore   : BugtrackCore,
-		projectID      : string,
-		name           : string,
-		owner          : User,
-		tickets        : Array<Ticket>,
-		projectMembers : Array<ProjectMember>,
-		creationDate   : Date,
+		private bgCore    : BugtrackCore,
+		public  id        : string,
+		public  name      : string,
+		public  owner     : User,
+		public  tickets   : Array<Ticket>,
+		public  members   : Array<ProjectMember>,
+		public  createdOn : Date,
 	) {
-		this.bgCore = bgCore;
-
 		// Check format of project ID.
-		if (!checkID(projectID)) {
+		if (!checkID(id)) {
 			throw new Error('Attempted to create new Project with invalid project ID');
 		}
-
-		this.id = projectID;
-		this.name = name;
-		this.owner = owner;
-		this.tickets = tickets;
-		this.projectMembers = projectMembers;
-		this.createdOn = creationDate;
 	}
-
-	/**
-	 * Instance of the core bugtracker class.
-	 */
-	private bgCore;
-
-	/**
-	 * ID used to reference the project.
-	 */
-	public id;
-
-	/**
-	 * The name/title of the project.
-	 */
-	public name;
-
-	/**
-	 * The user whom the project belongs to.
-	 */
-	public owner;
-
-	/**
-	 * All the tickets which are a part of this project. The ID for each ticket is used as
-	 * a key.
-	 */
-
-	public tickets;
-
-	/**
-	 * All members of the project. The ID of each project member is used as the key.
-	 */
-
-	public projectMembers;
-
-	/**
-	 * When the project was created.
-	 */
-	public createdOn;
 }
 
 export default Project;

@@ -11,103 +11,41 @@ import Tag from './tag.js';
  */
 
 class Ticket {
+	/**
+	 * @param bgCore Instance of bg-core. Used for data retrieval.
+	 * @param id The ID used to reference the ticket.
+	 * @param author The author of the ticket.
+	 * @param priority The priority of the ticket.
+	 * @param status The status of the ticket.
+	 * @param tags The tags associated with the ticket.
+	 * @param assignedMembers The members assigned to the ticket.
+	 * @param ticketTitle The title of the ticket.
+	 * @param ticketDescription The description/content of the ticket.
+	 * @param attachments The URLs of the attachments.
+	 * @param comments The comments made under the ticket.
+	 * @param createdOn The date the ticket was created on.
+	 */
 	constructor(
-		bgCore           : BugtrackCore,
-		ticketID               : string,
-		author                 : ProjectMember,
-		priority               : TicketPriority,
-		status                 : TicketStatus,
-		tags                   : Array<Tag>,
-		assignedProjectMembers : Array<ProjectMember>,
-		ticketTitle            : string,
-		ticketDescription      : string,
-		attachments            : Array<string>,
-		comments 			   : Array<Comment>,
-		createdOn              : Date,
+		private bgCore            : BugtrackCore,
+		public  id                : string,
+		public  author            : ProjectMember,
+		public  priority          : TicketPriority,
+		public  status            : TicketStatus,
+		public  tags              : Array<Tag>,
+		public  assignedMembers   : Array<ProjectMember>,
+		public  ticketTitle       : string,
+		public  ticketDescription : string,
+		public  attachments       : Array<string>,
+		public  comments          : Array<Comment>,
+		public  createdOn         : Date,
 	) {
-		this.bgCore = bgCore;
-
 		// Check the format of the passed ID.
-		if (!checkID(ticketID)) {
+		if (!checkID(id)) {
 			throw new Error(
 				'Attempted to create a ticket with an invalid ticket ID format.'
 			);
 		}
-
-		this.id = ticketID;
-		this.author = author;
-		this.priority = priority;
-		this.status = status;
-		this.tags = tags;
-		this.assignedMembers = assignedProjectMembers;
-		this.title = ticketTitle;
-		this.description = ticketDescription;
-		this.attachments = attachments;
-		this.comments = comments;
-		this.opened = createdOn;
 	}
-
-	/**
-	 * Instance of the core bugtracker class.
-	 */
-	private bgCore;
-
-	/**
-	 * The ID used to reference the ticket.
-	 */
-	public id;
-
-	/**
-	 * The author of the ticket.
-	 */
-	public author;
-
-	/**
-	 * The priority of the ticket. Represented via an enumerator.
-	 */
-	public priority;
-
-	/**
-	 * The status of the ticket. Represented via an enumarator.
-	 */
-	public status;
-
-	/**
-	 * The tags assigned to the ticket.
-	 */
-	public tags;
-
-	/**
-	 * The project members assigned to view the ticket.
-	 * Being assigned does not specifically allow the member to comment on the ticket.
-	 * See documentation on permissions and permission bit structure for details.
-	 */
-	public assignedMembers;
-
-	/**
-	 * The title of the ticket.
-	 */
-	public title;
-
-	/**
-	 * The description/content of the ticket.
-	 */
-	public description;
-
-	/**
-	 * The URLs for the attachments of the tickets.
-	 */
-	public attachments;
-
-	/**
-	 * Comments which have been made on the ticket.
-	 */
-	public comments;
-
-	/**
-	 * When the ticket was opened.
-	 */
-	public opened;
 }
 
 export default Ticket;

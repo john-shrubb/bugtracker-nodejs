@@ -3,65 +3,35 @@ import User from './user.js';
 
 /**
  * Used to represent a session.
- * When attempting to authenticate sessions, the user agents must be similar.
+ * When attempting to authenticate sessions, the user agents must be similar or identical
+ * as a layer of defence against session token theft.
  */
 class Session {
+	/**
+	 * @param bgCore Instance of bg-core. Used for data retrieval.
+	 * @param id The ID used to reference the session.
+	 * @param token The token used to authenticate the session. This token should be
+	 *              hashed.
+	 * @param userAgent The user agent used to authenticate the session.
+	 * @param user The user whom the session is used to access.
+	 * @param issued The date the session was issued.
+	 * @param expires The date of expiration for the session. Expiration is automatic.
+	 * @param onExpire The callback for when the session expires.
+	 */
 	constructor(
-		bgCore : BugtrackCore,
-		sessionID    : string,
-		sessionToken : string,
-		userAgent    : string,
-		user         : User,
-		issueDate    : Date,
-		expiryDate   : Date,
-		onExpire     : (session : Session) => void,
+		private bgCore    : BugtrackCore,
+		public  id        : string,
+		public  token     : string,
+		public  userAgent : string,
+		public  user      : User,
+		public  issued    : Date,
+		public  expires   : Date,
+		onExpire          : (session : Session) => void,
 	) {
-		this.bgCore = bgCore;
-		this.id = sessionID;
-		this.sessionToken = sessionToken;
-		this.userAgent = userAgent;
-		this.user = user;
-		this.issued = issueDate;
-		this.expires = expiryDate;
 		// Set a timer which will call a function inside of the userManagerInventory to
 		// notify it that the session has expired.
-		setTimeout(() => onExpire(this), expiryDate.getTime() - Date.now());
+		setTimeout(() => onExpire(this), expires.getTime() - Date.now());
 	}
-
-	/**
-	 * Instance of the core bugtracker class.
-	 */
-	private bgCore;
-
-	/**
-	 * The ID used to reference the session.
-	 */
-	public id;
-
-	/**
-	 * The token tied to the user's session.
-	 */
-	public sessionToken;
-
-	/**
-	 * The user agent tied to the session.
-	 */
-	public userAgent;
-
-	/**
-	 * The user tied to the session.
-	 */
-	public user;
-
-	/**
-	 * The issue date of the session token.
-	 */
-	public issued;
-
-	/**
-	 * When the session token expires.
-	 */
-	public expires;
 }
 
 export default Session;

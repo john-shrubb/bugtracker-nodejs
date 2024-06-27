@@ -10,57 +10,27 @@ import User from './user.js';
  */
 
 class ProjectMember {
+	/**
+	 * @param bgCore The instance of bg-core used for data retrieval.
+	 * @param id The ID used to reference the member. This ID is seperate to the user ID.
+	 * @param user The user associated with the project membership.
+	 * @param project The project associated with the membership.
+	 * @param role The role of the project member.
+	 * @param joinedOn When the user joined the project.
+	 */
 	constructor(
-		bgCore       : BugtrackCore,
-		memberID     : string,
-		user         : User,
-		project      : Project,
-		role         : Role,
-		joinedOn     : Date,
+		private bgCore   : BugtrackCore,
+		public  id       : string,
+		public  user     : User,
+		public  project  : Project,
+		public  role     : Role,
+		public  joinedOn : Date,
 	) {
-		this.bgCore = bgCore;
-
 		// Check format of member ID.
-		if (!checkID(memberID)) {
+		if (!checkID(id)) {
 			throw new Error('Attempted to create ProjectMember with invalid member ID.');
 		}
-
-		this.memberID = memberID;
-		this.user = user;
-		this.project = project;
-		this.role = role;
-		this.joined = joinedOn;
 	}
-
-	/**
-	 * Instance of the core bugtracker class.
-	 */
-	private bgCore;
-
-	/**
-	 * The user's member ID used to link them with the project.
-	 */
-	public memberID;
-	
-	/**
-	 * The user class linked to the member.
-	 */
-	public user;
-
-	/**
-	 * The project the user is a member of.
-	 */
-	public project;
-
-	/**
-	 * The user's role.
-	 */
-	public role;
-
-	/**
-	 * When the user joined the project.
-	 */
-	public joined;
 
 	/**
 	 * Grabs all the tickets the user created in the context of the current project.
