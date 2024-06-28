@@ -32,9 +32,9 @@ interface sessionRowStructure {
  * It also keeps a private cache of all sessions, and login attempts.
  */
 class UserManagerInventory {
-	constructor(bgCore : BugtrackCore) {
-		this.bgCore = bgCore;
-
+	constructor(
+		private bgCore : BugtrackCore
+	) {
 		// Builds session cache.
 
 		this.initialiseSessionCache();
@@ -42,11 +42,6 @@ class UserManagerInventory {
 		// For if there has been an update to the cache.
 		this.bgCore.cacheInvalidation.on('sessionUpdate', this.sessionUpdateCallback);
 	}
-
-	/**
-	 * Instance of BugtrackCore
-	 */
-	private bgCore;
 
 	// Sessions.
 	// These should be held closely, with session objects only being exposed to other

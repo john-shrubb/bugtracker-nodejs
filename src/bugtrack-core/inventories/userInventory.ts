@@ -26,15 +26,12 @@ interface userRowStruct {
  *           [UserManagerInventory](./userManagerInventory.ts) to create users.
  */
 class UserInventory {
-	constructor(bgCore : BugtrackCore, gpPool : PoolClient ) {
+	constructor(
+		private bgCore : BugtrackCore,
+		private gpPool : PoolClient
+	) {
 		// User map which essentially acts as the cache.
 		this.userMap = new Map<string, User>();
-
-		// The instance of the GP pool passed in from the BugtrackCore instance.
-		this.gpPool = gpPool;
-
-		// The instance of BugtrackCore
-		this.bgCore = bgCore;
 
 		// Set up cache invalidation to listen for user updates. Callback defined below.
 		this.bgCore.cacheInvalidation.on('userUpdate', this.userUpdateCallback);
@@ -59,18 +56,6 @@ class UserInventory {
 	 * Map used to keep a cache of all affected users.
 	 */
 	private userMap;
-
-	/**
-	 * Connection to PostgreSQL.
-	 */
-
-	private gpPool;
-
-	/**
-	 * BugtrackCore instance
-	 */
-
-	private bgCore;
 
 	/**
 	 * Callback function for the event in which a user is updated.
