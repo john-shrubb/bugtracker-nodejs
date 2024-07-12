@@ -2,6 +2,7 @@ import { CacheInvalidationService } from './services/cacheInvalidationService.js
 import { gpPool } from './dbConnection.js';
 import UserInventory from './inventories/userInventory.js';
 import UserManagerInventory from './inventories/userManagerInventory.js';
+import ProjectInventory from './inventories/projectInventory.js';
 
 /**
  * The core of the bug tracker exposes all required services which other parts of the
@@ -32,6 +33,9 @@ class BugtrackCore {
 	
 	// User manager inventory
 	public userManagerInventory = new UserManagerInventory(this);
+
+	// Project inventory
+	public projectInventory = new ProjectInventory(this);
 }
 
 export default BugtrackCore;
