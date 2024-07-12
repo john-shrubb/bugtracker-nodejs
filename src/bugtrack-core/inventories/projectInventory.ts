@@ -1,11 +1,3 @@
-/**
- * The ProjectInventory class is used to act as a data access layer for CRUD operations
- * for projects.
- * 
- * This class does not cover ProjectMembers. See ProjectMemberInventory (Hyperlink will
- * be inserted later).
- */
-
 import { QueryResult } from 'pg';
 import { gpPool } from '../dbConnection.js';
 import BugtrackCore from '../index.js';
@@ -20,6 +12,14 @@ interface ProjectDataStructure {
 	ownerID : string;
 	creationDate : Date;
 }
+
+/**
+ * The ProjectInventory class is used to act as a data access layer for CRUD operations
+ * for projects.
+ * 
+ * This class does not cover ProjectMembers.
+ * See [ProjectMemberInventory](./projectMemberInventory.ts).
+ */
 
 class ProjectInventory {
 	constructor(
