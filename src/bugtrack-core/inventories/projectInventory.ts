@@ -136,6 +136,11 @@ class ProjectInventory {
 		return structuredClone(this.projectMap.get(projectID)) || null;
 	}
 
+	/**
+	 * Create a new project.
+	 * @param name The display name of the project.
+	 * @param author The user whom is creating the project.
+	 */
 	public async createProject(
 		name : string,
 		author : User,
@@ -161,6 +166,84 @@ class ProjectInventory {
 
 		// Notify the cache invalidation service of the update.
 		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.project, id);
+
+		return;
+	}
+
+	/**
+	 * Delete a project from the database. Tickets made under the project will be
+	 * preserved.
+	 * @param projectID The ID of the project to be deleted.
+	 */
+	public async deleteProject(projectID : string) {
+		// Check if project exists. Throw an error if not.
+		if (!this.projectMap.has(projectID)) {
+			throw new Error('Cannot delete non existent project.', {
+				cause: projectID,
+			});
+		}
+
+		// Delete the project from the database.
+		await gpPool.query('DELETE FROM projects WHERE projectid = $1;', [projectID]);
+
+		return;
+	}
+
+	/**
+	 * Update a project's display name.
+	 * @param projectID The ID of the project to update.
+	 * @param newName The new name of the project.
+	 */
+	public async updateProjectName(projectID : string, newName : string) {
+		// Check if the project exists. Throw an error if not.
+		if (!this.projectMap.has(projectID)) {
+			throw new Error('Cannot update display name of non existent project.', {
+				cause: projectID,
+			});
+		}
+
+		// Length check the project name.
+		if (newName.trim() === '') {
+			throw new Error('Project name cannot be empty.', {
+				cause: newName,
+			});
+		}
+
+		// Query the database to update the project name.
+		await gpPool.query('UPDATE projects SET displayname = $1 WHERE projectid = $2;', [newName, projectID]);
+
+		// Notify the cache invalidation service of the update.
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.project, projectID);
+
+		return;
+	}
+
+	/**
+	 * Update the author of the project. The owner will keep their role.
+	 * @param projectID The ID of the project to update.
+	 * @param newOwner The new owner of the project.
+	 */
+	public async updateProjectOwner(projectID : string, newOwner : User) {
+		// Check if the project exists. Throw an error if not.
+		if (!this.projectMap.has(projectID)) {
+			throw new Error('Cannot update author of non existent project.', {
+				cause: projectID,
+			});
+		}
+
+		// Check if the new owner exists. Throw an error if not.
+		if (!this.bgCore.userInventory.getUserByID(newOwner.id)) {
+			throw new Error('New owner of project does not exist.', {
+				cause: newOwner.id,
+			});
+		}
+
+		// Query the database to update the project owner.
+		await gpPool.query('UPDATE projects SET ownerid = $1 WHERE projectid = $2;', [newOwner.id, projectID]);
+
+
+		// Notify the cache invalidation service of the update.
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.project, projectID);
 
 		return;
 	}
