@@ -1,5 +1,6 @@
 import checkID from '../helperFunctions/checkID.js';
 import BugtrackCore from '../index.js';
+import Project from './project.js';
 import ProjectMember from './projectMember.js';
 
 /**
@@ -24,6 +25,7 @@ class Role {
 		public  permissionInt : number,
 		public  colour        : string,
 		public  displayTag    : boolean,
+		public  parentProject : Project,
 	) {
 		// Check format of role ID.
 		if (!checkID(id)) {
