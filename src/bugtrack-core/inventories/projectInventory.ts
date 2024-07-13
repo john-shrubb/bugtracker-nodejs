@@ -103,7 +103,7 @@ class ProjectInventory {
 	 * @param projectID The ID of the project to be fetched.
 	 * @returns A project object if the project exists, otherwise null.
 	 */
-	public async noCacheGetProjectById(projectID : string) : Promise<Project | null> {
+	public async noCacheGetProjectByID(projectID : string) : Promise<Project | null> {
 		// Get the project data from the database.
 		const projectData : QueryResult<ProjectDataStructure> = await gpPool.query('SELECT projectid, displayname, ownerid, creationdate FROM projects WHERE projectid = $1;', [projectID]);
 		
@@ -132,7 +132,7 @@ class ProjectInventory {
 		return projectObject;
 	}
 
-	public getProjectById(projectID : string) : Project | null {
+	public getProjectByID(projectID : string) : Project | null {
 		return structuredClone(this.projectMap.get(projectID)) || null;
 	}
 
