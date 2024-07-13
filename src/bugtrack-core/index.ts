@@ -4,6 +4,7 @@ import UserInventory from './inventories/userInventory.js';
 import UserManagerInventory from './inventories/userManagerInventory.js';
 import ProjectInventory from './inventories/projectInventory.js';
 import ProjectMemberInventory from './inventories/projectMemberInventory.js';
+import { InventoryReadyService } from './services/inventoryReadyService.js';
 
 /**
  * The core of the bug tracker exposes all required services which other parts of the
@@ -11,10 +12,6 @@ import ProjectMemberInventory from './inventories/projectMemberInventory.js';
  */
 
 class BugtrackCore {
-	constructor() {
-		this.cacheInvalidation = new CacheInvalidationService();
-	}
-
 	/**
 	 * Private instance of the database.
 	 */
@@ -23,7 +20,12 @@ class BugtrackCore {
 	/**
 	 * Public instance of the cache invalidation service.
 	 */
-	public cacheInvalidation;
+	public cacheInvalidation = new CacheInvalidationService();
+
+	/**
+	 * Public instance of the inventory ready service
+	 */
+	public inventoryReadyService = new InventoryReadyService();
 
 	/*
 		Instances of each inventory:
