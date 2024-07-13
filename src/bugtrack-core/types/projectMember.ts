@@ -23,7 +23,7 @@ class ProjectMember {
 		public  id       : string,
 		public  user     : User,
 		public  project  : Project,
-		public  role     : Role,
+		public  role     : Role | null,
 		public  joinedOn : Date,
 	) {
 		// Check format of member ID.
