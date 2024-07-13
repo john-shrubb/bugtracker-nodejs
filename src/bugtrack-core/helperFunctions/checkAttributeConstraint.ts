@@ -57,6 +57,9 @@ function checkAttributeConstraint(
 
 	// Profile picture URLs
 	if (attributeType === UserAttributeType.pfp) {
+		// null PFPs are allowed.
+		if (!value) return true;
+		
 		// 2048 is generally the agreed maximum length a URL should be.
 		if (value.length > 2048) return false;
 

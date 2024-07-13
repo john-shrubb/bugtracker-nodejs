@@ -20,6 +20,7 @@ interface eventMap {
 	ticketInventoryReady: [],
 	commentInventoryReady: [],
 	tagInventoryReady: [],
+	allInventoriesReady: [],
 }
 
 /**
@@ -77,6 +78,11 @@ class InventoryReadyService {
 			case InventoryType.tagInventory:
 				this.eventEmitter.emit('tagInventoryReady');
 				break;
+		}
+
+		const inventoryAmount = Object.keys(InventoryType).length / 2;
+		if (inventoryAmount === this.inventoryReadyMap.size) {
+			this.eventEmitter.emit('allInventoriesReady');
 		}
 	}
 }

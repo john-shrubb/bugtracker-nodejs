@@ -12,6 +12,7 @@ import generateID from '../helperFunctions/genID.js';
 import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
 import UserStub from '../types/userStub.js';
+import { InventoryType } from '../services/inventoryReadyService.js';
 
 /**
  * Structure for the session rows when they are fetched from the database.
@@ -36,7 +37,6 @@ class UserManagerInventory {
 		private bgCore : BugtrackCore
 	) {
 		// Builds session cache.
-
 		this.initialiseSessionCache();
 
 		// For if there has been an update to the cache.
@@ -91,6 +91,9 @@ class UserManagerInventory {
 			// And allocate it into the session cache.
 			this.sessionMap.set(session.id, session);
 		});
+
+		// eslint-disable-next-line max-len
+		this.bgCore.inventoryReadyService.inventoryReady(InventoryType.userManagerInventory);
 	}
 
 	/**
@@ -220,15 +223,15 @@ class UserManagerInventory {
 			});
 		})).rows[0]; // The first row will always be correct.
 
-		const passwordCorrect = await bcrypt.compare(password, userData.pass);
+		const passwordCorrect = await bcrypt.compare(password, userData.pass.trim());
 		
 		// Insert a record of the login attempt to the database.
 		await umPool.query('INSERT INTO loginattempts (userid, successful, ipaddress, useragent) VALUES ($1, $2, $3, $4);',
-			[user.id, passwordCorrect, ipAddress, userAgent] // With the parameters.
+			[user.id, passwordCorrect, ipAddress, userAgent]
 		);
 
 		if (passwordCorrect) {
-			const token = await bcrypt.hash(crypto.randomUUID(), 30);
+			const token = await bcrypt.hash(crypto.randomUUID(), 13);
 			const id = generateID();
 
 			await umPool.query(
@@ -302,7 +305,8 @@ class UserManagerInventory {
 			throw new Error('Attempted to create with an already existing username or email address.');
 		}
 
-		const hashedPass = await bcrypt.hash(password, 13);
+		const salt = await bcrypt.genSalt(13);
+		const hashedPass = await bcrypt.hash(password, salt);
 
 		await umPool.query(
 			'INSERT INTO users (userid, username, email, displayname, pfp, pass) VALUES ($1, $2, $3, $4, $5, $6);',

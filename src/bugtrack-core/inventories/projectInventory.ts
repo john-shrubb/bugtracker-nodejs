@@ -5,6 +5,7 @@ import Project from '../types/project.js';
 import User from '../types/user.js';
 import generateID from '../helperFunctions/genID.js';
 import PossibleEvents from '../types/enums/possibleEvents.js';
+import { InventoryType } from '../services/inventoryReadyService.js';
 
 interface ProjectDataStructure {
 	projectID : string;
@@ -25,7 +26,19 @@ class ProjectInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.initialiseProjectCache();
+		this.bgCore.inventoryReadyService.on('userInventoryReady', () => {
+			// eslint-disable-next-line max-len
+			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.projectMemberInventory)) {
+				this.initialiseProjectCache();
+			}
+		});
+
+		this.bgCore.inventoryReadyService.on('projectMemberInventoryReady', () => {
+			// eslint-disable-next-line max-len
+			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.userInventory)) {
+				this.initialiseProjectCache();
+			}
+		});
 
 		this.bgCore.cacheInvalidation.on('projectUpdate', this.projectUpdateCallback);
 	}

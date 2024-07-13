@@ -5,7 +5,8 @@ import { gpPool } from '../dbConnection.js';
 import generateID from '../helperFunctions/genID.js';
 import User from '../types/user.js';
 import Project from '../types/project.js';
-import PossibleEvents from '../types/enums/possibleEvents';
+import PossibleEvents from '../types/enums/possibleEvents.js';
+import { InventoryType } from '../services/inventoryReadyService.js';
 
 interface ProjectMemberDataStructure {
 	memberid: string;
@@ -28,7 +29,7 @@ class ProjectMemberInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.initialiseProjectMemberCache();
+		this.bgCore.inventoryReadyService.on('userInventoryReady', this.initialiseProjectMemberCache);
 
 		this.bgCore.cacheInvalidation.on('projectMemberUpdate', this.projectMemberUpdateCallback);
 	}
@@ -51,8 +52,7 @@ class ProjectMemberInventory {
 
 		projectMembers.forEach(async memberData => {
 			const parentProject =
-				// eslint-disable-next-line max-len
-				await this.bgCore.projectInventory.noCacheGetProjectByID(memberData.projectid);
+				this.bgCore.projectInventory.getProjectByID(memberData.projectid);
 
 			// If the parent project doesn't exist, throw an error.
 			// Something is very wrong with the data integrity if this happens.
@@ -76,6 +76,10 @@ class ProjectMemberInventory {
 
 			this.projectMemberMap.set(member.id, member);
 		});
+
+		this.bgCore.inventoryReadyService.inventoryReady(
+			InventoryType.projectMemberInventory
+		);
 	}
 
 	/**

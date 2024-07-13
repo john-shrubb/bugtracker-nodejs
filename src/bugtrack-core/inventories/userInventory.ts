@@ -1,6 +1,7 @@
 import BugtrackCore from '..';
 import checkAttributeConstraint from '../helperFunctions/checkAttributeConstraint.js';
 import checkID from '../helperFunctions/checkID.js';
+import { InventoryType } from '../services/inventoryReadyService.js';
 import PossibleEvents from '../types/enums/possibleEvents.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
 import User from '../types/user.js';
@@ -38,7 +39,7 @@ class UserInventory {
 
 		// Initialise class method builds the cache from whats in the database.
 		// This may take some time depending on the size of the database.
-		this.initialiseClass();
+		this.initialiseUserCache();
 
 		// Just an idea, another temporary service which all inventories report they are
 		// ready to when they have finished initalising, at which point the service will
@@ -79,7 +80,7 @@ class UserInventory {
 		const userData = userDataRaw.rows[0];
 
 		// If there is no longer that user in the database then wipe them from cache.
-		if (!userDataRaw.rowCount) {
+		if (!userDataRaw.rows.length) {
 			this.userMap.delete(userID);
 			return;
 		}
@@ -99,7 +100,7 @@ class UserInventory {
 	/**
 	 * Initialises the class by building the cache.
 	 */
-	private async initialiseClass() {
+	private async initialiseUserCache() {
 		// Grab all of the user data from the view.
 		const allUserData : QueryResult<userRowStruct> = await this.gpPool.query(
 			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp;',
@@ -125,6 +126,8 @@ class UserInventory {
 			// And register it on the user map.
 			this.userMap.set(userData.userid, userToCreate);
 		});
+
+		this.bgCore.inventoryReadyService.inventoryReady(InventoryType.userInventory);
 	}
 
 	// CRUD functions
@@ -147,7 +150,7 @@ class UserInventory {
 		}
 
 		// Will return either a user class or "null" if it doesn't exist.
-		return structuredClone(this.userMap.get(userID)) || null;
+		return this.userMap.get(userID) || null;
 	}
 
 	/**
@@ -210,18 +213,12 @@ class UserInventory {
 	 * @param userEmail 
 	 */
 	public getUserByEmail(userEmail : string) : User | null {
-		// For each item in the user cache...
-		for (const key in this.userMap) {
-			// Get the user object + Non null assertion as cache can be trusted.
-			const user : User = this.userMap.get(key)!;
-			// Check if the email matches.
-			if (user.email === userEmail) {
-				// Return if it does.
-				return structuredClone(user);
-			}
-		}
+		const users = Array.from(this.userMap.values());
 
-		return null;
+		const user = users.filter(user => user.email === userEmail)[0];
+		console.log(user);
+
+		return user;
 	}
 
 	/**
@@ -232,16 +229,12 @@ class UserInventory {
 	 * @param username 
 	 */
 	public getUserByUsername(username : string) : User | null {
-		// getUserByEmail works in much of the same way except it gets a user by a
-		// different field.
-		for (const key in this.userMap) {
-			const user : User = this.userMap.get(key)!;
-			if (user.username === username) {
-				return structuredClone(user);
-			}
-		}
+		const users = Array.from(this.userMap.values());
 
-		return null;
+		const user = users.filter(user => user.username === username)[0];
+		console.log(user);
+
+		return user;
 	}
 
 	/**
