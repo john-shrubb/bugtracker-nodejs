@@ -216,7 +216,6 @@ class UserInventory {
 		const users = Array.from(this.userMap.values());
 
 		const user = users.filter(user => user.email === userEmail)[0];
-		console.log(user);
 
 		return user;
 	}
@@ -232,7 +231,6 @@ class UserInventory {
 		const users = Array.from(this.userMap.values());
 
 		const user = users.filter(user => user.username === username)[0];
-		console.log(user);
 
 		return user;
 	}
@@ -250,7 +248,7 @@ class UserInventory {
 		this.getUserByUsername(identifier) ||
 		this.getUserByEmail(identifier) ||
 		null;
-		return structuredClone(userMatch);
+		return userMatch;
 	}
 
 	// Update functions

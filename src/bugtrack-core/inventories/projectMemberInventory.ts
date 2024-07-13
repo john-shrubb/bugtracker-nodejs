@@ -134,7 +134,7 @@ class ProjectMemberInventory {
 	 * @param memberID The ID of the member to get.
 	 */
 	public getMemberByID(memberID : string) : ProjectMember | null {
-		return structuredClone(this.projectMemberMap.get(memberID)) || null;
+		return this.projectMemberMap.get(memberID) || null;
 	}
 
 	/**
@@ -201,9 +201,7 @@ class ProjectMemberInventory {
 		const projectMembers = Array.from(this.projectMemberMap.values());
 
 		// Return a filtered array of the project members in the project.
-		return structuredClone(
-			projectMembers.filter(member => member.project.id === projectID)
-		);
+		return projectMembers.filter(member => member.project.id === projectID);
 	}
 
 	/**
