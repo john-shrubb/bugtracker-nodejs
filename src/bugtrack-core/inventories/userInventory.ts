@@ -16,7 +16,7 @@ interface userRowStruct {
 	email: string;
 	displayname: string;
 	pfp: string;
-	creationDate: Date;
+	creationdate: Date;
 }
 
 /**
@@ -93,7 +93,7 @@ class UserInventory {
 			userData.email,
 			userData.displayname,
 			userData.pfp,
-			userData.creationDate
+			userData.creationdate,
 		));
 	}
 
@@ -120,7 +120,7 @@ class UserInventory {
 				userData.email,
 				userData.displayname,
 				userData.pfp,
-				userData.creationDate
+				userData.creationdate
 			);
 
 			// And register it on the user map.
@@ -198,7 +198,7 @@ class UserInventory {
 			userData.email,
 			userData.displayname,
 			userData.pfp,
-			userData.creationDate,
+			userData.creationdate,
 		);
 
 		// Return contrcuted user object.
