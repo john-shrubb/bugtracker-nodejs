@@ -29,9 +29,9 @@ class ProjectMemberInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.bgCore.inventoryReadyService.on('userInventoryReady', this.initialiseProjectMemberCache);
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.initialiseProjectMemberCache);
 
-		this.bgCore.cacheInvalidation.on('projectMemberUpdate', this.projectMemberUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', this.projectMemberUpdateCallback);
 	}
 
 	/**

@@ -40,7 +40,7 @@ class UserManagerInventory {
 		this.initialiseSessionCache();
 
 		// For if there has been an update to the cache.
-		this.bgCore.cacheInvalidation.on('sessionUpdate', this.sessionUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', this.sessionUpdateCallback);
 	}
 
 	// Sessions.

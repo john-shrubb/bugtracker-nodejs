@@ -31,15 +31,13 @@ interface eventMap {
 class InventoryReadyService {
 	constructor() {
 		this.eventEmitter = new EventEmitter();
-		this.on = this.eventEmitter.on;
 	}
 	/**
 	 * The map of all inventories and their readiness.
 	 */
 	private inventoryReadyMap : Map<InventoryType, boolean> = new Map();
 
-	private eventEmitter : EventEmitter<eventMap>;
-	public on;
+	public eventEmitter : EventEmitter<eventMap>;
 
 	/**
 	 * The method used by inventories to check if another inventory is ready.

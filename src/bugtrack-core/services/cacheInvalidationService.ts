@@ -40,15 +40,11 @@ interface eventMap {
 class CacheInvalidationService {
 	constructor() {
 		// Create a new emitter and expose the on function.
-		this.emitter = new EventEmitter<eventMap>();
-		this.on = this.emitter.on;
+		this.eventEmitter = new EventEmitter<eventMap>();
 	}
 
 	// The actual emitter class is private to prevent other classes from polluting it.
-	private emitter;
-
-	// On is exposed as emitter.on to allow other users to still listen to the class.
-	public on;
+	public eventEmitter;
 
 	// Functions to notify the invalidation service of changes to objects.
 
@@ -70,28 +66,28 @@ class CacheInvalidationService {
 
 		switch (updateType) {
 			case PossibleEvents.comment:
-				this.emitter.emit('commentUpdate', affectedID);
+				this.eventEmitter.emit('commentUpdate', affectedID);
 				break;
 			case PossibleEvents.project:
-				this.emitter.emit('projectUpdate', affectedID);
+				this.eventEmitter.emit('projectUpdate', affectedID);
 				break;
 			case PossibleEvents.projectmember:
-				this.emitter.emit('projectMemberUpdate', affectedID);
+				this.eventEmitter.emit('projectMemberUpdate', affectedID);
 				break;
 			case PossibleEvents.role:
-				this.emitter.emit('roleUpdate', affectedID);
+				this.eventEmitter.emit('roleUpdate', affectedID);
 				break;
 			case PossibleEvents.session:
-				this.emitter.emit('sessionUpdate', affectedID);
+				this.eventEmitter.emit('sessionUpdate', affectedID);
 				break;
 			case PossibleEvents.tag:
-				this.emitter.emit('tagUpdate', affectedID);
+				this.eventEmitter.emit('tagUpdate', affectedID);
 				break;
 			case PossibleEvents.ticket:
-				this.emitter.emit('ticketUpdate', affectedID);
+				this.eventEmitter.emit('ticketUpdate', affectedID);
 				break;
 			case PossibleEvents.user:
-				this.emitter.emit('userUpdate', affectedID);
+				this.eventEmitter.emit('userUpdate', affectedID);
 				break;
 			default:
 				// Who knows what happened if we are at this stage.

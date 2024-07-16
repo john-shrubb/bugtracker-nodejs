@@ -26,21 +26,21 @@ class ProjectInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.bgCore.inventoryReadyService.on('userInventoryReady', () => {
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => {
 			// eslint-disable-next-line max-len
 			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.projectMemberInventory)) {
 				this.initialiseProjectCache();
 			}
 		});
 
-		this.bgCore.inventoryReadyService.on('projectMemberInventoryReady', () => {
+		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', () => {
 			// eslint-disable-next-line max-len
 			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.userInventory)) {
 				this.initialiseProjectCache();
 			}
 		});
 
-		this.bgCore.cacheInvalidation.on('projectUpdate', this.projectUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate', this.projectUpdateCallback);
 	}
 	/**
 	 * The cache for holding all projects.
@@ -149,7 +149,7 @@ class ProjectInventory {
 	}
 
 	public getProjectByID(projectID : string) : Project | null {
-		return structuredClone(this.projectMap.get(projectID)) || null;
+		return this.projectMap.get(projectID) || null;
 	}
 
 	/**
