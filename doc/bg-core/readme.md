@@ -48,7 +48,7 @@ Accessing the database and updating/inserting records outside of the inventories
 
 My current list of planned additions is as follows after the first iteration of bg-core is complete (In no particular order):
 - Writing unit tests to ensure bg-node's inventories can perform CRUD operations correctly.
-- A "ready" system which each inventory will connect to and inform after cache building has finished. The idea is the API and front end do not start serving until the app has finished building it's cache.
+- ~~A "ready" system which each inventory will connect to and inform after cache building has finished. The idea is the API and front end do not start serving until the app has finished building it's cache.~~ - **Framework implemented**
 - More granular cache invalidation where the system will indicate the specific field which was updated or action which was performed to avoid entire object rebuilds to occur.
 - More comprehensive documentation.
 - To allow for the instance to be deployed as a decentralised publicly available system or as a more tightly controlled system where it is invitation only (An email invitation can be sent to allow the user to sign up), perfect as an addition to a company intranet.
