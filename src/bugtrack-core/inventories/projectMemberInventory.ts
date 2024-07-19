@@ -161,7 +161,6 @@ class ProjectMemberInventory {
 
 		// Get the parent project object.
 		const parentProject =
-			// eslint-disable-next-line max-len
 			await this.bgCore.projectInventory.noCacheGetProjectByID(memberData.projectid);
 		
 		// If the parent project doesn't exist, throw an error.

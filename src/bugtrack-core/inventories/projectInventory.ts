@@ -75,10 +75,8 @@ class ProjectInventory {
 				project.displayName,
 				this.bgCore.userInventory.getUserByID(project.ownerID) ||
 				// Just incase the user is not in the cache
-				// eslint-disable-next-line max-len
 				(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
 				[], // POPULATE THESE LATER
-				// eslint-disable-next-line max-len
 				this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
 				project.creationDate,
 			);
@@ -109,7 +107,6 @@ class ProjectInventory {
 			// Just incase the user is not in the cache
 			(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
 			[], // POPULATE THESE LATER
-			// eslint-disable-next-line max-len
 			this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
 			project.creationDate,
 		);
@@ -148,7 +145,6 @@ class ProjectInventory {
 			// Just incase the user is not in the cache
 			(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
 			[], // POPULATE THESE LATER
-			// eslint-disable-next-line max-len
 			this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
 			project.creationDate,
 		);
