@@ -5,7 +5,8 @@ import { InventoryType } from '../services/inventoryReadyService.js';
 import PossibleEvents from '../types/enums/possibleEvents.js';
 import UserAttributeType from '../types/enums/userAttributeType.js';
 import User from '../types/user.js';
-import { PoolClient, QueryResult } from 'pg';
+import { QueryResult } from 'pg';
+import { gpPool } from '../dbConnection.js';
 
 /**
  * A structure used to serialise the rows returned when querying the database.
@@ -29,7 +30,6 @@ interface userRowStruct {
 class UserInventory {
 	constructor(
 		private bgCore : BugtrackCore,
-		private gpPool : PoolClient
 	) {
 		// User map which essentially acts as the cache.
 		this.userMap = new Map<string, User>();
@@ -65,7 +65,7 @@ class UserInventory {
 
 	private async userUpdateCallback(userID : string) {
 		// Grab the raw query for the user data.
-		const userDataRaw : QueryResult<userRowStruct> = await this.gpPool.query(
+		const userDataRaw : QueryResult<userRowStruct> = await gpPool.query(
 			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp WHERE userid=$1;',
 			[userID]
 		).catch(reason => {
@@ -102,7 +102,7 @@ class UserInventory {
 	 */
 	private async initialiseUserCache() {
 		// Grab all of the user data from the view.
-		const allUserData : QueryResult<userRowStruct> = await this.gpPool.query(
+		const allUserData : QueryResult<userRowStruct> = await gpPool.query(
 			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp;',
 		).catch((reason) => {
 			const error = new Error('Failed to initialise user cache.');
@@ -171,7 +171,7 @@ class UserInventory {
 		// Code ripped from callback function. All the more reason to make me want to
 		// implement a driver system later on.
 		// Grab the raw query for the user data.
-		const userDataRaw : QueryResult<userRowStruct> = await this.gpPool.query(
+		const userDataRaw : QueryResult<userRowStruct> = await gpPool.query(
 			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp WHERE userid=$1;',
 			[userID]
 		).catch(reason => {
@@ -327,7 +327,7 @@ class UserInventory {
 		const query = `UPDATE usersgp SET ${columnToUpdate}=$1 WHERE userid=$2;`;
 		
 		// Query the database.
-		await this.gpPool.query(
+		await gpPool.query(
 			query,
 			[newValue, user.id]
 		// And catch just to throw another more debuggable error out if something goes

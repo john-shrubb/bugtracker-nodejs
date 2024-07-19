@@ -1,5 +1,4 @@
 import { CacheInvalidationService } from './services/cacheInvalidationService.js';
-import { gpPool } from './dbConnection.js';
 import UserInventory from './inventories/userInventory.js';
 import UserManagerInventory from './inventories/userManagerInventory.js';
 import ProjectInventory from './inventories/projectInventory.js';
@@ -12,11 +11,6 @@ import { InventoryReadyService } from './services/inventoryReadyService.js';
  */
 
 class BugtrackCore {
-	/**
-	 * Private instance of the database.
-	 */
-	private gpPool = gpPool;
-
 	/**
 	 * Public instance of the cache invalidation service.
 	 */
@@ -32,7 +26,7 @@ class BugtrackCore {
 	*/
 
 	// User inventory
-	public userInventory = new UserInventory(this, this.gpPool);
+	public userInventory = new UserInventory(this);
 	
 	// User manager inventory
 	public userManagerInventory = new UserManagerInventory(this);
