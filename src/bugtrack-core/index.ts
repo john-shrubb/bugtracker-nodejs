@@ -19,7 +19,7 @@ class BugtrackCore {
 	/**
 	 * Public instance of the inventory ready service
 	 */
-	public inventoryReadyService = new InventoryReadyService();
+	public invReady = new InventoryReadyService();
 
 	/*
 		Instances of each inventory:

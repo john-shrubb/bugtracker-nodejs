@@ -33,8 +33,8 @@ class ProjectMemberInventory {
 		this.projectMemberUpdateCallback.bind(this);
 		this.initialiseProjectMemberCache.bind(this);
 
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
-		this.bgCore.inventoryReadyService.eventEmitter.on('roleInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('roleInventoryReady', () => this.invReadyCallback());
 
 		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', 
 			(id : string) => this.projectMemberUpdateCallback(id)
@@ -42,7 +42,7 @@ class ProjectMemberInventory {
 	}
 
 	private invReadyCallback() {
-		this.bgCore.inventoryReadyService.areInventoriesReady(
+		this.bgCore.invReady.areInventoriesReady(
 			[
 				InventoryType.userInventory,
 				InventoryType.roleInventory,
@@ -81,7 +81,7 @@ class ProjectMemberInventory {
 		}
 
 		console.log(this.bgCore);
-		this.bgCore.inventoryReadyService.inventoryReady(
+		this.bgCore.invReady.inventoryReady(
 			InventoryType.projectMemberInventory
 		);
 	}

@@ -32,8 +32,8 @@ class ProjectInventory {
 		this.projectUpdateCallback.bind(this);
 		this.initialiseProjectCache.bind(this);
 
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
-		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('projectMemberInventoryReady', () => this.invReadyCallback());
 
 		// Callback for updates to project object data.
 		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate',
@@ -42,7 +42,7 @@ class ProjectInventory {
 	}
 
 	private invReadyCallback() {
-		this.bgCore.inventoryReadyService.areInventoriesReady(
+		this.bgCore.invReady.areInventoriesReady(
 			[
 				InventoryType.userInventory,
 				InventoryType.projectMemberInventory

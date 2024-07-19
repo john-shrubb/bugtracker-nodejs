@@ -129,7 +129,7 @@ class UserInventory {
 			this.userMap.set(userData.userid, userToCreate);
 		});
 
-		this.bgCore.inventoryReadyService.inventoryReady(InventoryType.userInventory);
+		this.bgCore.invReady.inventoryReady(InventoryType.userInventory);
 	}
 
 	// CRUD functions

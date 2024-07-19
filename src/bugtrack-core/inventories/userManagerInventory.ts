@@ -95,8 +95,7 @@ class UserManagerInventory {
 			this.sessionMap.set(session.id, session);
 		});
 
-		// eslint-disable-next-line max-len
-		this.bgCore.inventoryReadyService.inventoryReady(InventoryType.userManagerInventory);
+		this.bgCore.invReady.inventoryReady(InventoryType.userManagerInventory);
 	}
 
 	/**
@@ -285,7 +284,7 @@ class UserManagerInventory {
 
 		// New validation to help prevent duplicate classes from being created.
 		if (
-			this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.userInventory)
+			this.bgCore.invReady.isInventoryReady(InventoryType.userInventory)
 		) {
 			throw new Error('Before creating new users, the UserInventory class must be fully initialised.');
 		}
