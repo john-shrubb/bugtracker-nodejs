@@ -37,6 +37,10 @@ class InventoryReadyService {
 	 */
 	private inventoryReadyMap : Map<InventoryType, boolean> = new Map();
 
+	/**
+	 * The event emitter used to send out events for when each inventory declares itself
+	 * as ready.
+	 */
 	public eventEmitter : EventEmitter<eventMap>;
 
 	/**
@@ -50,7 +54,11 @@ class InventoryReadyService {
 	 * The method used by an inventory to notify the service that it is ready.
 	 */
 	public inventoryReady(inventoryType : InventoryType) {
+		// Set the inventory status to ready in the map.
 		this.inventoryReadyMap.set(inventoryType, true);
+
+		// A switch for each type of inventory. If the inventory in question is ready,
+		// emit the corresponding event.
 		switch(inventoryType) {
 			case InventoryType.userInventory:
 				this.eventEmitter.emit('userInventoryReady');
@@ -82,6 +90,33 @@ class InventoryReadyService {
 		if (inventoryAmount === this.inventoryReadyMap.size) {
 			this.eventEmitter.emit('allInventoriesReady');
 		}
+	}
+
+	/**
+	 * Mass check a bunch of inventories to see if they are ready. Simply a helpful
+	 * utility function to mass check 2 or more inventories to avoid spaghetti code.
+	 * @param inventories An array of each type of inventory type you want to check.
+	 * @param callback A callback function which will be called if passed and the
+	 *                 inventories are ready.
+	 * @returns True if all the inventories are marked as ready. False if not.
+	 */
+	public areInventoriesReady(
+		inventories : InventoryType[],
+		callback? : () => void
+	) : boolean {
+		let inventoriesReady = true;
+		for (const invType of inventories) {
+			if (!this.isInventoryReady(invType)) {
+				inventoriesReady = false;
+				break;
+			}
+		}
+
+		if (inventoriesReady && callback) {
+			callback();
+		}
+
+		return inventoriesReady;
 	}
 }
 

@@ -29,11 +29,21 @@ class ProjectMemberInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.initialiseProjectMemberCache);
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.invReadyCallback);
+		this.bgCore.inventoryReadyService.eventEmitter.on('roleInventoryReady', this.invReadyCallback);
 
 		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', this.projectMemberUpdateCallback);
 	}
 
+	private invReadyCallback() {
+		this.bgCore.inventoryReadyService.areInventoriesReady(
+			[
+				InventoryType.userInventory,
+				InventoryType.roleInventory,
+			],
+			this.initialiseProjectMemberCache,
+		);
+	}
 	/**
 	 * The cache holding all project members.
 	 * string corresponds to a member ID.
@@ -50,33 +60,21 @@ class ProjectMemberInventory {
 
 		const projectMembers = projectMembersRaw.rows;
 
-		projectMembers.forEach(async memberData => {
-			const parentProject =
-				this.bgCore.projectInventory.getProjectByID(memberData.projectid);
-
-			// If the parent project doesn't exist, throw an error.
-			// Something is very wrong with the data integrity if this happens.
-			if (!parentProject) {
-				throw new Error('Project not found during project member cache initialisation.', {
-					cause: {
-						memberID: memberData.memberid,
-						projectID: memberData.projectid,
-					}
-				});
-			}
-
+		for (const memberData of projectMembers) {
 			const member = new ProjectMember(
 				this.bgCore,
 				memberData.memberid,
 				this.bgCore.userInventory.getUserByID(memberData.userid)!,
-				parentProject,
+				this.bgCore.projectInventory.getProjectByID(memberData.projectid)!,
+				// Placeholder as RoleInventory doesn't exist yet.
 				null,
 				memberData.joindate,
 			);
 
-			this.projectMemberMap.set(member.id, member);
-		});
+			this.projectMemberMap.set(memberData.memberid, member);
+		}
 
+		console.log(this.bgCore);
 		this.bgCore.inventoryReadyService.inventoryReady(
 			InventoryType.projectMemberInventory
 		);

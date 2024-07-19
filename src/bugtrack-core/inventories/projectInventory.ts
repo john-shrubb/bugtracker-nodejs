@@ -26,21 +26,22 @@ class ProjectInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => {
-			// eslint-disable-next-line max-len
-			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.projectMemberInventory)) {
-				this.initialiseProjectCache();
-			}
-		});
+		// Required inventories are UserInventory and ProjectMemberInventory.
+		
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.invReadyCallback);
+		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', this.invReadyCallback);
 
-		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', () => {
-			// eslint-disable-next-line max-len
-			if (this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.userInventory)) {
-				this.initialiseProjectCache();
-			}
-		});
-
+		// Callback for updates to project object data.
 		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate', this.projectUpdateCallback);
+	}
+
+	private invReadyCallback() {
+		this.bgCore.inventoryReadyService.areInventoriesReady(
+			[
+				InventoryType.userInventory,
+				InventoryType.projectMemberInventory
+			], this.initialiseProjectCache
+		);
 	}
 	/**
 	 * The cache for holding all projects.
