@@ -26,13 +26,19 @@ class ProjectInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		// Required inventories are UserInventory and ProjectMemberInventory.
-		
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.invReadyCallback);
-		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', this.invReadyCallback);
+
+		// Bind the 'this' object to the callback otherwise it throws an error.
+		this.invReadyCallback.bind(this);
+		this.projectUpdateCallback.bind(this);
+		this.initialiseProjectCache.bind(this);
+
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
+		this.bgCore.inventoryReadyService.eventEmitter.on('projectMemberInventoryReady', () => this.invReadyCallback());
 
 		// Callback for updates to project object data.
-		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate', this.projectUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate',
+			(id : string) => this.projectUpdateCallback(id)
+		);
 	}
 
 	private invReadyCallback() {
@@ -40,7 +46,9 @@ class ProjectInventory {
 			[
 				InventoryType.userInventory,
 				InventoryType.projectMemberInventory
-			], this.initialiseProjectCache
+			], () => {
+				this.initialiseProjectCache();
+			}
 		);
 	}
 	/**

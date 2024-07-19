@@ -29,10 +29,16 @@ class ProjectMemberInventory {
 	constructor(
 		private bgCore : BugtrackCore,
 	) {
-		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', this.invReadyCallback);
-		this.bgCore.inventoryReadyService.eventEmitter.on('roleInventoryReady', this.invReadyCallback);
+		this.invReadyCallback.bind(this);
+		this.projectMemberUpdateCallback.bind(this);
+		this.initialiseProjectMemberCache.bind(this);
 
-		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', this.projectMemberUpdateCallback);
+		this.bgCore.inventoryReadyService.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
+		this.bgCore.inventoryReadyService.eventEmitter.on('roleInventoryReady', () => this.invReadyCallback());
+
+		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', 
+			(id : string) => this.projectMemberUpdateCallback(id)
+		);
 	}
 
 	private invReadyCallback() {
@@ -41,7 +47,7 @@ class ProjectMemberInventory {
 				InventoryType.userInventory,
 				InventoryType.roleInventory,
 			],
-			this.initialiseProjectMemberCache,
+			() => this.initialiseProjectMemberCache(),
 		);
 	}
 	/**

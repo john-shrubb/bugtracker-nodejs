@@ -34,8 +34,10 @@ class UserInventory {
 		// User map which essentially acts as the cache.
 		this.userMap = new Map<string, User>();
 
+		this.userUpdateCallback.bind(this);
+
 		// Set up cache invalidation to listen for user updates. Callback defined below.
-		this.bgCore.cacheInvalidation.eventEmitter.on('userUpdate', this.userUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('userUpdate', (id : string) => this.userUpdateCallback(id));
 
 		// Initialise class method builds the cache from whats in the database.
 		// This may take some time depending on the size of the database.

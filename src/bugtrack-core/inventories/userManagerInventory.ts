@@ -39,8 +39,11 @@ class UserManagerInventory {
 		// Builds session cache.
 		this.initialiseSessionCache();
 
+		// Bind the update callback to the class.
+		this.sessionUpdateCallback.bind(this);
+
 		// For if there has been an update to the cache.
-		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', this.sessionUpdateCallback);
+		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', (id : string) => this.sessionUpdateCallback(id));
 	}
 
 	// Sessions.
@@ -280,6 +283,13 @@ class UserManagerInventory {
 		// Generate the new user's ID.
 		const newUserID = generateID();
 
+		// New validation to help prevent duplicate classes from being created.
+		if (
+			this.bgCore.inventoryReadyService.isInventoryReady(InventoryType.userInventory)
+		) {
+			throw new Error('Before creating new users, the UserInventory class must be fully initialised.');
+		}
+
 		// Check that all the user attributes are of a valid format.
 		if (
 			!checkAttributeConstraint(username, UserAttributeType.username) ||
@@ -328,7 +338,7 @@ class UserManagerInventory {
 	 */
 	public async deleteUser(user : User) {
 		// Check that user exists so it's impossible to delete a non existent user.
-		if (!this.bgCore.userInventory.getUserByID(user.id)) {
+		if (!await this.bgCore.userInventory.noCacheGetUserByID(user.id)) {
 			throw new Error('Attempted to delete non existent user.', {
 				cause: user,
 			});
@@ -353,7 +363,7 @@ class UserManagerInventory {
 
 	public async updatePassword(user : User, oldPassword : string, newPassword : string) {
 		// Check that user exists.
-		if (!this.bgCore.userInventory.getUserByID(user.id)) {
+		if (!await this.bgCore.userInventory.noCacheGetUserByID(user.id)) {
 			throw new Error('Attempted to update password for non existent user.', {
 				cause: user,
 			});
