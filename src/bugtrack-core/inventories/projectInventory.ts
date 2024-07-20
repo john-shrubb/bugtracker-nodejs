@@ -8,10 +8,10 @@ import PossibleEvents from '../types/enums/possibleEvents.js';
 import { InventoryType } from '../services/inventoryReadyService.js';
 
 interface ProjectDataStructure {
-	projectID : string;
-	displayName : string;
-	ownerID : string;
-	creationDate : Date;
+	projectid : string;
+	displayname : string;
+	ownerid : string;
+	creationdate : Date;
 }
 
 /**
@@ -32,8 +32,10 @@ class ProjectInventory {
 		this.projectUpdateCallback.bind(this);
 		this.initialiseProjectCache.bind(this);
 
+		// The required inventory ready events before initialising the class.
 		this.bgCore.invReady.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
 		this.bgCore.invReady.eventEmitter.on('projectMemberInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('ticketInventoryReady', () => this.invReadyCallback());
 
 		// Callback for updates to project object data.
 		this.bgCore.cacheInvalidation.eventEmitter.on('projectUpdate',
@@ -45,6 +47,7 @@ class ProjectInventory {
 		this.bgCore.invReady.areInventoriesReady(
 			[
 				InventoryType.userInventory,
+				InventoryType.ticketInventory,
 				InventoryType.projectMemberInventory,
 			], () => {
 				this.initialiseProjectCache();
@@ -61,58 +64,34 @@ class ProjectInventory {
 	 */
 	private async initialiseProjectCache() {
 		// Fetch all projects from the database
-		const projects : QueryResult<ProjectDataStructure> = await gpPool.query('SELECT projectid, displayname, ownerid, creationdate FROM projects;');
+		const projects : QueryResult<{ projectid: string }> = await gpPool.query('SELECT projectid FROM projects;');
 
 		// Array using the ProjectDataStructure interface
-		const projectData : ProjectDataStructure[] = projects.rows;
+		const projectData = projects.rows;
 
 		// Iterate through the projectData array and create a new Project object for each
 
 		for (const project of projectData) {
-			const newProject = new Project(
-				this.bgCore,
-				project.projectID,
-				project.displayName,
-				this.bgCore.userInventory.getUserByID(project.ownerID) ||
-				// Just incase the user is not in the cache
-				(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
-				[], // POPULATE THESE LATER
-				this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
-				project.creationDate,
-			);
-
-			this.projectMap.set(project.projectID, newProject);
+			this.projectUpdateCallback(project.projectid);
 		}
+
+		// Mark this inventory as ready.
+		this.bgCore.invReady.inventoryReady(InventoryType.projectInventory);
 	}
 
 	public async projectUpdateCallback(projectID : string) {
-		// Fetch project from the database.
-		const projectData : QueryResult<ProjectDataStructure> = await gpPool.query('SELECT projectid, displayname, ownerid, creationdate FROM projects WHERE projectid = $1;', [projectID]);
+		// Get the project object directly from the database.
+		const project : Project | null = await this.noCacheGetProjectByID(projectID);
 
-		// If the project doesn't exist anymore then delete it from the cache.
-		if (!projectData.rows.length) {
+		// If it doesn't exist in the database anymore then delete it from cache as it
+		// doesn't exist anymore.
+		if (!project) {
 			this.projectMap.delete(projectID);
 			return;
 		}
 
-		// Otherwise, add it to the cache.
-		const project = projectData.rows[0];
-
-		// Create the project object.
-		const newProject = new Project(
-			this.bgCore,
-			project.projectID,
-			project.displayName,
-			this.bgCore.userInventory.getUserByID(project.ownerID) ||
-			// Just incase the user is not in the cache
-			(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
-			[], // POPULATE THESE LATER
-			this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
-			project.creationDate,
-		);
-
 		// Add the project to the cache.
-		this.projectMap.set(project.projectID, newProject);
+		this.projectMap.set(project.id, project);
 	}
 
 	/**
@@ -126,7 +105,10 @@ class ProjectInventory {
 	 */
 	public async noCacheGetProjectByID(projectID : string) : Promise<Project | null> {
 		// Get the project data from the database.
-		const projectData : QueryResult<ProjectDataStructure> = await gpPool.query('SELECT projectid, displayname, ownerid, creationdate FROM projects WHERE projectid = $1;', [projectID]);
+		const projectData : QueryResult<ProjectDataStructure> = await gpPool.query(
+			'SELECT projectid, displayname, ownerid, creationdate FROM projects WHERE projectid = $1;',
+			[projectID]
+		);
 		
 		// If the project doesn't exist then just return null.
 		if (!projectData.rows.length) {
@@ -139,14 +121,14 @@ class ProjectInventory {
 		// Create the project object.
 		const projectObject = new Project(
 			this.bgCore,
-			project.projectID,
-			project.displayName,
-			this.bgCore.userInventory.getUserByID(project.ownerID) ||
+			project.projectid,
+			project.displayname,
+			this.bgCore.userInventory.getUserByID(project.ownerid) ||
 			// Just incase the user is not in the cache
-			(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerID))!,
+			(await this.bgCore.userManagerInventory.getUserStubByID(project.ownerid))!,
 			[], // POPULATE THESE LATER
-			this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectID),
-			project.creationDate,
+			this.bgCore.projectMemberInventory.getProjectMembersByProjectID(project.projectid),
+			project.creationdate,
 		);
 
 		// Return the project object.
