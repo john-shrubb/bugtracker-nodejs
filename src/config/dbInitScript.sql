@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS roleassignments (
 	memberid char(15),
 	assignedby char(15) NOT NULL,
 	assignedon timestamp NOT NULL DEFAULT NOW(),
+	removed boolean DEFAULT 'false',
 
 	FOREIGN KEY (roleid) REFERENCES roles(roleid) ON UPDATE CASCADE ON DELETE NO ACTION,
 	FOREIGN KEY (memberid) REFERENCES projectmembers(memberid) ON UPDATE CASCADE ON DELETE SET NULL
