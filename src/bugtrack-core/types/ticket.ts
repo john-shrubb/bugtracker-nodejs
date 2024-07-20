@@ -3,6 +3,7 @@ import BugtrackCore from '../index.js';
 import Comment from './comment.js';
 import TicketPriority from './enums/ticketPriority.js';
 import TicketStatus from './enums/ticketStatus.js';
+import Project from './project.js';
 import ProjectMember from './projectMember.js';
 import Tag from './tag.js';
 import UserStub from './userStub.js';
@@ -30,6 +31,7 @@ class Ticket {
 		private bgCore            : BugtrackCore,
 		public  id                : string,
 		public  author            : ProjectMember | UserStub,
+		public project            : Project | null,
 		public  priority          : TicketPriority,
 		public  status            : TicketStatus,
 		public  tags              : Array<Tag>,

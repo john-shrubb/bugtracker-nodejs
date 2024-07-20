@@ -12,7 +12,7 @@ const PermissionIntMasks = {
 	INVITE_USER_TO_PROJECT: 64,
 	REMOVE_MEMBER_FROM_PROJECT: 128,
 	GRANT_ROLES_TO_USER: 256,
-	ADMINISTRATOR: 512
+	ADMINISTRATOR: 512,
 };
 
 export default PermissionIntMasks;
