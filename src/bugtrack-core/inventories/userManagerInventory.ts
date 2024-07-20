@@ -173,7 +173,7 @@ class UserManagerInventory {
 					sessionIssue: session.issued.toISOString(),
 					sessionUserID: session.user.id,
 					sessionUserAgent: session.userAgent,
-				}
+				},
 			});
 		}
 
@@ -245,7 +245,7 @@ class UserManagerInventory {
 					new Date(),
 					// Session life of 2 weeks.
 					new Date(Date.now() + (1000 * 60 * 60 * 24 * 14)),
-					id
+					id,
 				]
 			);
 

@@ -45,7 +45,7 @@ class ProjectInventory {
 		this.bgCore.invReady.areInventoriesReady(
 			[
 				InventoryType.userInventory,
-				InventoryType.projectMemberInventory
+				InventoryType.projectMemberInventory,
 			], () => {
 				this.initialiseProjectCache();
 			}

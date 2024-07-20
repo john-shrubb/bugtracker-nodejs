@@ -169,7 +169,7 @@ class ProjectMemberInventory {
 				cause: {
 					memberID: memberData.memberid,
 					projectID: memberData.projectid,
-				}
+				},
 			});
 		}
 
