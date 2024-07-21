@@ -72,7 +72,7 @@ class ProjectInventory {
 		// Iterate through the projectData array and create a new Project object for each
 
 		for (const project of projectData) {
-			this.projectUpdateCallback(project.projectid);
+			await this.projectUpdateCallback(project.projectid);
 		}
 
 		// Mark this inventory as ready.
@@ -91,7 +91,7 @@ class ProjectInventory {
 		}
 
 		// Add the project to the cache.
-		this.projectMap.set(project.id, project);
+		this.projectMap.set(projectID, project);
 	}
 
 	/**

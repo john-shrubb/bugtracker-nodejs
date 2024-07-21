@@ -66,68 +66,26 @@ class UserInventory {
 	 */
 
 	private async userUpdateCallback(userID : string) {
-		// Grab the raw query for the user data.
-		const userDataRaw : QueryResult<userRowStruct> = await gpPool.query(
-			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp WHERE userid=$1;',
-			[userID]
-		).catch(reason => {
-			const error = new Error(
-				`Error while attempting to query database for user ID: ${userID}.`
-			);
-			error.cause = reason;
-			throw error;
-		});
+		const user = await this.noCacheGetUserByID(userID);
 
-		// Simplify down from QueryResult to userRowStruct.
-		const userData = userDataRaw.rows[0];
-
-		// If there is no longer that user in the database then wipe them from cache.
-		if (!userDataRaw.rows.length) {
+		if (!user) {
 			this.userMap.delete(userID);
 			return;
 		}
 
-		// Otherwise create a new entry for them in the cache.
-		this.userMap.set(userData.userid, new User(
-			this.bgCore,
-			userData.userid,
-			userData.username,
-			userData.email,
-			userData.displayname,
-			userData.pfp,
-			userData.creationdate,
-		));
+		this.userMap.set(userID, user);
 	}
 
 	/**
 	 * Initialises the class by building the cache.
 	 */
 	private async initialiseUserCache() {
-		// Grab all of the user data from the view.
-		const allUserData : QueryResult<userRowStruct> = await gpPool.query(
-			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp;',
-		).catch((reason) => {
-			const error = new Error('Failed to initialise user cache.');
-			error.cause = reason || 'Call to PostgreSQL failed for unknown reason.';
-			throw error;
-		});
+		// Get a list of IDs in the users table.
+		const allUserData : QueryResult<{ userid: string }> = await gpPool.query('SELECT userid FROM usersgp;');
 
-		// For each row in the user data...
-		allUserData.rows.forEach(userData => {
-			// Create a new User class...
-			const userToCreate = new User(
-				this.bgCore,
-				userData.userid,
-				userData.username,
-				userData.email,
-				userData.displayname,
-				userData.pfp,
-				userData.creationdate
-			);
-
-			// And register it on the user map.
-			this.userMap.set(userData.userid, userToCreate);
-		});
+		for (const user of allUserData.rows) {
+			await this.userUpdateCallback(user.userid);
+		}
 
 		this.bgCore.invReady.inventoryReady(InventoryType.userInventory);
 	}

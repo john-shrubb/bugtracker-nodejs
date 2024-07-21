@@ -61,26 +61,15 @@ class ProjectMemberInventory {
 	 * Initialise the cache of all project members in the database.
 	 */
 	private async initialiseProjectMemberCache() {
-		const projectMembersRaw : QueryResult<ProjectMemberDataStructure> =
-			await gpPool.query('SELECT * FROM projectmembers;');
+		const projectMembersRaw : QueryResult<{ memberid: string }> =
+			await gpPool.query('SELECT memberid FROM projectmembers WHERE removed = $1;', [false]);
 
 		const projectMembers = projectMembersRaw.rows;
 
 		for (const memberData of projectMembers) {
-			const member = new ProjectMember(
-				this.bgCore,
-				memberData.memberid,
-				this.bgCore.userInventory.getUserByID(memberData.userid)!,
-				this.bgCore.projectInventory.getProjectByID(memberData.projectid)!,
-				// Placeholder as RoleInventory doesn't exist yet.
-				null,
-				memberData.joindate,
-			);
-
-			this.projectMemberMap.set(memberData.memberid, member);
+			await this.projectMemberUpdateCallback(memberData.memberid);
 		}
 
-		console.log(this.bgCore);
 		this.bgCore.invReady.inventoryReady(
 			InventoryType.projectMemberInventory
 		);
@@ -91,44 +80,12 @@ class ProjectMemberInventory {
 	 * @param memberID The ID of the project member that has been updated.
 	 */
 	private async projectMemberUpdateCallback(memberID : string) {
-		// Query database for the member data.
-		const memberDataRaw : QueryResult<ProjectMemberDataStructure> =
-			await gpPool.query('SELECT * FROM projectmembers WHERE memberid = $1;', [memberID]);
-
-		// Check if the member exists. If they don't, delete them from the cache.
-		if (!memberDataRaw.rows.length) {
+		const member = await this.noCacheGetMemberByID(memberID);
+		
+		if (!member) {
 			this.projectMemberMap.delete(memberID);
 			return;
 		}
-
-		// Get the member data itself.
-		const memberData = memberDataRaw.rows[0];
-
-		// Grab the parent project object.
-		const parentProject =
-			this.bgCore.projectInventory.getProjectByID(memberData.projectid);
-
-		// If the parent project doesn't exist, throw an error.
-		// This probably represents a pretty severe issue in data integrity.
-		if (!parentProject) {
-			throw new Error('Project does not exist.', {
-				cause: {
-					memberID: memberData.memberid,
-					projectID: memberData.projectid,
-				},
-			});
-		}
-
-		// Create a new ProjectMember object.
-		const member = new ProjectMember(
-			this.bgCore,
-			memberData.memberid,
-			this.bgCore.userInventory.getUserByID(memberData.userid)!,
-			parentProject,
-			// Placeholder as RoleInventory doesn't exist yet.
-			null,
-			memberData.joindate,
-		);
 
 		this.projectMemberMap.set(memberID, member);
 	}
@@ -149,7 +106,7 @@ class ProjectMemberInventory {
 	public async noCacheGetMemberByID(memberID : string) : Promise<ProjectMember | null> {
 		// Query the database for the member data.
 		const memberDataRaw : QueryResult<ProjectMemberDataStructure> =
-			await gpPool.query('SELECT * FROM projectmembers WHERE memberid = $1;', [memberID]);
+			await gpPool.query('SELECT * FROM projectmembers WHERE memberid = $1 AND removed = $2;', [memberID, false]);
 		
 		// If the member doesn't exist, return null.
 		if (!memberDataRaw.rows.length) {
@@ -179,7 +136,7 @@ class ProjectMemberInventory {
 			memberData.memberid,
 			(await this.bgCore.userInventory.noCacheGetUserByID(memberData.userid))!,
 			parentProject,
-			null, // Placeholder as RoleInventory doesn't exist yet.
+			this.bgCore.roleInventory.getRoleByProjectMemberID(memberData.memberid),
 			memberData.joindate,
 		);
 
@@ -292,8 +249,8 @@ class ProjectMemberInventory {
 
 		// Remove the project member from the database.
 		await gpPool.query(
-			'DELETE FROM projectmembers WHERE memberid = $1;',
-			[projectMember.id],
+			'UPDATE projectmembers SET removed = $1 WHERE memberid = $2;',
+			[true, projectMember.id],
 		);
 
 		// Notify of the project member removal.

@@ -11,6 +11,7 @@ interface eventMap {
 	commentUpdate: [string];
 	projectUpdate: [string];
 	projectMemberUpdate: [string];
+	roleAssignmentUpdate: [string, string];
 	roleUpdate: [string];
 	sessionUpdate: [string];
 	tagUpdate: [string];
@@ -27,6 +28,7 @@ interface eventMap {
  * - commentUpdate
  * - projectUpdate
  * - projectMemberUpdate
+ * - roleAssignmentUpdate
  * - roleUpdate
  * - sessionUpdate
  * - tagUpdate
@@ -52,8 +54,9 @@ class CacheInvalidationService {
 	 * Notify the invalidation service that there was an update to an object.
 	 * @param updateType The type of update that occurred.
 	 * @param affectedID The ID of the object that has been modified.
+	 * @param affectedID2 In cases such as roleAssignmentUpdate, the member's ID.
 	 */
-	public notifyUpdate(updateType : PossibleEvents, affectedID : string) {
+	public notifyUpdate(updateType : PossibleEvents, affectedID : string, affectedID2? : string) {
 		// Check the ID is of the correct format.
 		if (!checkID(affectedID)) {
 			throw Error('Invalid ID passed as affectedID');
@@ -73,6 +76,9 @@ class CacheInvalidationService {
 				break;
 			case PossibleEvents.projectmember:
 				this.eventEmitter.emit('projectMemberUpdate', affectedID);
+				break;
+			case PossibleEvents.roleAssignment:
+				this.eventEmitter.emit('roleAssignmentUpdate', affectedID, affectedID2!);
 				break;
 			case PossibleEvents.role:
 				this.eventEmitter.emit('roleUpdate', affectedID);

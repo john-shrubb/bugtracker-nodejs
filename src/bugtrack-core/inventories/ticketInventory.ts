@@ -57,77 +57,40 @@ class TicketInventory {
 
 	private async initialiseTicketCache() {
 		// Get all tickets from the database.
-		const ticketDataRaw : QueryResult<TicketRowStructure> = await gpPool.query('SELECT * FROM tickets WHERE deleted = $1;', [false]);
+		const ticketDataRaw : QueryResult<{ ticketid: string }> = await gpPool.query('SELECT ticketid FROM tickets WHERE deleted = $1;', [false]);
 		const ticketData = ticketDataRaw.rows;
 
 		// Convert the ticket data into ticket objects.
 		for (const ticket of ticketData) {
-			// Define the ticket priority and ticket status variables.
-			let ticketPriority : TicketPriority;
-			let ticketStatus : TicketStatus;
-
-			// Define the ticket priority depending on what came out the DB.
-			switch (ticket.ticketpriority) {
-				case 'Low':
-					ticketPriority = TicketPriority.low;
-					break;
-				case 'Medium':
-					ticketPriority = TicketPriority.medium;
-					break;
-				case 'High':
-					ticketPriority = TicketPriority.high;
-					break;
-				default:
-					ticketPriority = TicketPriority.low;
-					break;
-			}
-
-			// Same for the ticket status.
-			switch (ticket.currentstatus) {
-				case 'Closed':
-					ticketStatus = TicketStatus.closed;
-					break;
-				case 'WiP':
-					ticketStatus = TicketStatus.wip;
-					break;
-				case 'Open':
-					ticketStatus = TicketStatus.open;
-					break;
-				default:
-					ticketStatus = TicketStatus.open;
-					break;
-			}
-
-			// Create the ticket object.
-			const ticketObj = new Ticket(
-				this.bgCore,
-				ticket.ticketid,
-				this.bgCore.projectMemberInventory.getMemberByID(ticket.authorid) ||
-				(await this.bgCore.userManagerInventory.getUserStubByID(ticket.authorid))!,
-				(await this.bgCore.projectInventory.noCacheGetProjectByID(ticket.projectid))!,
-				ticketPriority,
-				ticketStatus,
-				[], // TODO: Tag inventory not implemented.
-				[], // TODO: Need to implement the assigned members CRUD stuff.
-				ticket.title,
-				ticket.description,
-				ticket.attachments,
-				[], // TODO: Comment inventory not implemented.
-				ticket.creationdate,
-			);
-
-			// Add the new ticket object to cache.
-			this.ticketMap.set(ticket.ticketid, ticketObj);
+			await this.ticketUpdateCallback(ticket.ticketid);
 		}
+
+		this.bgCore.invReady.inventoryReady(InventoryType.ticketInventory);
 	}
 
 	private async ticketUpdateCallback(ticketID : string) {
+		const ticket = await this.noCacheGetTicketByID(ticketID);
+
+		if (!ticket) {
+			this.ticketMap.delete(ticketID);
+			return;
+		}
+
+		this.ticketMap.set(ticket.id, ticket);
+	}
+
+	/**
+	 * Get a ticket by its ID without using the cache. Prefer using the cache where
+	 * possible.
+	 * @param ticketID The ID of the ticket to retrieve.
+	 * @returns The ticket object if found, otherwise null.
+	 */
+	public async noCacheGetTicketByID(ticketID : string) : Promise<Ticket | null> {
 		const ticketDataRaw : QueryResult<TicketRowStructure> =
 			await gpPool.query('SELECT * FROM tickets WHERE ticketid = $1;', [ticketID]);
 		
 		if (!ticketDataRaw.rows.length) {
-			this.ticketMap.delete(ticketID);
-			return;
+			return null;
 		}
 
 		const ticket = ticketDataRaw.rows[0];
@@ -187,8 +150,7 @@ class TicketInventory {
 			ticket.creationdate,
 		);
 
-		// Add the new ticket object to cache.
-		this.ticketMap.set(ticket.ticketid, ticketObj);
+		return ticketObj;
 	}
 
 	/**

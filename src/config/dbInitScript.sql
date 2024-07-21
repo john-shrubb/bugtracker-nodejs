@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS projectmembers (
 	userid char(15) NOT NULL,
 	projectid char(15) NOT NULL,
 	joindate timestamp DEFAULT now(),
+	removed boolean DEFAULT 'false',
 
 	FOREIGN KEY (userid) REFERENCES users(userid) ON UPDATE CASCADE ON DELETE CASCADE,
 	FOREIGN KEY (projectid) REFERENCES projects(projectid) ON UPDATE CASCADE ON DELETE CASCADE

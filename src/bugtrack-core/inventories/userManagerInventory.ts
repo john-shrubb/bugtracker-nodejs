@@ -46,10 +46,8 @@ class UserManagerInventory {
 		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', (id : string) => this.sessionUpdateCallback(id));
 	}
 
-	// Sessions.
-	// These should be held closely, with session objects only being exposed to other
-	// classes if they can supply correct credentials. This section of the class mainly
-	// provides CRUD operations (Update isn't really appropriate for a session).
+	// Session objects aren't really supposed to be passed around. Try not to expose any
+	// public functions that may return a session object.
 
 	/**
 	 * Cache holding current sessions. The session token is hashed for security.
@@ -65,34 +63,14 @@ class UserManagerInventory {
 	 */
 	private async initialiseSessionCache() {
 		// Grab all session objects.
-		const rawSessionQuery : QueryResult<sessionRowStructure> = await umPool.query(
-			'SELECT sessiontoken, userid, useragent, issuedon, expireson, sessionid FROM sessions;'
-		).catch((reason) => {
-			// Basically standard error handling. Maybe I should make a standard function
-			// for this.
-			const error = new Error('Falied to initialise session cache.');
-			error.cause = reason || 'Call to PostgreSQL failed for unknown reason.';
-			throw error;
-		});
+		const rawSessionQuery : QueryResult<{ sessionid: string }> = await umPool.query(
+			'SELECT sessionid FROM sessions;'
+		);
 
 		// For each session that exists...
 
-		rawSessionQuery.rows.forEach(async (value) => {
-			// Pack it all into a session object...
-			const hashedSessionToken = await bcrypt.hash(value.sessiontoken, 12);
-			const session = new Session(
-				this.bgCore,
-				value.sessionid,
-				hashedSessionToken,
-				value.useragent,
-				this.bgCore.userInventory.getUserByID(value.userid)!,
-				value.issuedon,
-				value.expireson,
-				this.deleteSession,
-			);
-
-			// And allocate it into the session cache.
-			this.sessionMap.set(session.id, session);
+		rawSessionQuery.rows.forEach(async (session) => {
+			await this.sessionUpdateCallback(session.sessionid);
 		});
 
 		this.bgCore.invReady.inventoryReady(InventoryType.userManagerInventory);
@@ -104,13 +82,7 @@ class UserManagerInventory {
 	private async sessionUpdateCallback(sessionID : string) {
 		// Grab raw query result from PostgreSQL.
 		const sessionDataRaw : QueryResult<sessionRowStructure> =
-			await umPool.query('SELECT * FROM sessions WHERE sessionid=$1;', [sessionID])
-			// You never know what could happen...
-			.catch((reason) => {
-				const error = new Error('Something went wrong when getting a session from PostgreSQL.');
-				error.cause = reason || 'Call to PostgreSQL failed for unknown reason.';
-				throw error;
-			});
+			await umPool.query('SELECT * FROM sessions WHERE sessionid=$1;', [sessionID]);
 
 		// If the database no longer shows a session then delete it from cache.
 		if (!sessionDataRaw.rows.length) {
@@ -122,8 +94,7 @@ class UserManagerInventory {
 
 		const sessionData = sessionDataRaw.rows[0];
 
-		// Assign the session a spot in cache.
-		this.sessionMap.set(sessionID, new Session(
+		const session = new Session(
 			this.bgCore,
 			sessionData.sessionid,
 			await bcrypt.hash(sessionData.sessiontoken, 10),
@@ -132,7 +103,10 @@ class UserManagerInventory {
 			sessionData.issuedon,
 			sessionData.expireson,
 			this.deleteSession,
-		));
+		);
+
+		// Assign the session a spot in cache.
+		this.sessionMap.set(sessionID, session);
 	}
 
 	/**

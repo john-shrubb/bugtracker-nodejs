@@ -27,18 +27,28 @@ class RoleInventory {
 	) {
 		// Bind 'this' to callback function.
 		this.roleUpdateCallback.bind(this);
+		this.roleAssignmentUpdateCallback.bind(this);
 
 		// Callback for role object updates.
 		this.bgCore.cacheInvalidation.eventEmitter.on('roleUpdate', (id : string) => this.roleUpdateCallback(id));
-
+		this.bgCore.cacheInvalidation.eventEmitter.on('roleAssignmentUpdate',
+			(roleID : string, memberID : string) =>
+				this.roleAssignmentUpdateCallback(roleID, memberID)
+		);
 		// Initialise the cache.
 		this.initialiseRoleCache();
 	}
 
 	/**
-	 * The map of all the roles. Role assignments must be fetched directly from DB.
+	 * The map of all the roles.
 	 */
 	private roleMap : Map<string, Role> = new Map();
+
+	/**
+	 * The map of all role assignments.
+	 * string corresponds to a member ID.
+	 */
+	private roleAssignmentMap : Map<string, Role> = new Map();
 
 	get invReady() : boolean {
 		return this.bgCore.invReady.isInventoryReady(InventoryType.roleInventory);
@@ -49,26 +59,19 @@ class RoleInventory {
 	 */
 	public async initialiseRoleCache() {
 		// Fetch all roles from the database.
-		const rolesData : QueryResult<RoleDataStructure> = await gpPool.query('SELECT * FROM roles;');
+		const roleIDs : QueryResult<{ roleid: string }> = await gpPool.query('SELECT roleid FROM roles WHERE deleted = $1;', [false]);
 
-		// Array using the RoleDataStructure interface.
-		const roleData : RoleDataStructure[] = rolesData.rows;
+		// For each id in the array.
+		for (const role of roleIDs.rows) {
+			await this.roleUpdateCallback(role.roleid);
+		}
 
-		// For each role in the array.
-		for (const role of roleData) {
-			// Make a new role object
-			const newRole = new Role(
-				this.bgCore,
-				role.roleid,
-				role.rolename,
-				role.permissionmask,
-				role.colour,
-				role.displaytag,
-				(await this.bgCore.projectInventory.noCacheGetProjectByID(role.projectid))!,
-			);
-
-			// And add it to the cache.
-			this.roleMap.set(role.roleid, newRole);
+		// Fetch all role assignments from DB.
+		const roleAssignments : QueryResult<{ roleid: string, memberid: string }> =
+			await gpPool.query('SELECT roleid, memberid FROM roleassignments WHERE removed = $1;', [false]);
+		
+		for (const roleAssignment of roleAssignments.rows) {
+			await this.roleAssignmentUpdateCallback(roleAssignment.roleid, roleAssignment.memberid);
 		}
 
 		// Mark this inventory as ready for use.
@@ -79,27 +82,61 @@ class RoleInventory {
 	 * Callback for a role update.
 	 */
 	private async roleUpdateCallback(roleID : string) {
-		const roleDataRaw : QueryResult<RoleDataStructure> = await gpPool.query('SELECT * FROM roles WHERE roleid = $1;', [roleID]);
-		const roleData = roleDataRaw.rows[0];
+		const role = await this.noCacheGetRoleByID(roleID);
 
-		// If the role is marked as deleted, remove it from the cache.
-		if (roleData.deleted) {
+		if (!role) {
 			this.roleMap.delete(roleID);
+			// I will need to get every single member with the role and call the
+			// roleAssignmentUpdateCallback for each of them.
+
+			// Get all members with the role.
+			const membersWithRole : QueryResult<{ memberid: string }> =
+				await gpPool.query('SELECT memberid FROM roleassignments WHERE roleid = $1 AND removed = $2;', [roleID, false]);
+			
+			// For each member with the role, use the callback to wipe them from cache.
+			for (const member of membersWithRole.rows) {
+				await this.roleAssignmentUpdateCallback(roleID, member.memberid);
+			}
 			return;
 		}
 
-		// Create a new role object and add it to the cache.
-		const newRole = new Role(
-			this.bgCore,
-			roleData.roleid,
-			roleData.rolename,
-			roleData.permissionmask,
-			roleData.colour,
-			roleData.displaytag,
-			(await this.bgCore.projectInventory.noCacheGetProjectByID(roleData.projectid))!,
-		);
+		this.roleMap.set(roleID, role);
+	}
 
-		this.roleMap.set(roleID, newRole);
+	/**
+	 * Callback for a role assignment update.
+	 */
+	private async roleAssignmentUpdateCallback(roleID : string, memberID : string) {
+		// Get the role object.
+		const role = await this.noCacheGetRoleByID(roleID);
+
+		// The member cannot have the role if it no longer exists.
+		if (!role) {
+			this.roleAssignmentMap.delete(memberID);
+			// Set removed to true in the DB.
+			await gpPool.query(
+				'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
+				[true, memberID]
+			);
+			return;
+		}
+
+		// Get the member object to ensure that they exist.
+		const member = await this.bgCore.projectMemberInventory.noCacheGetMemberByID(roleID);
+
+		// If they don't exist, they clearly don't have the role anymore.
+		if (!member) {
+			this.roleAssignmentMap.delete(memberID);
+			// Set removed to true in the DB.
+			await gpPool.query(
+				'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
+				[true, memberID]
+			);
+			return;
+		}
+
+		// Finally, assign the role to the assignment map if everything checks out.
+		this.roleAssignmentMap.set(memberID, role);
 	}
 
 	/**
@@ -119,7 +156,10 @@ class RoleInventory {
 	 * @returns The role object, or null if it doesn't exist.
 	 */
 	public async noCacheGetRoleByID(roleID : string) : Promise<Role | null> {
-		const roleDataRaw : QueryResult<RoleDataStructure> = await gpPool.query('SELECT * FROM roles WHERE roleid = $1;', [roleID]);
+		const roleDataRaw : QueryResult<RoleDataStructure> = await gpPool.query(
+			'SELECT * FROM roles WHERE roleid = $1 AND removed = $2;',
+			[roleID, false]
+		);
 
 		if (!roleDataRaw.rows.length) return null;
 
@@ -144,7 +184,7 @@ class RoleInventory {
 	 * @returns An array of roles under the project. If there are no roles, then an empty
 	 *          array is returned.
 	 */
-	public async getRolesByProjectID(projectID : string) : Promise<Role[]> {
+	public getRolesByProjectID(projectID : string) : Role[] {
 		const rolesArray = Array.from(this.roleMap.values());
 
 		const filteredRoles = rolesArray.filter(role => role.parentProject.id === projectID);
@@ -152,26 +192,16 @@ class RoleInventory {
 		return filteredRoles;
 	}
 
-	public async getRoleByProjectMemberID(memberID : string) : Promise<Role | null> {
-		// Select the ID of the role
-		const memberDataRaw : QueryResult<{ roleid : string }> = await gpPool.query(
-			'SELECT roleid FROM roleassignments WHERE memberid = $1 AND removed = $2;',
-			[memberID, false]
-		);
-
-		// If the member doesn't have a role, return null.
-		if (!memberDataRaw.rows.length) return null;
-
-		let role : Role;
-
-		// Get the role by it's ID from cache.
-		if (this.bgCore.invReady.isInventoryReady(InventoryType.roleInventory)) {
-			role = this.getRoleByID(memberDataRaw.rows[0].roleid)!;
-		} else {
-			role = (await this.noCacheGetRoleByID(memberDataRaw.rows[0].roleid))!;
+	public getRoleByProjectMemberID(memberID : string) : Role | null {
+		if (!this.invReady) {
+			throw new Error('The role inventory must be ready before getting a role by member ID.');
 		}
 
-		return role;
+		const role = this.roleAssignmentMap.get(memberID);
+
+		if (!role) return null;
+
+		return null;
 	}
 
 	/**

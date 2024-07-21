@@ -5,6 +5,7 @@ import ProjectInventory from './inventories/projectInventory.js';
 import ProjectMemberInventory from './inventories/projectMemberInventory.js';
 import { InventoryReadyService } from './services/inventoryReadyService.js';
 import TicketInventory from './inventories/ticketInventory.js';
+import RoleInventory from './inventories/roleInventory.js';
 
 /**
  * The core of the bug tracker exposes all required services which other parts of the
@@ -40,6 +41,9 @@ class BugtrackCore {
 
 	// Ticket inventory
 	public ticketInventory = new TicketInventory(this);
+
+	// Role inventory
+	public roleInventory = new RoleInventory(this);
 }
 
 export default BugtrackCore;
