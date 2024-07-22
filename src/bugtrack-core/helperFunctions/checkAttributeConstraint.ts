@@ -30,7 +30,7 @@ function checkAttributeConstraint(
 		// eslint-disable-next-line max-len
 		// Credit: https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
 		// Adapted Regex from above link, only lower case letters are allowed.
-		const usernameRegex = /^[a-z]+$/;
+		const usernameRegex = /^[a-z_-]+$/;
 
 		// Format check.
 		if (!usernameRegex.test(value)) return false;
@@ -82,7 +82,7 @@ function checkAttributeConstraint(
 		cause: {
 			checkValue: value,
 			attribute: attributeType,
-		}
+		},
 	});
 }
 
