@@ -4,6 +4,8 @@ import BugtrackCore from '../index.js';
 import { InventoryType } from '../services/inventoryReadyService.js';
 import Role from '../types/role.js';
 import PermissionIntMasks from '../types/permissionIntMasks.js';
+import generateID from '../helperFunctions/genID.js';
+import PossibleEvents from '../types/enums/possibleEvents.js';
 
 interface RoleDataStructure {
 	roleid: string;
@@ -14,6 +16,8 @@ interface RoleDataStructure {
 	deleted: boolean;
 	colour: string;
 }
+
+// TODO: Make a dedicated inventory for roleAssignments.
 
 /**
  * Responsible for the implementations of roles in the system. Roles are used to represent
@@ -192,6 +196,11 @@ class RoleInventory {
 		return filteredRoles;
 	}
 
+	/**
+	 * Get a member's role within a project.
+	 * @param memberID The ID of the member to get the role for.
+	 * @returns The role the member has, or null if they don't have one.
+	 */
 	public getRoleByProjectMemberID(memberID : string) : Role | null {
 		if (!this.invReady) {
 			throw new Error('The role inventory must be ready before getting a role by member ID.');
@@ -233,13 +242,105 @@ class RoleInventory {
 	}
 
 	/**
+	 * Create a new role under a project.
+	 * @param name The name of the role.
+	 * @param colour The colour of the role.
+	 * @param displayTag Whether the role should display a tag next to members with it.
+	 * @param projectID The ID of the project to create the role under.
+	 */
+	public async createRole(
+		name: string,
+		colour: string,
+		displayTag : boolean,
+		projectID : string,
+	) {
+		if (!this.invReady) {
+			throw new Error('The role inventory must be ready before creating a role.');
+		}
+
+		// Ensure the project actually exists
+		const project = await this.bgCore.projectInventory.noCacheGetProjectByID(projectID);
+
+		if (!project) {
+			throw new Error('Attempting to create role under non existent project.', {
+				cause: {
+					projectID: projectID,
+				},
+			});
+		}
+
+		const roleID = generateID();
+		// Insert the role into the database.
+		await gpPool.query(
+			'INSERT INTO roles (roleid, projectid, rolename, displaytag, permissionmask, colour) VALUES ($1, $2, $3, $4, $5, $6);',
+			[roleID, projectID, name, displayTag, 0, colour],
+		);
+
+		// Notify of the new role.
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
+	}
+
+	public async deleteRole(roleID : string, deleterID : string) {
+		// Get the role object to delete.
+		const role = this.getRoleByID(roleID);
+		
+		// If the role doesn't exist, throw an error.
+		if (!role) {
+			throw new Error('Attempting to delete non existent role.', {
+				cause: {
+					roleID: roleID,
+				},
+			});
+		}
+
+		// Get the ProjectMember object of the user deleting the role.
+		const deleter = this.bgCore.projectMemberInventory.getMemberByID(deleterID);
+
+		if (!deleter) {
+			throw new Error('Nonexistent member attempting to delete role.', {
+				cause: {
+					userID: deleterID,
+				},
+			});
+		}
+
+		// Check that the deleter and the role belong to the same project.
+		if (role.parentProject.id !== deleter.project.id) {
+			throw new Error('Role and deleter projects must match.', {
+				cause: {
+					role: role,
+					deleter: deleter,
+				},
+			});
+		}
+
+		// Check if the deleter has permission to delete roles.
+		if (!this.memberHasPermission(deleterID, PermissionIntMasks.ADMINISTRATOR)) {
+			throw new Error('Deleter does not have permission to delete roles.', {
+				cause: {
+					member: deleter,
+				},
+			});
+		}
+
+		// Update the role in the database.
+		await gpPool.query(
+			'UPDATE roles SET deleted = $1 WHERE roleid = $2;',
+			[true, roleID]
+		);
+
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.roleAssignment, roleID);
+	}
+
+	/**
 	 * Assign a role to a project member.
 	 * @param roleID The ID of the role to assign.
 	 * @param memberID The ID of the member to assign the role to.
 	 * @param assignedByMemberID The ID of the member who is assigning the role. Their
 	 *                           permissions will be checked.
 	 */
-	public async assignRoleToProjectMember(
+	public async assignRole(
 		roleID : string,
 		memberID : string,
 		assignedByMemberID : string
@@ -320,8 +421,223 @@ class RoleInventory {
 		// Add the role assignment into the database.
 		await gpPool.query(
 			'INSERT INTO roleassignments (roleid, memberid, assignedby, assignedon) VALUES ($1, $2, $3);',
-			[roleID, memberID, assignedByMemberID]
+			[roleID, memberID, assignedByMemberID],
 		);
+
+		// Notify of the role assignment.
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.roleAssignment, roleID, memberID);
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.projectmember, memberID);
+	}
+
+	/**
+	 * Update a role's permission. This can be used to add or remove permissions from a
+	 * role.
+	 * @param roleID The ID of the role to update.
+	 * @param permissionMask The integer mask of the permission to update.
+	 * @param updaterID The ID of the member updating the role.
+	 * @param addingPermission Whether the permission is being added to the role or
+	 *                         removed. Defaults to true.
+	 */
+	public async updateRolePermission(
+		roleID : string,
+		permissionMask : number,
+		updaterID : string,
+		addingPermission = true,
+	) {
+		// Get the role object to update.
+		const role = this.getRoleByID(roleID);
+
+		if (!role) {
+			throw new Error('Attempting to update non existent role.', {
+				cause: {
+					roleID: roleID,
+				},
+			});
+		}
+
+		// Get the ProjectMember object of the user updating the role.
+		const updater = this.bgCore.projectMemberInventory.getMemberByID(updaterID);
+
+		if (!updater) {
+			throw new Error('Nonexistent member attempting to update role.', {
+				cause: {
+					userID: updaterID,
+				},
+			});
+		}
+
+		// Check that the updater and the role belong to the same project.
+		if (role.parentProject.id !== updater.project.id) {
+			throw new Error('Role and updater projects must match.', {
+				cause: {
+					role: role,
+					updater: updater,
+				},
+			});
+		}
+
+		// Check if the updater has permission to update roles.
+		// (Admin permission
+		if (!this.memberHasPermission(updaterID, PermissionIntMasks.ADMINISTRATOR)) {
+			throw new Error('Updater does not have permission to update roles.', {
+				cause: {
+					member: updater,
+				},
+			});
+		}
+
+		let newPermissionMask;
+		// Calculate the new permission mask.
+		if (addingPermission) {
+			newPermissionMask = role.permissionInt | permissionMask;
+		} else {
+			newPermissionMask = role.permissionInt & ~permissionMask;
+		}
+
+		// Update the role in the database.
+		await gpPool.query(
+			'UPDATE roles SET permissionmask = $1 WHERE roleid = $2;',
+			[newPermissionMask, roleID]
+		);
+
+		// Notify of the role update.
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
+	}
+
+	/**
+	 * Update the name of a role.
+	 * @param roleID The ID of the role to update.
+	 * @param newName The new name of the role.
+	 * @param updaterID The ID of the member updating the role.
+	 */
+	public async updateRoleName(roleID : string, newName : string, updaterID : string) {
+		// Get the role object to update.
+		const role = this.getRoleByID(roleID);
+
+		if (!role) {
+			throw new Error('Attempting to update non existent role.', {
+				cause: {
+					roleID: roleID,
+				},
+			});
+		}
+
+		// Get the ProjectMember object of the user updating the role.
+		const updater = this.bgCore.projectMemberInventory.getMemberByID(updaterID);
+
+		if (!updater) {
+			throw new Error('Nonexistent member attempting to update role.', {
+				cause: {
+					userID: updaterID,
+				},
+			});
+		}
+
+		// Check that the updater and the role belong to the same project.
+		if (role.parentProject.id !== updater.project.id) {
+			throw new Error('Role and updater projects must match.', {
+				cause: {
+					role: role,
+					updater: updater,
+				},
+			});
+		}
+
+		// Check if the updater has permission to update roles.
+		// (Admin permission)
+		if (!this.memberHasPermission(updaterID, PermissionIntMasks.ADMINISTRATOR)) {
+			throw new Error('Updater does not have permission to update roles.', {
+				cause: {
+					member: updater,
+				},
+			});
+		}
+
+		newName = newName.trim();
+
+		if (newName.length < 3 || newName.length > 50) {
+			throw new Error('Role name must be between 3 and 50 characters.', {
+				cause: {
+					newName: newName,
+				},
+			});
+		}
+		// Update the role in the database.
+		await gpPool.query(
+			'UPDATE roles SET rolename = $1 WHERE roleid = $2;',
+			[newName, roleID]
+		);
+
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
+	}
+
+	/**
+	 * Update the colour of a role.
+	 * @param roleID The ID of the role to update.
+	 * @param newColour The new colour of the role.
+	 * @param updaterID The ID of the member updating the role.
+	 */
+	public async updateRoleColour(roleID : string, newColour : string, updaterID : string) {
+		// Get the role object to update.
+		const role = this.getRoleByID(roleID);
+
+		// If the role doesn't exist, throw an error.
+		if (!role) {
+			throw new Error('Attempting to update non existent role.', {
+				cause: {
+					roleID: roleID,
+				},
+			});
+		}
+
+		// Get the ProjectMember object of the user updating the role.
+		const updater = this.bgCore.projectMemberInventory.getMemberByID(updaterID);
+
+		if (!updater) {
+			throw new Error('Nonexistent member attempting to update role.', {
+				cause: {
+					userID: updaterID,
+				},
+			});
+		}
+
+		// Check that the updater and the role belong to the same project.
+		if (role.parentProject.id !== updater.project.id) {
+			throw new Error('Role and updater projects must match.', {
+				cause: {
+					role: role,
+					updater: updater,
+				},
+			});
+		}
+
+		// Check if the updater has permission to update roles.
+		// (Admin permission)
+		if (!this.memberHasPermission(updaterID, PermissionIntMasks.ADMINISTRATOR)) {
+			throw new Error('Updater does not have permission to update roles.', {
+				cause: {
+					member: updater,
+				},
+			});
+		}
+
+		newColour = newColour.trim().toUpperCase();
+
+		if (!newColour.match(/^[0-9A-F]{6}$/)) {
+			throw new Error('Role colour must be a valid 6 digit hex colour code.', {
+				cause: {
+					newColour: newColour,
+				},
+			});
+		}
+
+		// Update the role in the database.
+		await gpPool.query(
+			'UPDATE roles SET colour = $1 WHERE roleid = $2;',
+			[newColour, roleID]
+		);
+
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
 	}
 
 	/**
@@ -378,6 +694,8 @@ class RoleInventory {
 			'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
 			[true, memberID]
 		);
+
+		this.bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.roleAssignment, memberID);
 	}
 }
 
