@@ -1,6 +1,6 @@
-import { gpPool } from '../../dbConnection.js';
-import BugtrackCore from '../../index.js';
-import PossibleEvents from '../../types/enums/possibleEvents.js';
+import { gpPool } from '../../../dbConnection.js';
+import BugtrackCore from '../../../index.js';
+import PossibleEvents from '../../../types/enums/possibleEvents.js';
 
 async function updateProjectName(
 	projectID : string,

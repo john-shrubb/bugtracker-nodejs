@@ -1,7 +1,7 @@
 import { QueryResult } from 'pg';
-import BugtrackCore from '../../index.js';
-import Project from '../../types/project.js';
-import { gpPool } from '../../dbConnection.js';
+import BugtrackCore from '../../../index.js';
+import Project from '../../../types/project.js';
+import { gpPool } from '../../../dbConnection.js';
 
 
 interface ProjectDataStructure {

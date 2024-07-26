@@ -1,5 +1,5 @@
-import BugtrackCore from '../../index.js';
-import Project from '../../types/project.js';
+import BugtrackCore from '../../../index.js';
+import Project from '../../../types/project.js';
 
 async function projectUpdateCallback(
 	projectID : string,

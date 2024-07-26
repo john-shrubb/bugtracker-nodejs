@@ -1,18 +1,14 @@
-import { QueryResult } from 'pg';
-import { gpPool } from '../../dbConnection.js';
 import BugtrackCore from '../../index.js';
 import Project from '../../types/project.js';
 import User from '../../types/user.js';
-import generateID from '../../helperFunctions/genID.js';
-import PossibleEvents from '../../types/enums/possibleEvents.js';
-import initialiseProjectCache from './initialiseProjectCache.js';
-import invReadyCallback from './invReadyCallback.js';
-import projectUpdateCallback from './projectUpdateCallback.js';
-import noCacheGetProjectByID from './noCacheGetProjectByID.js';
-import createProject from './createProject.js';
-import deleteProject from './deleteProject.js';
-import updateProjectName from './updateProjectName.js';
-import updateProjectOwner from './updateProjectOwner.js';
+import initialiseProjectCache from './core/initialiseProjectCache.js';
+import invReadyCallback from './core/invReadyCallback.js';
+import projectUpdateCallback from './core/projectUpdateCallback.js';
+import noCacheGetProjectByID from './specific/noCacheGetProjectByID.js';
+import createProject from './specific/createProject.js';
+import deleteProject from './specific/deleteProject.js';
+import updateProjectName from './specific/updateProjectName.js';
+import updateProjectOwner from './specific/updateProjectOwner.js';
 
 /**
  * The ProjectInventory class is used to act as a data access layer for CRUD operations
@@ -44,24 +40,19 @@ class ProjectInventory {
 	}
 
 	/**
-	 * The cache for holding all projects.
+	 * The cache for holding all projects. The key is the project ID and the value is the
+	 * project object. Simple enough :-)
 	 */
 	private projectMap : Map<string, Project> = new Map();
 
-	private invReadyCallback() {
-		invReadyCallback(
-			this.bgCore,
-			() => this.initialiseProjectCache()
-		);
-	}
+	private invReadyCallback = () : void =>
+		invReadyCallback(this.bgCore, this.initialiseProjectCache.bind(this));
 
-	private async initialiseProjectCache() {
+	private initialiseProjectCache = async () : Promise<void> =>
 		await initialiseProjectCache(this.bgCore);
-	}
 
-	public async projectUpdateCallback(projectID : string) {
-		projectUpdateCallback(projectID, this.bgCore, this.projectMap);
-	}
+	public projectUpdateCallback = async (projectID : string) : Promise<void> =>
+		await projectUpdateCallback(projectID, this.bgCore, this.projectMap);
 
 	/**
 	 * Fetch a project object directly from the database bypassing cache. Useful if an up
@@ -69,9 +60,8 @@ class ProjectInventory {
 	 * @param projectID The ID of the project to be fetched.
 	 * @returns A project object if the project exists, otherwise null.
 	 */
-	public async noCacheGetProjectByID(projectID : string) : Promise<Project | null> {
-		return await noCacheGetProjectByID(projectID, this.bgCore);
-	}
+	public noCacheGetProjectByID = async (projectID : string) : Promise<Project | null> =>
+		await noCacheGetProjectByID(projectID, this.bgCore);
 
 	/**
 	 * Get a project by its ID.
@@ -79,9 +69,8 @@ class ProjectInventory {
 	 * @returns A project object if found, otherwise null.
 	 */
 	// It's not really worth moving this function to it's own file.
-	public getProjectByID(projectID : string) : Project | null {
-		return this.projectMap.get(projectID) || null;
-	}
+	public getProjectByID = (projectID : string) : Project | null =>
+		this.projectMap.get(projectID) || null;
 
 	/**
 	 * Create a new project.
@@ -97,27 +86,24 @@ class ProjectInventory {
 	 * preserved.
 	 * @param projectID The ID of the project to be deleted.
 	 */
-	public async deleteProject(projectID : string) {
+	public deleteProject = async (projectID : string) : Promise<void> =>
 		await deleteProject(projectID, this.bgCore);
-	}
 
 	/**
 	 * Update a project's display name.
 	 * @param projectID The ID of the project to update.
 	 * @param newName The new name of the project.
 	 */
-	public async updateProjectName(projectID : string, newName : string) {
+	public updateProjectName = async (projectID : string, newName : string) : Promise<void> =>
 		await updateProjectName(projectID, newName, this.bgCore);
-	}
 
 	/**
 	 * Update the author of the project. The owner will keep their role.
 	 * @param projectID The ID of the project to update.
 	 * @param newOwner The new owner of the project.
 	 */
-	public async updateProjectOwner(projectID : string, newOwner : User) {
+	public updateProjectOwner = async (projectID : string, newOwner : User) : Promise<void> =>
 		await updateProjectOwner(projectID, newOwner, this.bgCore);
-	}
 }
 
 export default ProjectInventory;

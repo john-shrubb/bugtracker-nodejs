@@ -1,8 +1,8 @@
-import { gpPool } from '../../dbConnection.js';
-import generateID from '../../helperFunctions/genID.js';
-import BugtrackCore from '../../index.js';
-import PossibleEvents from '../../types/enums/possibleEvents.js';
-import User from '../../types/user.js';
+import { gpPool } from '../../../dbConnection.js';
+import generateID from '../../../helperFunctions/genID.js';
+import BugtrackCore from '../../../index.js';
+import PossibleEvents from '../../../types/enums/possibleEvents.js';
+import User from '../../../types/user.js';
 
 async function createProject(
 	name : string,
