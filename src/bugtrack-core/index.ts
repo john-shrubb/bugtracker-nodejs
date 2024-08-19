@@ -1,6 +1,6 @@
 import { CacheInvalidationService } from './services/cacheInvalidationService.js';
 import UserInventory from './inventories/userInventory/index.js';
-import UserManagerInventory from './inventories/userManagerInventory.js';
+import UserManagerInventory from './inventories/userManagerInventory/index.js';
 import ProjectInventory from './inventories/projectInventory/index.js';
 import ProjectMemberInventory from './inventories/projectMemberInventory/index.js';
 import { InventoryReadyService } from './services/inventoryReadyService.js';
