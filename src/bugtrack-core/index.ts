@@ -1,11 +1,11 @@
 import { CacheInvalidationService } from './services/cacheInvalidationService.js';
-import UserInventory from './inventories/userInventory.js';
+import UserInventory from './inventories/userInventory/index.js';
 import UserManagerInventory from './inventories/userManagerInventory.js';
-import ProjectInventory from './inventories/projectInventory.js';
-import ProjectMemberInventory from './inventories/projectMemberInventory.js';
+import ProjectInventory from './inventories/projectInventory/index.js';
+import ProjectMemberInventory from './inventories/projectMemberInventory/index.js';
 import { InventoryReadyService } from './services/inventoryReadyService.js';
 import TicketInventory from './inventories/ticketInventory.js';
-import RoleInventory from './inventories/roleInventory.js';
+import RoleInventory from './inventories/roleInventory/index.js';
 
 /**
  * The core of the bug tracker exposes all required services which other parts of the
