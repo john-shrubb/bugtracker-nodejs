@@ -22,42 +22,42 @@ interface TicketRowStructure {
 /**
  * The TicketInventory class is used to act as a data access layer for CRUD operations
  * relating to tickets. This inventory also covers assigning tickets to users.
- * 
+ *
  * To assign tags to a ticket, see [TagInventory]() - **NOT IMPLEMENTED**
  * TODO: Update the above link when the TagInventory class is implemented.
  */
 class TicketInventory {
-	constructor (
-		private bgCore : BugtrackCore,
-	) {
+	constructor(private bgCore: BugtrackCore) {
 		// Bind all of the callbacks to the this object to avoid errors.
 		this.invReadyCallback.bind(this);
 		this.ticketUpdateCallback.bind(this);
 		this.initialiseTicketCache.bind(this);
-		
+
 		// Listen for the required inventory ready events before initialising the class
 		this.bgCore.invReady.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
-		this.bgCore.invReady.eventEmitter.on('projectMemberInventoryReady', () => this.invReadyCallback());
+		this.bgCore.invReady.eventEmitter.on('projectMemberInventoryReady', () =>
+			this.invReadyCallback(),
+		);
 	}
 
 	/**
 	 * The map for holding all tickets.
 	 */
-	private ticketMap : Map<string, Ticket> = new Map();
+	private ticketMap: Map<string, Ticket> = new Map();
 
 	private invReadyCallback() {
 		this.bgCore.invReady.areInventoriesReady(
-			[
-				InventoryType.userInventory,
-				InventoryType.projectMemberInventory,
-			],
+			[InventoryType.userInventory, InventoryType.projectMemberInventory],
 			() => this.initialiseTicketCache(),
 		);
 	}
 
 	private async initialiseTicketCache() {
 		// Get all tickets from the database.
-		const ticketDataRaw : QueryResult<{ ticketid: string }> = await gpPool.query('SELECT ticketid FROM tickets WHERE deleted = $1;', [false]);
+		const ticketDataRaw: QueryResult<{ ticketid: string }> = await gpPool.query(
+			'SELECT ticketid FROM tickets WHERE deleted = $1;',
+			[false],
+		);
 		const ticketData = ticketDataRaw.rows;
 
 		// Convert the ticket data into ticket objects.
@@ -68,7 +68,7 @@ class TicketInventory {
 		this.bgCore.invReady.inventoryReady(InventoryType.ticketInventory);
 	}
 
-	private async ticketUpdateCallback(ticketID : string) {
+	private async ticketUpdateCallback(ticketID: string) {
 		const ticket = await this.noCacheGetTicketByID(ticketID);
 
 		if (!ticket) {
@@ -85,10 +85,12 @@ class TicketInventory {
 	 * @param ticketID The ID of the ticket to retrieve.
 	 * @returns The ticket object if found, otherwise null.
 	 */
-	public async noCacheGetTicketByID(ticketID : string) : Promise<Ticket | null> {
-		const ticketDataRaw : QueryResult<TicketRowStructure> =
-			await gpPool.query('SELECT * FROM tickets WHERE ticketid = $1;', [ticketID]);
-		
+	public async noCacheGetTicketByID(ticketID: string): Promise<Ticket | null> {
+		const ticketDataRaw: QueryResult<TicketRowStructure> = await gpPool.query(
+			'SELECT * FROM tickets WHERE ticketid = $1;',
+			[ticketID],
+		);
+
 		if (!ticketDataRaw.rows.length) {
 			return null;
 		}
@@ -97,8 +99,8 @@ class TicketInventory {
 
 		// Define the ticket priority and ticket status variables.
 
-		let ticketPriority : TicketPriority;
-		let ticketStatus : TicketStatus;
+		let ticketPriority: TicketPriority;
+		let ticketStatus: TicketStatus;
 
 		// Define the ticket priority depending on what came out the DB.
 		switch (ticket.ticketpriority) {
@@ -137,7 +139,7 @@ class TicketInventory {
 			this.bgCore,
 			ticket.ticketid,
 			this.bgCore.projectMemberInventory.getMemberByID(ticket.authorid) ||
-			(await this.bgCore.userManagerInventory.getUserStubByID(ticket.authorid))!,
+				(await this.bgCore.userManagerInventory.getUserStubByID(ticket.authorid))!,
 			this.bgCore.projectInventory.getProjectByID(ticket.projectid),
 			ticketPriority,
 			ticketStatus,
@@ -154,11 +156,11 @@ class TicketInventory {
 	}
 
 	/**
-	 * 
-	 * @param ticketID 
-	 * @returns 
+	 *
+	 * @param ticketID
+	 * @returns
 	 */
-	public getTicketByID(ticketID : string) : Ticket | null {
+	public getTicketByID(ticketID: string): Ticket | null {
 		return this.ticketMap.get(ticketID) || null;
 	}
 }

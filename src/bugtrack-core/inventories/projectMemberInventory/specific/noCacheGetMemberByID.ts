@@ -11,25 +11,26 @@ interface ProjectMemberDataStructure {
 }
 
 async function noCacheGetMemberByID(
-	memberID : string,
-	bgCore : BugtrackCore,
-) : Promise<ProjectMember | null> {
+	memberID: string,
+	bgCore: BugtrackCore,
+): Promise<ProjectMember | null> {
 	// Query the database for the member data.
-	const memberDataRaw : QueryResult<ProjectMemberDataStructure> =
-		await gpPool.query('SELECT * FROM projectmembers WHERE memberid = $1 AND removed = $2;', [memberID, false]);
-	
+	const memberDataRaw: QueryResult<ProjectMemberDataStructure> = await gpPool.query(
+		'SELECT * FROM projectmembers WHERE memberid = $1 AND removed = $2;',
+		[memberID, false],
+	);
+
 	// If the member doesn't exist, return null.
 	if (!memberDataRaw.rows.length) {
 		return null;
 	}
 
 	// Get the member data itself.
-	const memberData : ProjectMemberDataStructure = memberDataRaw.rows[0];
+	const memberData: ProjectMemberDataStructure = memberDataRaw.rows[0];
 
 	// Get the parent project object.
-	const parentProject =
-		await bgCore.projectInventory.noCacheGetProjectByID(memberData.projectid);
-	
+	const parentProject = await bgCore.projectInventory.noCacheGetProjectByID(memberData.projectid);
+
 	// If the parent project doesn't exist, throw an error.
 	if (!parentProject) {
 		throw new Error('Parent project not found for project member.', {

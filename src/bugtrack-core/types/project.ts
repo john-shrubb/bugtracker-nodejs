@@ -19,13 +19,13 @@ class Project {
 	 * @param createdOn When the project was created.
 	 */
 	constructor(
-		private bgCore    : BugtrackCore,
-		public  id        : string,
-		public  name      : string,
-		public  owner     : User | UserStub,
-		public  tickets   : Array<Ticket>,
-		public  members   : Array<ProjectMember>,
-		public  createdOn : Date,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public name: string,
+		public owner: User | UserStub,
+		public tickets: Array<Ticket>,
+		public members: Array<ProjectMember>,
+		public createdOn: Date,
 	) {
 		// Check format of project ID.
 		if (!checkID(id)) {

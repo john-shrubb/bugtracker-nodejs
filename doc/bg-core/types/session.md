@@ -1,5 +1,4 @@
-Session
-=======
+# Session
 
 The Session type represents a currently active session allocated after a user successfully authenticated.
 
@@ -43,4 +42,4 @@ Session does not currently have any methods.
 
 ## Relations
 
-- Related to [User](./user.md) - Uses this type for the `user` attribute.
+-   Related to [User](./user.md) - Uses this type for the `user` attribute.

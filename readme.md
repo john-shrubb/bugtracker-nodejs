@@ -1,9 +1,8 @@
-Simple Bugtracker
-=================
+# Simple Bugtracker
 
 This is a simple bug tracker written using node.js, it uses Express for web serving and PostgreSQL for data storage.
 
-*Setup steps will be gradually improved over time.*
+_Setup steps will be gradually improved over time._
 
 ## Documentation
 
@@ -15,6 +14,7 @@ Current setup instructions are as follows:
 
 1. Run `npm update` in the root project directory to install all of the required packages.
 2. Create a `.env` file in the root directory with the content shown below, replacing the values as described.
+
 ```ini
 # Replace with your PostgreSQL instance details.
 HOST=localhost
@@ -29,9 +29,11 @@ UM-PASSWORD=user_manager_role_pass_123
 GP-LOGIN=your_general_purpose_role
 GP-PASSWORD=general_purpose_role_pass_123
 ```
+
 <!--
 	TODO: Add a script to automatically perform this step.
 -->
+
 3. Run `npm run start` to start the service.
 
 ## Licensing

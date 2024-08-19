@@ -3,11 +3,11 @@ import { gpPool } from '../../../dbConnection.js';
 import BugtrackCore from '../../../index.js';
 import { InventoryType } from '../../../services/inventoryReadyService.js';
 
-async function initialiseProjectMemberCache(
-	bgCore : BugtrackCore,
-) {
-	const projectMembersRaw : QueryResult<{ memberid: string }> =
-		await gpPool.query('SELECT memberid FROM projectmembers WHERE removed = $1;', [false]);
+async function initialiseProjectMemberCache(bgCore: BugtrackCore) {
+	const projectMembersRaw: QueryResult<{ memberid: string }> = await gpPool.query(
+		'SELECT memberid FROM projectmembers WHERE removed = $1;',
+		[false],
+	);
 
 	const projectMembers = projectMembersRaw.rows;
 
@@ -15,9 +15,7 @@ async function initialiseProjectMemberCache(
 		await bgCore.projectMemberInventory.projectMemberUpdateCallback(memberData.memberid);
 	}
 
-	bgCore.invReady.inventoryReady(
-		InventoryType.projectMemberInventory
-	);
+	bgCore.invReady.inventoryReady(InventoryType.projectMemberInventory);
 }
 
 export default initialiseProjectMemberCache;

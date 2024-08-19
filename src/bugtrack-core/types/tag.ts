@@ -12,11 +12,11 @@ class Tag {
 	 * @param colour 6 digit hex colour code representation of the tag colour.
 	 */
 	constructor(
-		private bgCore  : BugtrackCore,
-		public  id      : string,
-		public  name    : string,
-		public  project : Project,
-		public  colour  : string,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public name: string,
+		public project: Project,
+		public colour: string,
 	) {
 		// Check format of tag ID.
 		if (!checkID(id)) {
@@ -24,7 +24,7 @@ class Tag {
 		}
 	}
 
-	public getTicketsWithTag() : Array<Ticket> {
+	public getTicketsWithTag(): Array<Ticket> {
 		return [];
 	}
 }

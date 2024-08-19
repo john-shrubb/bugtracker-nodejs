@@ -19,14 +19,14 @@ class Session {
 	 * @param onExpire The callback for when the session expires.
 	 */
 	constructor(
-		private bgCore    : BugtrackCore,
-		public  id        : string,
-		public  token     : string,
-		public  userAgent : string,
-		public  user      : User,
-		public  issued    : Date,
-		public  expires   : Date,
-		onExpire          : (session : Session) => void,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public token: string,
+		public userAgent: string,
+		public user: User,
+		public issued: Date,
+		public expires: Date,
+		onExpire: (session: Session) => void,
 	) {
 		// Set a timer which will call a function inside of the userManagerInventory to
 		// notify it that the session has expired.

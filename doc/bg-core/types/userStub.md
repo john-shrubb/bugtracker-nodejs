@@ -1,5 +1,4 @@
-UserStub
-========
+# UserStub
 
 UserStub is used to represent a deleted user which has been somewhat anonymised and can still be displayed as the author of a ticket/comment.
 

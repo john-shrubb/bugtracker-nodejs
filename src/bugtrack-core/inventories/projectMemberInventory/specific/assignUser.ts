@@ -5,11 +5,7 @@ import PossibleEvents from '../../../types/enums/possibleEvents.js';
 import Project from '../../../types/project.js';
 import User from '../../../types/user.js';
 
-async function assignUser(
-	user : User,
-	project : Project,
-	bgCore : BugtrackCore,
-) {
+async function assignUser(user: User, project: Project, bgCore: BugtrackCore) {
 	// Check if the user exists.
 	if (!bgCore.userInventory.getUserByID(user.id)) {
 		throw new Error('User does not exist.');
@@ -19,11 +15,12 @@ async function assignUser(
 	if (!bgCore.projectInventory.getProjectByID(project.id)) {
 		throw new Error('Project does not exist.');
 	}
-	
+
 	// Check if the user is already a member of the project.
 	if (
-		bgCore.projectMemberInventory.getProjectMembersByUser(user)
-			.some(member => member.project.id === project.id)
+		bgCore.projectMemberInventory
+			.getProjectMembersByUser(user)
+			.some((member) => member.project.id === project.id)
 	) {
 		throw new Error('User is already a member of the project.', {
 			cause: {
@@ -43,9 +40,7 @@ async function assignUser(
 	);
 
 	// Notify of the new project member.
-	bgCore.cacheInvalidation.notifyUpdate(
-		PossibleEvents.projectmember, memberID
-	);
+	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.projectmember, memberID);
 }
 
 export default assignUser;

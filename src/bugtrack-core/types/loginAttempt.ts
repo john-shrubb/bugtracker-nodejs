@@ -15,14 +15,13 @@ class LoginAttempt {
 	 * @param userAgent The user agent of the client.
 	 */
 	constructor(
-		private bgCore       : BugtrackCore,
-		public  user         : User,
-		public  date         : Date,
-		public  successful   : boolean,
-		public  ipAddress    : string,
-		public  userAgent    : string,
-	) {
-	}
+		private bgCore: BugtrackCore,
+		public user: User,
+		public date: Date,
+		public successful: boolean,
+		public ipAddress: string,
+		public userAgent: string,
+	) {}
 }
 
 export default LoginAttempt;

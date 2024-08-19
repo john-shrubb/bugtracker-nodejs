@@ -23,7 +23,7 @@ interface eventMap {
  * The cache invalidation service sends out notifications for when there is a change to an
  * object which requires an inventory to update and refetch its cache. This applies to all
  * inventories and indicates changes to ALL data classes.
- * 
+ *
  * The possible events are:
  * - commentUpdate
  * - projectUpdate
@@ -34,7 +34,7 @@ interface eventMap {
  * - tagUpdate
  * - ticketUpdate
  * - userUpdate
- * 
+ *
  * When an inventory queries the database in a way that may edit an object, the inventory
  * should also notify other inventories through this system.
  */
@@ -56,7 +56,7 @@ class CacheInvalidationService {
 	 * @param affectedID The ID of the object that has been modified.
 	 * @param affectedID2 In cases such as roleAssignmentUpdate, the member's ID.
 	 */
-	public notifyUpdate(updateType : PossibleEvents, affectedID : string, affectedID2? : string) {
+	public notifyUpdate(updateType: PossibleEvents, affectedID: string, affectedID2?: string) {
 		// Check the ID is of the correct format.
 		if (!checkID(affectedID)) {
 			throw Error('Invalid ID passed as affectedID');
@@ -101,6 +101,5 @@ class CacheInvalidationService {
 		}
 	}
 }
-
 
 export { PossibleEvents as possibleEvents, CacheInvalidationService };

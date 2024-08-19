@@ -7,23 +7,22 @@ import { InventoryType } from '../../../services/inventoryReadyService.js';
 import UserAttributeType from '../../../types/enums/userAttributeType.js';
 import bcrypt from 'bcrypt';
 
-
 async function createUser(
-	username : string,
-	email : string,
-	displayname : string,
-	pfp : string | null,
-	password : string,
-	bgCore : BugtrackCore
-) : Promise<string> {
+	username: string,
+	email: string,
+	displayname: string,
+	pfp: string | null,
+	password: string,
+	bgCore: BugtrackCore,
+): Promise<string> {
 	// Generate the new user's ID.
 	const newUserID = generateID();
 
 	// New validation to help prevent duplicate classes from being created.
-	if (
-		bgCore.invReady.isInventoryReady(InventoryType.userInventory)
-	) {
-		throw new Error('Before creating new users, the UserInventory class must be fully initialised.');
+	if (bgCore.invReady.isInventoryReady(InventoryType.userInventory)) {
+		throw new Error(
+			'Before creating new users, the UserInventory class must be fully initialised.',
+		);
 	}
 
 	// Check that all the user attributes are of a valid format.

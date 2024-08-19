@@ -1,5 +1,4 @@
-Permissions
-===========
+# Permissions
 
 Permissions are allocated to project members when the project owner (Or another project member with the appropriate permission) allocates a role to that user.
 
@@ -24,6 +23,7 @@ Permissions in the system are represented via a bit structure, shown in the tabl
 | Grant roles to user             | User can grant roles to another project member           | 256                    | 0100000000            |
 | Administrator                   | User has all above permissions and cannot be removed     | 512                    | 1000000000            |
 
-*Notes:*
-- The user is always able to set the status of their own ticket between *Open*, *WiP* and *Closed*.
-- **IMPORTANT:** The administrator permission is a dangerous privilege to grant and should only be granted when necessary and only to trusted members of the project.
+_Notes:_
+
+-   The user is always able to set the status of their own ticket between _Open_, _WiP_ and _Closed_.
+-   **IMPORTANT:** The administrator permission is a dangerous privilege to grant and should only be granted when necessary and only to trusted members of the project.

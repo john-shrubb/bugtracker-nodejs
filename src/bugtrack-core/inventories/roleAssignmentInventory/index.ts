@@ -13,20 +13,16 @@ import noCacheGetRoleByMemberID from './specific/noCacheGetRoleByMemberID.js';
  * [RoleInventory](./roleInventory.ts).
  */
 class RoleAssignmentInventory {
-	constructor(
-		private bgCore: BugtrackCore,
-	) {
+	constructor(private bgCore: BugtrackCore) {
 		// Initialise the role assignment cache.
-		this.bgCore.invReady.eventEmitter.on(
-			'roleInventoryReady',
-			() => initialiseRoleAssignmentCache(this.bgCore)
+		this.bgCore.invReady.eventEmitter.on('roleInventoryReady', () =>
+			initialiseRoleAssignmentCache(this.bgCore),
 		);
 
 		// Listen for role assignment updates.
 		// TODO: Consider making function calls less verbose.
-		this.bgCore.cacheInvalidation.eventEmitter.on(
-			'roleAssignmentUpdate',
-			(roleID, memberID) => this.roleAssignmentUpdateCallback(roleID, memberID)
+		this.bgCore.cacheInvalidation.eventEmitter.on('roleAssignmentUpdate', (roleID, memberID) =>
+			this.roleAssignmentUpdateCallback(roleID, memberID),
 		);
 	}
 
@@ -46,7 +42,7 @@ class RoleAssignmentInventory {
 	 * @param projectID The ID of the projects to get role assignments for.
 	 * @returns An array of role assignments for the project. See the return format.
 	 */
-	public getRoleAssignmentsByProjectID = (projectID : string) =>
+	public getRoleAssignmentsByProjectID = (projectID: string) =>
 		getRoleAssignmentsByProjectID(projectID, this.bgCore, this.roleAssignmentMap);
 
 	/**
@@ -54,16 +50,15 @@ class RoleAssignmentInventory {
 	 * @param memberID The ID of the member to get the role for.
 	 * @returns The appropriate role for the member, or null if they don't have a role.
 	 */
-	public getRoleByMemberID = (memberID: string) : Role | null =>
+	public getRoleByMemberID = (memberID: string): Role | null =>
 		this.roleAssignmentMap.get(memberID) || null;
 
-
 	/**
-	 * 
+	 *
 	 * @param memberID The ID of the member to get the role for.
 	 * @returns The role assigned to the member, or null if they don't have a role.
 	 */
-	public noCacheGetRoleByMemberID = async (memberID: string) : Promise<Role | null> =>
+	public noCacheGetRoleByMemberID = async (memberID: string): Promise<Role | null> =>
 		await noCacheGetRoleByMemberID(memberID, this.bgCore);
 
 	/**
@@ -81,7 +76,7 @@ class RoleAssignmentInventory {
 	 * @param memberID The ID of the member having their role removed.
 	 * @param unassignerID The ID of the member who is removing the role.
 	 */
-	public unassignRole = async (memberID : string, unassignerID : string) =>
+	public unassignRole = async (memberID: string, unassignerID: string) =>
 		await unassignRole(memberID, unassignerID, this.bgCore);
 }
 

@@ -1,5 +1,4 @@
-UserInventory
-=============
+# UserInventory
 
 Looking to authenticate a user or validate sessions? [Check out UserManagerInventory.md](./userManagerInventory.md).
 

@@ -5,8 +5,8 @@ import { randomInt } from 'crypto';
  * manner.
  * @returns A 15 digit ID.
  */
-function generateID() : string {
-	const generated : Array<number> = [];
+function generateID(): string {
+	const generated: Array<number> = [];
 
 	for (let x = 0; x < 15; x++) {
 		generated.push(randomInt(0, 10));

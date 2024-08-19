@@ -1,5 +1,4 @@
-Comment
-=======
+# Comment
 
 The comment class is used to represent a comment made under a ticket.
 
@@ -31,5 +30,5 @@ Comment does not currently have any methods.
 
 ## Relations
 
-- Related to [ProjectMember](./projectMember.md) - Uses this type for the `author` attribute.
-- Related to [Ticket](./ticket.md) - Uses this type for the `ticket` attribute.
+-   Related to [ProjectMember](./projectMember.md) - Uses this type for the `author` attribute.
+-   Related to [Ticket](./ticket.md) - Uses this type for the `ticket` attribute.

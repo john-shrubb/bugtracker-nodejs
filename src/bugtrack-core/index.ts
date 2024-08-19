@@ -29,7 +29,7 @@ class BugtrackCore {
 
 	// User inventory
 	public userInventory = new UserInventory(this);
-	
+
 	// User manager inventory
 	public userManagerInventory = new UserManagerInventory(this);
 

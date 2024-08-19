@@ -4,10 +4,10 @@ import PossibleEvents from '../../../types/enums/possibleEvents.js';
 import PermissionIntMasks from '../../../types/permissionIntMasks.js';
 
 async function updateRoleName(
-	roleID : string,
-	newName : string,
-	updaterID : string,
-	bgCore : BugtrackCore,
+	roleID: string,
+	newName: string,
+	updaterID: string,
+	bgCore: BugtrackCore,
 ) {
 	// Get the role object to update.
 	const role = bgCore.roleInventory.getRoleByID(roleID);
@@ -61,10 +61,7 @@ async function updateRoleName(
 		});
 	}
 	// Update the role in the database.
-	await gpPool.query(
-		'UPDATE roles SET rolename = $1 WHERE roleid = $2;',
-		[newName, roleID]
-	);
+	await gpPool.query('UPDATE roles SET rolename = $1 WHERE roleid = $2;', [newName, roleID]);
 
 	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
 }

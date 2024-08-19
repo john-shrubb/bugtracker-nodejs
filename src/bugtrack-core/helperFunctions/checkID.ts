@@ -4,7 +4,7 @@
  * @returns True if the ID is valid, false if it isn't.
  */
 
-function checkID(id : string) : boolean {
+function checkID(id: string): boolean {
 	// Length check the ID. Is instantly invalid if it isn't 15 letters in length.
 	if (id.length !== 15) {
 		return false;

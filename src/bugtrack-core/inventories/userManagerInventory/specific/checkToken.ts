@@ -3,11 +3,11 @@ import User from '../../../types/user.js';
 import bcrypt from 'bcrypt';
 
 async function checkToken(
-	sessionToken : string,
-	sessionMap : Map<string, Session>,
-) : Promise<User | null> {
+	sessionToken: string,
+	sessionMap: Map<string, Session>,
+): Promise<User | null> {
 	// Variable to be assigned if the for loop matches a user.
-	let foundUser : User | null = null;
+	let foundUser: User | null = null;
 
 	// For each key in the map...
 	for (const sessionID in sessionMap) {

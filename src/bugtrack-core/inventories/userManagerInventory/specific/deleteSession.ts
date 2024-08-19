@@ -4,11 +4,10 @@ import { possibleEvents } from '../../../services/cacheInvalidationService.js';
 import Session from '../../../types/session.js';
 
 async function deleteSession(
-	session : Session,
-	bgCore : BugtrackCore,
-	sessionMap : Map<string, Session>,
+	session: Session,
+	bgCore: BugtrackCore,
+	sessionMap: Map<string, Session>,
 ) {
-
 	if (!sessionMap.has(session.id)) {
 		throw new Error('Attempted to delete non existent session.', {
 			// Construct a cause with a bunch of details.

@@ -1,5 +1,4 @@
-UserAttributeType
-=================
+# UserAttributeType
 
 UserAttributeType is a standard way of representing an attribute of a user, primarily used to differentiate between multiple different attributes of a user with the same data type, such as `email` and `username`.
 

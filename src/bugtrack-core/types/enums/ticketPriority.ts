@@ -6,7 +6,7 @@
 enum TicketPriority {
 	high = 'HIGHPRIORITY',
 	medium = 'MEDIUMPRIORITY',
-	low = 'LOWPRIORITY'
+	low = 'LOWPRIORITY',
 }
 
 export default TicketPriority;

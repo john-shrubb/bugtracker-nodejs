@@ -1,5 +1,4 @@
-CacheInvalidationService
-========================
+# CacheInvalidationService
 
 This service provides a single means for other inventories to notify eachother that there has been a change to an object. For example, deleting a user would require a notification to be sent.
 
@@ -17,15 +16,16 @@ Responsible for emitting events when cache is invalidated.
 
 This is used to designate a callback for when there has been a change to an object. This should be used by the inventories themselves.
 The possible event types are:
-- commentUpdate
-- projectUpdate
-- projectMemberUpdate
-- roleUpdate
-- sessionUpdate
-- tagUpdate
-- ticketUpdate
-- userUpdate
-Intellisense should be able to suggest these automatically.
+
+-   commentUpdate
+-   projectUpdate
+-   projectMemberUpdate
+-   roleUpdate
+-   sessionUpdate
+-   tagUpdate
+-   ticketUpdate
+-   userUpdate
+    Intellisense should be able to suggest these automatically.
 
 ### notifyUpdate(updateType : possibleEvents, affectedID : string) : `void`
 

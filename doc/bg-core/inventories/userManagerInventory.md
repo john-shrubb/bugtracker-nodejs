@@ -1,5 +1,4 @@
-UserManagerInventory
-====================
+# UserManagerInventory
 
 This inventory is responsible for all authentication and user management (Excluding non protected user attributes such as their profile picture, see [userInventory](./userInventory.md)).
 

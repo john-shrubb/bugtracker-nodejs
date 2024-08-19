@@ -3,12 +3,10 @@ import { umPool } from '../../../dbConnection.js';
 import { InventoryType } from '../../../services/inventoryReadyService.js';
 import BugtrackCore from '../../../index.js';
 
-async function initialiseSessionCache(
-	bgCore : BugtrackCore,
-) {
+async function initialiseSessionCache(bgCore: BugtrackCore) {
 	// Grab all session objects.
-	const rawSessionQuery : QueryResult<{ sessionid: string }> = await umPool.query(
-		'SELECT sessionid FROM sessions;'
+	const rawSessionQuery: QueryResult<{ sessionid: string }> = await umPool.query(
+		'SELECT sessionid FROM sessions;',
 	);
 
 	// For each session that exists...

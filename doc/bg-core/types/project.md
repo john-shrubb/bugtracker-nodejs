@@ -1,5 +1,4 @@
-Project
-=======
+# Project
 
 The project class represents a project within bg-core. It is an umbrella for project members, tickets (Comments are pulled from the ticket class), roles and tags.
 
@@ -35,5 +34,5 @@ Project does not currently have any methods.
 
 ## Relations
 
-- Related to [Ticket](./ticket.md) - Uses this type for the `tickets` attribute.
-- Related to [ProjectMember](./projectMember.md) - Uses this type for the `projectMembers` attribute.
+-   Related to [Ticket](./ticket.md) - Uses this type for the `tickets` attribute.
+-   Related to [ProjectMember](./projectMember.md) - Uses this type for the `projectMembers` attribute.

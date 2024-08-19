@@ -1,15 +1,9 @@
 import BugtrackCore from '../../../index.js';
 import { InventoryType } from '../../../services/inventoryReadyService.js';
 
-function invReadyCallback(
-	bgCore : BugtrackCore,
-	callback : () => void,
-) {
+function invReadyCallback(bgCore: BugtrackCore, callback: () => void) {
 	bgCore.invReady.areInventoriesReady(
-		[
-			InventoryType.userInventory,
-			InventoryType.roleInventory,
-		],
+		[InventoryType.userInventory, InventoryType.roleInventory],
 		callback,
 	);
 }

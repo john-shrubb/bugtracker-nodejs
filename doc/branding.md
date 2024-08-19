@@ -1,11 +1,10 @@
-Branding
-========
+# Branding
 
 Even if this project is more of a personal portfolio project and not really intended for commercial use (Although I won't stop you if you do choose to deploy it in a commercial manner), I have decided on "Troubletracker" as the branding that will be used on the front end.
 
 ## Naming
 
-As shown above, the branding for the stock version of the front end is *TroubleTracker*.
+As shown above, the branding for the stock version of the front end is _TroubleTracker_.
 I simply chose this as it was the first creative and relevant name I could think of.
 
 ## Logo
@@ -13,7 +12,6 @@ I simply chose this as it was the first creative and relevant name I could think
 I've gone for a pretty simple logo, with some simple text and a logo.
 
 <img style="width: 800px; height: auto;" src="./.assets/TroubleTracker.svg">
-
 
 This can be cut down to only the logo:
 

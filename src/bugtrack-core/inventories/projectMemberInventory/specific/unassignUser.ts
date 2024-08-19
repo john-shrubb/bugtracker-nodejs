@@ -3,10 +3,7 @@ import BugtrackCore from '../../../index.js';
 import PossibleEvents from '../../../types/enums/possibleEvents.js';
 import ProjectMember from '../../../types/projectMember.js';
 
-async function unassignUser(
-	projectMember : ProjectMember,
-	bgCore : BugtrackCore,
-) {
+async function unassignUser(projectMember: ProjectMember, bgCore: BugtrackCore) {
 	// Check if the project member exists.
 	if (!bgCore.projectMemberInventory.getMemberByID(projectMember.id)) {
 		throw new Error('Project member does not exist.', {
@@ -15,15 +12,13 @@ async function unassignUser(
 	}
 
 	// Remove the project member from the database.
-	await gpPool.query(
-		'UPDATE projectmembers SET removed = $1 WHERE memberid = $2;',
-		[true, projectMember.id],
-	);
+	await gpPool.query('UPDATE projectmembers SET removed = $1 WHERE memberid = $2;', [
+		true,
+		projectMember.id,
+	]);
 
 	// Notify of the project member removal.
-	bgCore.cacheInvalidation.notifyUpdate(
-		PossibleEvents.projectmember, projectMember.id
-	);
+	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.projectmember, projectMember.id);
 
 	return;
 }

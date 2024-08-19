@@ -1,5 +1,4 @@
-LoginAttempt
-============
+# LoginAttempt
 
 The LoginAttempt represents a clients attempt to authenticate with the API. All attempts are recorded whether successful or not.
 
@@ -31,4 +30,4 @@ LoginAttempt does not currently have any methods.
 
 ## Relations
 
-- Related to [User](./user.md) - Uses this type for the `user` method.
+-   Related to [User](./user.md) - Uses this type for the `user` method.

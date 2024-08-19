@@ -6,11 +6,11 @@ import User from '../../../types/user.js';
 import bcrypt from 'bcrypt';
 
 async function authenticateUser(
-	user : User,
-	password : string,
-	userAgent : string,
-	ipAddress : string,
-	bgCore : BugtrackCore,
+	user: User,
+	password: string,
+	userAgent: string,
+	ipAddress: string,
+	bgCore: BugtrackCore,
 ): Promise<string | Error> {
 	// Check user exists.
 	if (!bgCore.userInventory.getUserByID(user.id)) {
@@ -22,21 +22,27 @@ async function authenticateUser(
 	// Grab user data from database.
 	// This class avoids holding this data in memory for longer than required to
 	// prevent security where a user may get access to a cache of hashed passwords.
-	const userData : { pass: string } = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
-		// Catch error incase DB query goes wrong.
-		throw Error('Something has gone wrong with fetching user authentication details. User that exists in cache not present in database.', {
-			cause: {
-				userObject: user,
-				reason: reason,
-			},
-		});
-	})).rows[0]; // The first row will always be correct.
+	const userData: { pass: string } = (
+		await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id]).catch((reason) => {
+			// Catch error incase DB query goes wrong.
+			throw Error(
+				'Something has gone wrong with fetching user authentication details. User that exists in cache not present in database.',
+				{
+					cause: {
+						userObject: user,
+						reason: reason,
+					},
+				},
+			);
+		})
+	).rows[0]; // The first row will always be correct.
 
 	const passwordCorrect = await bcrypt.compare(password, userData.pass.trim());
-	
+
 	// Insert a record of the login attempt to the database.
-	await umPool.query('INSERT INTO loginattempts (userid, successful, ipaddress, useragent) VALUES ($1, $2, $3, $4);',
-		[user.id, passwordCorrect, ipAddress, userAgent]
+	await umPool.query(
+		'INSERT INTO loginattempts (userid, successful, ipaddress, useragent) VALUES ($1, $2, $3, $4);',
+		[user.id, passwordCorrect, ipAddress, userAgent],
 	);
 
 	if (passwordCorrect) {
@@ -51,9 +57,9 @@ async function authenticateUser(
 				userAgent,
 				new Date(),
 				// Session life of 2 weeks.
-				new Date(Date.now() + (1000 * 60 * 60 * 24 * 14)),
+				new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
 				id,
-			]
+			],
 		);
 
 		bgCore.cacheInvalidation.notifyUpdate(possibleEvents.session, id);

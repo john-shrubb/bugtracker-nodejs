@@ -17,12 +17,12 @@ class Comment {
 	 * @param createdOn When the comment was made.
 	 */
 	constructor(
-		private bgCore    : BugtrackCore,
-		public  id        : string,
-		public  author    : ProjectMember | UserStub,
-		public  content   : string,
-		public  ticket    : Ticket,
-		public  createdOn : Date,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public author: ProjectMember | UserStub,
+		public content: string,
+		public ticket: Ticket,
+		public createdOn: Date,
 	) {
 		this.bgCore = bgCore;
 

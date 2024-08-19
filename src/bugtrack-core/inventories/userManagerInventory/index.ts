@@ -15,13 +15,11 @@ import getUserStubByID from './specific/getUserStubByID.js';
 /**
  * The user manager inventory provides methods to authenticate users and update security
  * information, such as passwords.
- * 
+ *
  * It also keeps a private cache of all sessions, and login attempts.
  */
 class UserManagerInventory {
-	constructor(
-		private bgCore : BugtrackCore
-	) {
+	constructor(private bgCore: BugtrackCore) {
 		// Builds session cache.
 		this.initialiseSessionCache();
 
@@ -29,7 +27,9 @@ class UserManagerInventory {
 		this.sessionUpdateCallback.bind(this);
 
 		// For if there has been an update to the cache.
-		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', (id : string) => this.sessionUpdateCallback(id));
+		this.bgCore.cacheInvalidation.eventEmitter.on('sessionUpdate', (id: string) =>
+			this.sessionUpdateCallback(id),
+		);
 	}
 
 	// Session objects aren't really supposed to be passed around. Try not to expose any
@@ -37,30 +37,29 @@ class UserManagerInventory {
 
 	/**
 	 * Cache holding current sessions. The session token is hashed for security.
-	 * 
+	 *
 	 * Do not delete items directly from the session map, simply notify cache invalidation
 	 * of the change and it will handle the rest.
 	 */
-	private sessionMap : Map<string, Session> = new Map();
+	private sessionMap: Map<string, Session> = new Map();
 
 	/**
 	 * Initialises the session cache by grabbing all sessions and adding them to the array
 	 * of sessions.
 	 */
-	private initialiseSessionCache = async () =>
-		await initialiseSessionCache(this.bgCore);
+	private initialiseSessionCache = async () => await initialiseSessionCache(this.bgCore);
 
 	/**
 	 * Callback function for if a session has been updated.
 	 */
-	public sessionUpdateCallback = async (sessionID : string) =>
+	public sessionUpdateCallback = async (sessionID: string) =>
 		await sessionUpdateCallback(sessionID, this.bgCore, this.sessionMap);
 
 	/**
 	 * Check a session token against the internal cache.
 	 * @param sessionToken Token to check against sessions.
 	 */
-	public checkToken = async (sessionToken : string) : Promise<User | null> =>
+	public checkToken = async (sessionToken: string): Promise<User | null> =>
 		await checkToken(sessionToken, this.sessionMap);
 
 	/**
@@ -68,7 +67,7 @@ class UserManagerInventory {
 	 * expires or to log out.
 	 * @param session The session to purge from the database.
 	 */
-	public deleteSession = async (session : Session) =>
+	public deleteSession = async (session: Session) =>
 		await deleteSession(session, this.bgCore, this.sessionMap);
 
 	/**
@@ -80,7 +79,10 @@ class UserManagerInventory {
 	 */
 
 	public authenticateUser = async (
-		user : User, password : string, userAgent : string, ipAddress : string
+		user: User,
+		password: string,
+		userAgent: string,
+		ipAddress: string,
 	): Promise<string | Error> =>
 		await authenticateUser(user, password, userAgent, ipAddress, this.bgCore);
 
@@ -97,12 +99,12 @@ class UserManagerInventory {
 	 * @returns A string with the new account ID.
 	 */
 	public createUser = async (
-		username : string,
-		email : string,
-		displayname : string,
-		pfp : string | null,
-		password : string
-	) : Promise<string> =>
+		username: string,
+		email: string,
+		displayname: string,
+		pfp: string | null,
+		password: string,
+	): Promise<string> =>
 		await createUser(username, email, displayname, pfp, password, this.bgCore);
 
 	/**
@@ -110,19 +112,18 @@ class UserManagerInventory {
 	 * user deletion.
 	 * @param user The user that requires deletion.
 	 */
-	public deleteUser = async (user : User) =>
-		await deleteUser(user, this.bgCore);
+	public deleteUser = async (user: User) => await deleteUser(user, this.bgCore);
 
 	/**
 	 * Update the user's password.
-	 * 
+	 *
 	 * This function will throw an error if the old password is incorrect. It is advisable
 	 * to encase the use of this function in a try/catch block.
 	 * @param user The user object to update the password for.
 	 * @param oldPassword The old password given by the user.
 	 * @param newPassword The new password to be set.
 	 */
-	public updatePassword = async (user : User, oldPassword : string, newPassword : string) =>
+	public updatePassword = async (user: User, oldPassword: string, newPassword: string) =>
 		await updatePassword(user, oldPassword, newPassword, this.bgCore);
 
 	// Deleted users are only accessible by this class, so a method is needed to provide
@@ -133,7 +134,7 @@ class UserManagerInventory {
 	 * returned.
 	 * @param userID The ID of the user stub to retrieve.
 	 */
-	public getUserStubByID = async (userID : string) : Promise<UserStub | null> =>
+	public getUserStubByID = async (userID: string): Promise<UserStub | null> =>
 		await getUserStubByID(userID);
 }
 

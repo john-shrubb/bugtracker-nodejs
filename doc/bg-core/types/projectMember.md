@@ -1,5 +1,4 @@
-ProjectMember
-=============
+# ProjectMember
 
 The ProjectMember type is a way of representing a user in the context of being a member in a project.
 
@@ -37,5 +36,5 @@ Gets all the comments the user has made on a project.
 
 ## Relations
 
-- Related to [Ticket](./ticket.md) - Uses this type for the `getTickets()` method.
-- Related to [Comment](./comment.md) - Uses this type for the `getComments()` method.
+-   Related to [Ticket](./ticket.md) - Uses this type for the `getTickets()` method.
+-   Related to [Comment](./comment.md) - Uses this type for the `getComments()` method.

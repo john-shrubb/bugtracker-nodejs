@@ -16,13 +16,13 @@ class User {
 	 * @param creationDate The date the user was created.
 	 */
 	constructor(
-		private bgCore       : BugtrackCore,
-		public  id           : string,
-		public  username     : string,
-		public  email        : string,
-		public  displayName  : string,
-		public  pfp          : string,
-		public  creationDate : Date,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public username: string,
+		public email: string,
+		public displayName: string,
+		public pfp: string,
+		public creationDate: Date,
 	) {
 		// Check the format of the user ID.
 		if (!checkID(id)) {
@@ -35,7 +35,7 @@ class User {
 	 * Get the projects the user is in.
 	 * @returns An array of the ProjectMember class, in the context of this user.
 	 */
-	public getProjects() : Array<ProjectMember> {
+	public getProjects(): Array<ProjectMember> {
 		return [];
 	}
 }

@@ -5,14 +5,13 @@ import BugtrackCore from '../../../index.js';
 
 async function noCacheGetRoleByMemberID(
 	memberID: string,
-	bgCore : BugtrackCore,
-) : Promise<Role | null> {
-	const assignmentData : QueryResult<{ memberid: string, roleid: string }> =
-		await gpPool.query(
-			'SELECT roleid, memberid FROM roleassignments WHERE memberid = $1 AND removed = $2;',
-			[memberID],
-		);
-	
+	bgCore: BugtrackCore,
+): Promise<Role | null> {
+	const assignmentData: QueryResult<{ memberid: string; roleid: string }> = await gpPool.query(
+		'SELECT roleid, memberid FROM roleassignments WHERE memberid = $1 AND removed = $2;',
+		[memberID],
+	);
+
 	if (assignmentData.rows.length === 0) {
 		return null;
 	}

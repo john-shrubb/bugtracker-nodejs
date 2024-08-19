@@ -14,10 +14,10 @@ class UserStub {
 	 * @param email The user's email address.
 	 */
 	constructor(
-		public id : string,
-		public displayName : string,
-		public username : string,
-		public email : string,
+		public id: string,
+		public displayName: string,
+		public username: string,
+		public email: string,
 	) {
 		// Check format of user ID.
 		if (!checkID(id)) {

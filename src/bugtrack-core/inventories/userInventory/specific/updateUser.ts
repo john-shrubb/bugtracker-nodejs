@@ -6,14 +6,16 @@ import UserAttributeType from '../../../types/enums/userAttributeType.js';
 import User from '../../../types/user.js';
 
 async function updateUser( // Adherance to 90 character line limit
-	user : User,
-	updateType : UserAttributeType,
-	newValue : string,
-	bgCore : BugtrackCore,
+	user: User,
+	updateType: UserAttributeType,
+	newValue: string,
+	bgCore: BugtrackCore,
 ) {
 	// This method cannot be used to update a password.
 	if (updateType === UserAttributeType.password) {
-		const error = new TypeError('Passed invalid argument for updateType. Passwords must be updated via userManagerInventory.');
+		const error = new TypeError(
+			'Passed invalid argument for updateType. Passwords must be updated via userManagerInventory.',
+		);
 		error.cause = updateType;
 		throw error;
 	}
@@ -61,7 +63,7 @@ async function updateUser( // Adherance to 90 character line limit
 		[UserAttributeType.username]: 'username',
 		[UserAttributeType.pfp]: 'pfp',
 	};
-	
+
 	// Utilise column mapping by making a string with the appropriate column name in
 	// it.
 	const columnToUpdate = columnUpdateMapping[updateType];
@@ -69,29 +71,31 @@ async function updateUser( // Adherance to 90 character line limit
 	// I swear this should be secure, right? What could go wrong with SQL and string
 	// interpolation????
 	const query = `UPDATE usersgp SET ${columnToUpdate}=$1 WHERE userid=$2;`;
-	
+
 	// Query the database.
-	await gpPool.query(
-		query,
-		[newValue, user.id]
-	// And catch just to throw another more debuggable error out if something goes
-	// wrong.
-	).catch((reason) => {
-		// Build a cause object with more details than otherwise.
-		const cause = {
-			rejectionReason: reason,
-			updateType: updateType.toString(),
-			query: query,
-			newValString: newValue,
-		};
+	await gpPool
+		.query(
+			query,
+			[newValue, user.id],
+			// And catch just to throw another more debuggable error out if something goes
+			// wrong.
+		)
+		.catch((reason) => {
+			// Build a cause object with more details than otherwise.
+			const cause = {
+				rejectionReason: reason,
+				updateType: updateType.toString(),
+				query: query,
+				newValString: newValue,
+			};
 
-		// Build the error with the cause.
-		const error = new Error('Error updating user details. Check cause for more details.');
-		error.cause = cause;
+			// Build the error with the cause.
+			const error = new Error('Error updating user details. Check cause for more details.');
+			error.cause = cause;
 
-		// Throw the error.
-		throw error;
-	});
+			// Throw the error.
+			throw error;
+		});
 
 	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.user, user.id);
 }

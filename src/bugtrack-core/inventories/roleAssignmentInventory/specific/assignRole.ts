@@ -8,13 +8,15 @@ async function assignRole(
 	roleID: string,
 	memberID: string,
 	assignedByMemberID: string,
-	bgCore : BugtrackCore,
+	bgCore: BugtrackCore,
 ) {
 	if (
 		!bgCore.roleInventory.invReady ||
 		!bgCore.invReady.isInventoryReady(InventoryType.projectMemberInventory)
 	) {
-		throw new Error('The role inventory and project member inventory must be ready before assigning roles.');
+		throw new Error(
+			'The role inventory and project member inventory must be ready before assigning roles.',
+		);
 	}
 
 	// Attempt to get role to ensure it exists.
@@ -53,8 +55,7 @@ async function assignRole(
 	}
 
 	// Assigned by user object.
-	const assignedByMember =
-		bgCore.projectMemberInventory.getMemberByID(assignedByMemberID);
+	const assignedByMember = bgCore.projectMemberInventory.getMemberByID(assignedByMemberID);
 
 	// If the assigned by user doesn't exist, throw an error.
 	if (!assignedByMember) {

@@ -1,5 +1,4 @@
-Role
-====
+# Role
 
 Role is used to represent a project member's role within the project. It handles the permissions the user has, can signify their role within a project with `displayTag`, and can even have a colour.
 
@@ -33,4 +32,4 @@ Grabs all users who have the role and returns them as `ProjectMember`.
 
 ## Relations
 
-- Related to [ProjectMember](./projectMember.md) - Uses this type for the `getUsersWithRole()` method.
+-   Related to [ProjectMember](./projectMember.md) - Uses this type for the `getUsersWithRole()` method.

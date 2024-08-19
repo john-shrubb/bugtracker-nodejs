@@ -19,12 +19,12 @@ class ProjectMember {
 	 * @param joinedOn When the user joined the project.
 	 */
 	constructor(
-		private bgCore   : BugtrackCore,
-		public  id       : string,
-		public  user     : User,
-		public  project  : Project,
-		public  role     : Role | null,
-		public  joinedOn : Date,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public user: User,
+		public project: Project,
+		public role: Role | null,
+		public joinedOn: Date,
 	) {
 		// Check format of member ID.
 		if (!checkID(id)) {
@@ -36,7 +36,7 @@ class ProjectMember {
 	 * Grabs all the tickets the user created in the context of the current project.
 	 * @returns An array with all of the tickets the user has created.
 	 */
-	public getTickets() : Array<Ticket> {
+	public getTickets(): Array<Ticket> {
 		return [];
 	}
 
@@ -44,7 +44,7 @@ class ProjectMember {
 	 * Grab all the comments the user has made in the project.
 	 * @returns The an array of comments the user has left on tickets across the project.
 	 */
-	public getComments() : Array<Comment> {
+	public getComments(): Array<Comment> {
 		return [];
 	}
 }

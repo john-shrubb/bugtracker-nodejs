@@ -6,9 +6,9 @@ import PossibleEvents from '../../../types/enums/possibleEvents.js';
 async function createRole(
 	name: string,
 	colour: string,
-	displayTag : boolean,
-	projectID : string,
-	bgCore : BugtrackCore,
+	displayTag: boolean,
+	projectID: string,
+	bgCore: BugtrackCore,
 ) {
 	if (!bgCore.roleInventory.invReady) {
 		throw new Error('The role inventory must be ready before creating a role.');

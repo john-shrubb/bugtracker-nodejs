@@ -13,16 +13,16 @@ enum InventoryType {
 }
 
 interface eventMap {
-	userInventoryReady: [],
-	userManagerInventoryReady: [],
-	projectInventoryReady: [],
-	projectMemberInventoryReady: [],
-	roleAssignmentInventoryReady: [],
-	roleInventoryReady: [],
-	ticketInventoryReady: [],
-	commentInventoryReady: [],
-	tagInventoryReady: [],
-	allInventoriesReady: [],
+	userInventoryReady: [];
+	userManagerInventoryReady: [];
+	projectInventoryReady: [];
+	projectMemberInventoryReady: [];
+	roleAssignmentInventoryReady: [];
+	roleInventoryReady: [];
+	ticketInventoryReady: [];
+	commentInventoryReady: [];
+	tagInventoryReady: [];
+	allInventoriesReady: [];
 }
 
 /**
@@ -37,31 +37,31 @@ class InventoryReadyService {
 	/**
 	 * The map of all inventories and their readiness.
 	 */
-	private inventoryReadyMap : Map<InventoryType, boolean> = new Map();
+	private inventoryReadyMap: Map<InventoryType, boolean> = new Map();
 
 	/**
 	 * The event emitter used to send out events for when each inventory declares itself
 	 * as ready.
 	 */
-	public eventEmitter : EventEmitter<eventMap>;
+	public eventEmitter: EventEmitter<eventMap>;
 
 	/**
 	 * The method used by inventories to check if another inventory is ready.
 	 */
-	public isInventoryReady(inventoryType : InventoryType) : boolean {
+	public isInventoryReady(inventoryType: InventoryType): boolean {
 		return this.inventoryReadyMap.get(inventoryType) || false;
 	}
 
 	/**
 	 * The method used by an inventory to notify the service that it is ready.
 	 */
-	public inventoryReady(inventoryType : InventoryType) {
+	public inventoryReady(inventoryType: InventoryType) {
 		// Set the inventory status to ready in the map.
 		this.inventoryReadyMap.set(inventoryType, true);
 
 		// A switch for each type of inventory. If the inventory in question is ready,
 		// emit the corresponding event.
-		switch(inventoryType) {
+		switch (inventoryType) {
 			case InventoryType.userInventory:
 				this.eventEmitter.emit('userInventoryReady');
 				break;
@@ -102,10 +102,7 @@ class InventoryReadyService {
 	 *                 inventories are ready.
 	 * @returns True if all the inventories are marked as ready. False if not.
 	 */
-	public areInventoriesReady(
-		inventories : InventoryType[],
-		callback? : () => void
-	) : boolean {
+	public areInventoriesReady(inventories: InventoryType[], callback?: () => void): boolean {
 		let inventoriesReady = true;
 		for (const invType of inventories) {
 			if (!this.isInventoryReady(invType)) {

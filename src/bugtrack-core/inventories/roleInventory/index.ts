@@ -15,20 +15,17 @@ import updateRoleColour from './specific/updateRoleColour.js';
 /**
  * Responsible for the implementations of roles in the system. Roles are used to represent
  * someone's status within a project and how many permissions they have.
- * 
+ *
  * This inventory is also responsible for (un)assigning roles to a project member.
  */
 class RoleInventory {
-	constructor(
-		private bgCore : BugtrackCore,
-	) {
+	constructor(private bgCore: BugtrackCore) {
 		// Bind 'this' to callback function.
 		this.roleUpdateCallback.bind(this);
 
 		// Callback for role object updates.
-		this.bgCore.cacheInvalidation.eventEmitter.on(
-			'roleUpdate',
-			(id : string) => this.roleUpdateCallback(id)
+		this.bgCore.cacheInvalidation.eventEmitter.on('roleUpdate', (id: string) =>
+			this.roleUpdateCallback(id),
 		);
 
 		// Initialise the cache.
@@ -38,26 +35,25 @@ class RoleInventory {
 	/**
 	 * The map of all the roles.
 	 */
-	private roleMap : Map<string, Role> = new Map();
+	private roleMap: Map<string, Role> = new Map();
 
 	/**
 	 * Shorthand and more simple way to check if the role inventory is ready for use.
 	 */
-	get invReady() : boolean {
+	get invReady(): boolean {
 		return this.bgCore.invReady.isInventoryReady(InventoryType.roleInventory);
 	}
 
 	/**
 	 * Initialise the cache of all roles in the database.
 	 */
-	public initialiseRoleCache = async () =>
-		await initialiseRoleCache(this.bgCore);
+	public initialiseRoleCache = async () => await initialiseRoleCache(this.bgCore);
 
 	/**
 	 * Callback for a role update. Has to be public to allow the role initialiser method
 	 * to call it.
 	 */
-	public roleUpdateCallback = async (roleID : string) =>
+	public roleUpdateCallback = async (roleID: string) =>
 		await roleUpdateCallback(roleID, this.bgCore, this.roleMap);
 
 	/**
@@ -65,8 +61,7 @@ class RoleInventory {
 	 * @param roleID The ID of the role to get.
 	 * @returns The role object, or null if it doesn't exist.
 	 */
-	public getRoleByID = (roleID : string) : Role | null =>
-		this.roleMap.get(roleID) || null;
+	public getRoleByID = (roleID: string): Role | null => this.roleMap.get(roleID) || null;
 
 	/**
 	 * No cache version of getRoleByID. Useful if you need a literally completely up to
@@ -75,7 +70,7 @@ class RoleInventory {
 	 * @param roleID The ID of the role to get.
 	 * @returns The role object, or null if it doesn't exist.
 	 */
-	public noCacheGetRoleByID = async (roleID : string) : Promise<Role | null> =>
+	public noCacheGetRoleByID = async (roleID: string): Promise<Role | null> =>
 		await noCacheGetRoleByID(roleID, this.bgCore);
 
 	/**
@@ -84,7 +79,7 @@ class RoleInventory {
 	 * @returns An array of roles under the project. If there are no roles, then an empty
 	 *          array is returned.
 	 */
-	public getRolesByProjectID = (projectID : string) : Role[] =>
+	public getRolesByProjectID = (projectID: string): Role[] =>
 		getRolesByProjectID(projectID, this.roleMap);
 
 	// getRoleByProjectMemberID is roleAssignmentInventory's responsibility now.
@@ -96,7 +91,7 @@ class RoleInventory {
 	 * @param permissionInt The permission integer to check against.
 	 * @returns True if the member has permission, false if they don't.
 	 */
-	public memberHasPermission = (memberID : string, permissionInt : number) =>
+	public memberHasPermission = (memberID: string, permissionInt: number) =>
 		memberHasPermission(memberID, permissionInt, this.bgCore);
 
 	/**
@@ -109,12 +104,11 @@ class RoleInventory {
 	public createRole = async (
 		name: string,
 		colour: string,
-		displayTag : boolean,
-		projectID : string,
-	) =>
-		await createRole(name, colour, displayTag, projectID, this.bgCore);
+		displayTag: boolean,
+		projectID: string,
+	) => await createRole(name, colour, displayTag, projectID, this.bgCore);
 
-	public deleteRole = async (roleID : string, deleterID : string) =>
+	public deleteRole = async (roleID: string, deleterID: string) =>
 		await deleteRole(roleID, deleterID, this.bgCore);
 
 	/**
@@ -127,13 +121,19 @@ class RoleInventory {
 	 *                         removed. Defaults to true.
 	 */
 	public updateRolePermission = async (
-		roleID : string,
-		permissionMask : number,
-		updaterID : string,
+		roleID: string,
+		permissionMask: number,
+		updaterID: string,
 		addingPermission = true,
 	) =>
 		// eslint-disable-next-line max-len
-		await updateRolePermission(roleID, permissionMask, updaterID, addingPermission, this.bgCore);
+		await updateRolePermission(
+			roleID,
+			permissionMask,
+			updaterID,
+			addingPermission,
+			this.bgCore,
+		);
 
 	/**
 	 * Update the name of a role.
@@ -141,7 +141,7 @@ class RoleInventory {
 	 * @param newName The new name of the role.
 	 * @param updaterID The ID of the member updating the role.
 	 */
-	public updateRoleName = async(roleID : string, newName : string, updaterID : string) =>
+	public updateRoleName = async (roleID: string, newName: string, updaterID: string) =>
 		await updateRoleName(roleID, newName, updaterID, this.bgCore);
 
 	/**
@@ -150,7 +150,7 @@ class RoleInventory {
 	 * @param newColour The new colour of the role.
 	 * @param updaterID The ID of the member updating the role.
 	 */
-	public updateRoleColour = async (roleID : string, newColour : string, updaterID : string) =>
+	public updateRoleColour = async (roleID: string, newColour: string, updaterID: string) =>
 		await updateRoleColour(roleID, newColour, updaterID, this.bgCore);
 }
 

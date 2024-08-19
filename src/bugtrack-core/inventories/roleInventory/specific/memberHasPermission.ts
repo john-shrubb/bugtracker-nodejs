@@ -1,10 +1,10 @@
 import BugtrackCore from '../../../index.js';
 
 function memberHasPermission(
-	memberID : string,
-	permissionInt : number,
-	bgCore : BugtrackCore,
-) : boolean {
+	memberID: string,
+	permissionInt: number,
+	bgCore: BugtrackCore,
+): boolean {
 	if (!bgCore.roleInventory.invReady) {
 		throw new Error('The role inventory must be ready before checking permissions.');
 	}

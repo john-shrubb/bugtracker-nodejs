@@ -1,5 +1,4 @@
-User
-====
+# User
 
 The user class makes up the bread and butter of everything that happens in bg-core. It represents a user in a general context.
 
@@ -33,10 +32,10 @@ The date of account creation.
 
 ### getProjects() : `Array<ProjectMember>`
 
-*Prone to be restructured into an attribute which looks something like `this.projects : Array<Project>`.*
+_Prone to be restructured into an attribute which looks something like `this.projects : Array<Project>`._
 
 Fetches all the projects the user is a member of and returns these projects in the form of a `ProjectMember`.
 
 ## Relations
 
-- Related to [ProjectMember](./projectMember.md) - Uses this type for the `getProjects()` method.
+-   Related to [ProjectMember](./projectMember.md) - Uses this type for the `getProjects()` method.

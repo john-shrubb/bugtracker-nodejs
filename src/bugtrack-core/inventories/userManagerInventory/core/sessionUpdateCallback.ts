@@ -8,22 +8,24 @@ import bcrypt from 'bcrypt';
  * Structure for the session rows when they are fetched from the database.
  */
 interface sessionRowStructure {
-	sessiontoken : string;
-	userid       : string;
-	useragent    : string;
-	issuedon     : Date;
-	expireson    : Date;
-	sessionid    : string;
+	sessiontoken: string;
+	userid: string;
+	useragent: string;
+	issuedon: Date;
+	expireson: Date;
+	sessionid: string;
 }
 
 async function sessionUpdateCallback(
-	sessionID : string,
-	bgCore : BugtrackCore,
-	sessionMap : Map<string, Session>,
+	sessionID: string,
+	bgCore: BugtrackCore,
+	sessionMap: Map<string, Session>,
 ) {
 	// Grab raw query result from PostgreSQL.
-	const sessionDataRaw : QueryResult<sessionRowStructure> =
-		await umPool.query('SELECT * FROM sessions WHERE sessionid=$1;', [sessionID]);
+	const sessionDataRaw: QueryResult<sessionRowStructure> = await umPool.query(
+		'SELECT * FROM sessions WHERE sessionid=$1;',
+		[sessionID],
+	);
 
 	// If the database no longer shows a session then delete it from cache.
 	if (!sessionDataRaw.rows.length) {

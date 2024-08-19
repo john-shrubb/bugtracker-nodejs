@@ -3,14 +3,10 @@ import BugtrackCore from '../../../index.js';
 import PossibleEvents from '../../../types/enums/possibleEvents.js';
 import PermissionIntMasks from '../../../types/permissionIntMasks.js';
 
-async function deleteRole(
-	roleID : string,
-	deleterID : string,
-	bgCore : BugtrackCore,
-) {
+async function deleteRole(roleID: string, deleterID: string, bgCore: BugtrackCore) {
 	// Get the role object to delete.
 	const role = bgCore.roleInventory.getRoleByID(roleID);
-	
+
 	// If the role doesn't exist, throw an error.
 	if (!role) {
 		throw new Error('Attempting to delete non existent role.', {
@@ -51,10 +47,7 @@ async function deleteRole(
 	}
 
 	// Update the role in the database.
-	await gpPool.query(
-		'UPDATE roles SET deleted = $1 WHERE roleid = $2;',
-		[true, roleID]
-	);
+	await gpPool.query('UPDATE roles SET deleted = $1 WHERE roleid = $2;', [true, roleID]);
 
 	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.role, roleID);
 	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.roleAssignment, roleID);

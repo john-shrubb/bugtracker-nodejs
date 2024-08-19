@@ -1,5 +1,4 @@
-TicketStatus
-============
+# TicketStatus
 
 TicketStatus is a way of representing the current status of a ticket. It can be open, WiP or closed.
 

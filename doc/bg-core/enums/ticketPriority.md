@@ -1,5 +1,4 @@
-TicketPriority
-==============
+# TicketPriority
 
 This enum represents the current priority of a ticket. High priority tickets will by default show up at the top of the list of [open/WiP](./ticketStatus.md) tickets. A ticket can have a high, medium or low priority.
 

@@ -14,7 +14,7 @@ import unassignUser from './specific/unassignUser.js';
 /**
  * The ProjectMemberInventory class is used to act as a data access layer for CRUD
  * operations for project members.
- * 
+ *
  * This class does not cover Projects.
  * See [ProjectInventory](./projectInventory.ts).
  */
@@ -22,9 +22,7 @@ class ProjectMemberInventory {
 	/**
 	 * @param bgCore The primary bugtrack core instance.
 	 */
-	constructor(
-		private bgCore : BugtrackCore,
-	) {
+	constructor(private bgCore: BugtrackCore) {
 		this.invReadyCallback.bind(this);
 		this.projectMemberUpdateCallback.bind(this);
 		this.initialiseProjectMemberCache.bind(this);
@@ -32,8 +30,8 @@ class ProjectMemberInventory {
 		this.bgCore.invReady.eventEmitter.on('userInventoryReady', () => this.invReadyCallback());
 		this.bgCore.invReady.eventEmitter.on('roleInventoryReady', () => this.invReadyCallback());
 
-		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', 
-			(id : string) => this.projectMemberUpdateCallback(id)
+		this.bgCore.cacheInvalidation.eventEmitter.on('projectMemberUpdate', (id: string) =>
+			this.projectMemberUpdateCallback(id),
 		);
 	}
 
@@ -42,7 +40,7 @@ class ProjectMemberInventory {
 	 * string corresponds to a member ID.
 	 * ProjectMember corresponds to the member object.
 	 */
-	private projectMemberMap : Map<string, ProjectMember> = new Map();
+	private projectMemberMap: Map<string, ProjectMember> = new Map();
 
 	private invReadyCallback = () =>
 		invReadyCallback(this.bgCore, this.initialiseProjectMemberCache.bind(this));
@@ -57,14 +55,14 @@ class ProjectMemberInventory {
 	 * Callback function to be used when a project member is updated.
 	 * @param memberID The ID of the project member that has been updated.
 	 */
-	public projectMemberUpdateCallback = async (memberID : string) =>
+	public projectMemberUpdateCallback = async (memberID: string) =>
 		projectMemberUpdateCallback(memberID, this.bgCore, this.projectMemberMap);
 
 	/**
 	 * Get a project member by their ID.
 	 * @param memberID The ID of the member to get.
 	 */
-	public getMemberByID = (memberID : string) : ProjectMember | null =>
+	public getMemberByID = (memberID: string): ProjectMember | null =>
 		this.projectMemberMap.get(memberID) || null;
 
 	/**
@@ -72,7 +70,7 @@ class ProjectMemberInventory {
 	 * @param memberID The ID of the member to attempt to get.
 	 * @returns A project member if one is found. Otherwise, null is returned.
 	 */
-	public noCacheGetMemberByID = async (memberID : string) : Promise<ProjectMember | null> =>
+	public noCacheGetMemberByID = async (memberID: string): Promise<ProjectMember | null> =>
 		await noCacheGetMemberByID(memberID, this.bgCore);
 
 	/**
@@ -81,7 +79,7 @@ class ProjectMemberInventory {
 	 * @returns An array of ProjectMembers. If there are no members, an empty array is
 	 * returned.
 	 */
-	public getProjectMembersByProjectID = (projectID : string) : ProjectMember[] =>
+	public getProjectMembersByProjectID = (projectID: string): ProjectMember[] =>
 		getProjectMembersByProjectID(projectID, this.bgCore, this.projectMemberMap);
 
 	/**
@@ -90,7 +88,7 @@ class ProjectMemberInventory {
 	 * @returns An array of ProjectMember objects. If the user is not a member of any
 	 * projects, an empty array is returned.
 	 */
-	public getProjectMembersByUser = (user : User) : ProjectMember[] =>
+	public getProjectMembersByUser = (user: User): ProjectMember[] =>
 		getProjectMembersByUser(user, this.bgCore, this.projectMemberMap);
 
 	/**
@@ -98,14 +96,14 @@ class ProjectMemberInventory {
 	 * @param user The user to assign to the project.
 	 * @param project The project to assign the user to.
 	 */
-	public assignUser = async (user : User, project : Project) =>
+	public assignUser = async (user: User, project: Project) =>
 		await assignUser(user, project, this.bgCore);
 
 	/**
 	 * Remove a user from a project.
 	 * @param projectMember The project member to remove from the project.
 	 */
-	public unassignUser = async (projectMember : ProjectMember) =>
+	public unassignUser = async (projectMember: ProjectMember) =>
 		await unassignUser(projectMember, this.bgCore);
 }
 

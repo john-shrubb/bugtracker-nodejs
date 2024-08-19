@@ -13,13 +13,10 @@ interface RoleDataStructure {
 	colour: string;
 }
 
-async function noCacheGetRoleByID(
-	roleID : string,
-	bgCore : BugtrackCore,
-) : Promise<Role | null> {
-	const roleDataRaw : QueryResult<RoleDataStructure> = await gpPool.query(
+async function noCacheGetRoleByID(roleID: string, bgCore: BugtrackCore): Promise<Role | null> {
+	const roleDataRaw: QueryResult<RoleDataStructure> = await gpPool.query(
 		'SELECT * FROM roles WHERE roleid = $1 AND removed = $2;',
-		[roleID, false]
+		[roleID, false],
 	);
 
 	if (!roleDataRaw.rows.length) return null;

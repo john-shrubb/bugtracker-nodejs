@@ -5,7 +5,7 @@ import Role from '../../../types/role.js';
 async function roleAssignmentUpdateCallback(
 	roleID: string,
 	memberID: string,
-	bgCore : BugtrackCore,
+	bgCore: BugtrackCore,
 	roleAssignmentMap: Map<string, Role>,
 ) {
 	// Get the role object.
@@ -15,10 +15,10 @@ async function roleAssignmentUpdateCallback(
 	if (!role) {
 		roleAssignmentMap.delete(memberID);
 		// Set removed to true in the DB.
-		await gpPool.query(
-			'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
-			[true, memberID]
-		);
+		await gpPool.query('UPDATE roleassignments SET removed = $1 WHERE memberid = $2;', [
+			true,
+			memberID,
+		]);
 		return;
 	}
 
@@ -29,10 +29,10 @@ async function roleAssignmentUpdateCallback(
 	if (!member) {
 		roleAssignmentMap.delete(memberID);
 		// Set removed to true in the DB.
-		await gpPool.query(
-			'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
-			[true, memberID]
-		);
+		await gpPool.query('UPDATE roleassignments SET removed = $1 WHERE memberid = $2;', [
+			true,
+			memberID,
+		]);
 		return;
 	}
 

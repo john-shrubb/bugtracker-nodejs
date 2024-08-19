@@ -2,10 +2,7 @@ import { gpPool } from '../../../dbConnection.js';
 import BugtrackCore from '../../../index.js';
 import PossibleEvents from '../../../types/enums/possibleEvents.js';
 
-async function deleteProject(
-	projectID : string,
-	bgCore : BugtrackCore,
-) {
+async function deleteProject(projectID: string, bgCore: BugtrackCore) {
 	// Check if project exists. Throw an error if not.
 	if (!bgCore.projectInventory.getProjectByID(projectID)) {
 		throw new Error('Cannot delete non existent project.', {

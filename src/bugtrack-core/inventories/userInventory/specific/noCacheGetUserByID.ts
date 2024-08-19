@@ -17,9 +17,9 @@ interface userRowStruct {
 }
 
 async function noCacheGetUserByID(
-	userID : string,
+	userID: string,
 	throwError = true,
-	bgCore : BugtrackCore,
+	bgCore: BugtrackCore,
 ): Promise<User | null> {
 	// Format check the user ID.
 	if (!checkID(userID) && throwError) {
@@ -29,16 +29,18 @@ async function noCacheGetUserByID(
 	// Code ripped from callback function. All the more reason to make me want to
 	// implement a driver system later on.
 	// Grab the raw query for the user data.
-	const userDataRaw : QueryResult<userRowStruct> = await gpPool.query(
-		'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp WHERE userid=$1;',
-		[userID]
-	).catch(reason => {
-		const error = new Error(
-			`Error while attempting to query database for user ID: ${userID}.`
-		);
-		error.cause = reason || 'Unknown error during connection to PostgreSQL.';
-		throw error;
-	});
+	const userDataRaw: QueryResult<userRowStruct> = await gpPool
+		.query(
+			'SELECT userid, username, email, displayname, pfp, creationdate FROM usersgp WHERE userid=$1;',
+			[userID],
+		)
+		.catch((reason) => {
+			const error = new Error(
+				`Error while attempting to query database for user ID: ${userID}.`,
+			);
+			error.cause = reason || 'Unknown error during connection to PostgreSQL.';
+			throw error;
+		});
 
 	// Check if the user was found,
 	if (!userDataRaw.rowCount) {

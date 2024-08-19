@@ -19,13 +19,13 @@ class Role {
 	 * @param displayTag Whether a tag is displayed next to the users with the role.
 	 */
 	constructor(
-		private bgCore        : BugtrackCore,
-		public  id            : string,
-		public  name          : string,
-		public  permissionInt : number,
-		public  colour        : string,
-		public  displayTag    : boolean,
-		public  parentProject : Project,
+		private bgCore: BugtrackCore,
+		public id: string,
+		public name: string,
+		public permissionInt: number,
+		public colour: string,
+		public displayTag: boolean,
+		public parentProject: Project,
 	) {
 		// Check format of role ID.
 		if (!checkID(id)) {
@@ -37,7 +37,7 @@ class Role {
 	 * Get all users with the role.
 	 */
 
-	public getUsersWithRole() : Array<ProjectMember> {
+	public getUsersWithRole(): Array<ProjectMember> {
 		return [];
 	}
 }

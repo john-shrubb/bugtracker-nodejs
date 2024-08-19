@@ -4,23 +4,25 @@ import User from '../../../types/user.js';
 import BugtrackCore from '../../../index.js';
 
 async function updatePassword(
-	user : User,
-	oldPassword : string,
-	newPassword : string,
-	bgCore : BugtrackCore,
+	user: User,
+	oldPassword: string,
+	newPassword: string,
+	bgCore: BugtrackCore,
 ) {
 	// Check that user exists.
-	if (!await bgCore.userInventory.noCacheGetUserByID(user.id)) {
+	if (!(await bgCore.userInventory.noCacheGetUserByID(user.id))) {
 		throw new Error('Attempted to update password for non existent user.', {
 			cause: user,
 		});
 	}
 
 	// Check that the old password is correct.
-	const userPassHash : string = (await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id])).rows[0][0];
+	const userPassHash: string = (
+		await umPool.query('SELECT pass FROM users WHERE userid=$1;', [user.id])
+	).rows[0][0];
 
 	// Compare and throw error if old password is incorrect.
-	if (!await bcrypt.compare(oldPassword, userPassHash)) {
+	if (!(await bcrypt.compare(oldPassword, userPassHash))) {
 		throw new Error('Attempted to update password with incorrect old password.');
 	}
 

@@ -3,15 +3,11 @@ import UserAttributeType from '../types/enums/userAttributeType.js';
 /**
  * Check the formatting of an account's attributes. userid is a seperate type of attribute
  * checked in [checkID](./checkID.ts).
- * @param value The value you wish to check complies with the constraints 
+ * @param value The value you wish to check complies with the constraints
  * @param attributeType Can be displayname, email, PFP or username. Password will throw an
  * error.
  */
-function checkAttributeConstraint(
-	value : string,
-	attributeType : UserAttributeType
-) : boolean {
-
+function checkAttributeConstraint(value: string, attributeType: UserAttributeType): boolean {
 	// This structure of if statement reduces the amount of jumps it takes to get a return
 	// value, therefore saving maybe like 2 nanoseconds per statement if I'm lucky.
 
@@ -59,7 +55,7 @@ function checkAttributeConstraint(
 	if (attributeType === UserAttributeType.pfp) {
 		// null PFPs are allowed.
 		if (!value) return true;
-		
+
 		// 2048 is generally the agreed maximum length a URL should be.
 		if (value.length > 2048) return false;
 
@@ -73,7 +69,6 @@ function checkAttributeConstraint(
 		throw new Error('The password type cannot be checked.');
 	}
 
-	
 	// TypeScript doesn't seem to recognise that there isn't a scenario that will mean
 	// we get this far down. All variants of attribute types have a check associated.
 

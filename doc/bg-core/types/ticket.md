@@ -1,5 +1,4 @@
-Ticket
-======
+# Ticket
 
 Ticket are the primary purpose of the bugtracker, being a way of representing a ticket which can have different tags on it and have comments underneath it.
 
@@ -61,8 +60,8 @@ Ticket does not currently have any methods.
 
 ## Relations
 
-- Related to [ProjectMember](./projectMember.md) - Uses this type for the `author` and `assignedMembers` attributes.
-- Related to [TicketPriority](../enums/ticketPriority.md) - Uses this type for the `priority` attribute.
-- Related to [TicketStatus](../enums/ticketStatus.md) - Uses this type for the `status` attribute.
-- Related to [Tag](./tag.md) - Uses this type for the `tags` attribute.
-- Related to [Comment](./comment.md) - Uses this type for the `comments` attribute.
+-   Related to [ProjectMember](./projectMember.md) - Uses this type for the `author` and `assignedMembers` attributes.
+-   Related to [TicketPriority](../enums/ticketPriority.md) - Uses this type for the `priority` attribute.
+-   Related to [TicketStatus](../enums/ticketStatus.md) - Uses this type for the `status` attribute.
+-   Related to [Tag](./tag.md) - Uses this type for the `tags` attribute.
+-   Related to [Comment](./comment.md) - Uses this type for the `comments` attribute.

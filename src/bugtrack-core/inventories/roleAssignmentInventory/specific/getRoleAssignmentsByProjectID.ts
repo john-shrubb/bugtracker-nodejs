@@ -4,18 +4,15 @@ import Role from '../../../types/role.js';
 
 function getRoleAssignmentsByProjectID(
 	projectID: string,
-	bgCore : BugtrackCore,
+	bgCore: BugtrackCore,
 	roleAssignmentMap: Map<string, Role>,
-) : Array<{ member: ProjectMember, role: Role }> {
-	const relevantRoleAssignments =
-		Array.from(roleAssignmentMap.entries())
-		.filter(entry => {
-			const member = bgCore.projectMemberInventory.getMemberByID(entry[0]);
-			return member && member.project.id === projectID;
-		});
-	
-		
-	return relevantRoleAssignments.map(entry => {
+): Array<{ member: ProjectMember; role: Role }> {
+	const relevantRoleAssignments = Array.from(roleAssignmentMap.entries()).filter((entry) => {
+		const member = bgCore.projectMemberInventory.getMemberByID(entry[0]);
+		return member && member.project.id === projectID;
+	});
+
+	return relevantRoleAssignments.map((entry) => {
 		const member = bgCore.projectMemberInventory.getMemberByID(entry[0])!;
 		return {
 			member: member,

@@ -3,11 +3,7 @@ import BugtrackCore from '../../../index.js';
 import PossibleEvents from '../../../types/enums/possibleEvents.js';
 import PermissionIntMasks from '../../../types/permissionIntMasks.js';
 
-async function unassignRole(
-	memberID : string,
-	unassignerID : string,
-	bgCore : BugtrackCore,
-) {
+async function unassignRole(memberID: string, unassignerID: string, bgCore: BugtrackCore) {
 	// Get the member object to unassign the role from.
 	const member = bgCore.projectMemberInventory.getMemberByID(memberID);
 
@@ -46,7 +42,7 @@ async function unassignRole(
 	if (
 		!bgCore.roleInventory.memberHasPermission(
 			unassignerID,
-			PermissionIntMasks.GRANT_ROLES_TO_USER
+			PermissionIntMasks.GRANT_ROLES_TO_USER,
 		)
 	) {
 		throw new Error('Unassigner does not have permission to unassign roles.', {
@@ -57,10 +53,10 @@ async function unassignRole(
 	}
 
 	// Update the role assignment in the database to mark it as removed.
-	await gpPool.query(
-		'UPDATE roleassignments SET removed = $1 WHERE memberid = $2;',
-		[true, memberID]
-	);
+	await gpPool.query('UPDATE roleassignments SET removed = $1 WHERE memberid = $2;', [
+		true,
+		memberID,
+	]);
 
 	bgCore.cacheInvalidation.notifyUpdate(PossibleEvents.roleAssignment, memberID);
 }
